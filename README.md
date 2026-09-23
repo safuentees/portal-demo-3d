@@ -119,3 +119,5 @@ Checks cover custom frustum corners and edges, invalid parameters, near/far proj
 Input checks cover held keys, camera movement/look, consuming mouse deltas once, and native view/window lifecycle callbacks for Escape, focus loss, detachment, window close/reopen, reattachment, and SwiftUI dismantling. They inject inert cursor callbacks, so they can verify release balance without changing the user's cursor. Actual cursor visibility and mouse association after those interactions remain a separate manual macOS check; the automated checks do not prove those operating-system effects.
 
 Keep generated products outside synced Desktop/Documents source directories to avoid signing metadata problems. Running from Xcode uses its normal DerivedData location.
+
+For the original manual commits, later fixes, and the reason for reorganizing their history, see [Development review](Docs/DevelopmentReview.md).
