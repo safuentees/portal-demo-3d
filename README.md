@@ -1,89 +1,121 @@
-# Metsl Starter
+# MetslStarter 3D
 
-A ready-to-run macOS Metal project based on `metsl-macOS`: one stationary blue sphere on the same pale background, with the window, camera controls, GPU setup, and shaders already wired together.
+A macOS Swift/Metal experiment with entrance and exit objects, a mapped player and camera field-of-view outline, and two side-by-side perspective viewports. The left viewport uses the source camera; the right uses its pose mapped from the entrance to the exit.
 
-## Version and repository
+The second viewport and FOV outline are debugging views. Player traversal, collision, aperture masking, and a composited portal surface are not implemented by this camera mapping.
 
-Current release: **v1.0.0** (app version 1.0.0, build 1). See `CHANGELOG.md` for release notes.
-
-Clone the private repository while signed in with GitHub CLI:
-
-```sh
-gh repo clone safuentees/metsl-starter
-cd metsl-starter
-open MetslStarter.xcodeproj
-```
-
-Get future updates with `git pull --ff-only`. To use this exact starting point, run `git switch --detach v1.0.0`; create a branch with `git switch -c my-experiment` before making changes.
-
-## Run
+## Run and controls
 
 1. Open `MetslStarter.xcodeproj`.
 2. Select the **MetslStarter** scheme and **My Mac**.
 3. Press **Command-R**.
 
-Click the scene to capture the mouse for looking around. **W/S** moves forward/backward; **A/D** moves left/right. **Escape** releases capture and clears held input. Closing and reopening the window resets the camera. Mouse sensitivity lives in `SceneConfiguration.swift`; movement ignores pitch and uses inverse yaw to preserve grounded controls.
+Click the scene to capture the mouse for looking around. **W/S** moves forward/backward and **A/D** moves left/right. **Escape** releases the mouse and clears held input. Closing and reopening the window resets the camera.
 
-Input checks exercise Escape, focus loss, retained detachment, teardown, and close/reopen in hidden windows with inert cursor callbacks. System cursor visibility and mouse association remain separate manual checks.
+The project uses SwiftUI, AppKit, MetalKit, Model I/O, and SIMD, with no external packages.
 
-The project uses SwiftUI, AppKit, MetalKit, Model I/O, and SIMD. There are no external packages or setup commands. It keeps the original macOS 14 minimum and Swift 5 language mode, uses the installed macOS SDK, and uses local ad hoc signing without an Apple development team.
+## Custom field of view and length
+
+`ConeMesh.make` returns an `MTKMesh` and takes the same four values as a perspective projection:
+
+```swift
+let coneMesh = try ConeMesh.make(
+    device: device,
+    fieldOfView: 70 * .pi / 180,
+    aspect: Float(viewportWidth) / Float(viewportHeight),
+    near: 0.1,
+    far: 100
+)
+```
+
+With two viewports, use the width and height of the camera's viewport, rather than the full window.
+
+| Parameter | Meaning |
+| --- | --- |
+| `fieldOfView` | Full vertical viewing angle, in radians. Multiply degrees by `.pi / 180`. |
+| `aspect` | Viewport width divided by height; determines the horizontal angle. |
+| `near` | Distance from the eye to the near plane, in world units. |
+| `far` | Distance from the eye to the far plane, in world units. |
+
+The visible length is `far - near`. For a desired length of 20 starting at `near = 0.1`, set `far = 20.1`. All parameters must be finite, with `0 < fieldOfView < .pi`, `aspect > 0`, and `0 < near < far`; invalid values throw an error.
+
+Despite its name, this mesh is a rectangular viewing **frustum**: a pyramid cut off at its near and far planes. It has eight corners and twelve line edges, so both plane boundaries are visible without filled faces hiding the scene. Its local origin is the camera's eye and it extends along **+Z**. At either plane's distance `z`, the corners follow:
+
+```text
+halfHeight = z * tan(fieldOfView / 2)
+halfWidth  = halfHeight * aspect
+corners    = (±halfWidth, ±halfHeight, z)
+```
+
+This makes the edges match the camera's projection angles exactly. An extra rotation, translation, or arbitrary scale would offset or distort that match.
+
+The observing camera can still clip or occlude parts of this outline. With `far: 100`, the outline extends the full 100 units from the source eye; it is not shortened for display.
+
+For the running scene, edit `fieldOfViewRadians`, `nearPlane`, and `farPlane` in `Sources/Scene/SceneConfiguration.swift`. Both the camera projection and the outline read those values. The renderer builds the mesh once with `aspect: 1`, then scales its local X coordinates by the source viewport's current aspect before placement. Resizing changes that scale and the projection without rebuilding or modifying the GPU mesh.
+
+## Placement and portal mapping
+
+`ObjectPlacement` groups an object's position, scale, yaw, and pitch. Edit the entrance, exit, and player placements in `SceneConfiguration.swift`, for example:
+
+```swift
+static let exitPlacement = ObjectPlacement(
+    position: [1, 0, 3],
+    scale: [1, 1.5, 0.1],
+    yaw: .pi / 2,
+    pitch: 0
+)
+```
+
+Positions and dimensions use world units; angles use radians. The model matrix is derived as `scale * rotateY(yaw) * rotateX(pitch) * translation`. The `rigidFrame` uses only the rotation and translation, so decorative scale does not stretch a portal mapping. There is no separate stored matrix that can disagree with the editable placement. `RenderObject` pairs that placement with a mesh and an `ObjectID`; duplicate IDs and invalid placements are rejected when the renderer is created.
+
+Scene object placements use world space. The player and FOV placements use source-camera space. The renderer first expands the outline to the source viewport's aspect, then places it in the source camera's world frame, then applies the portal mapping once:
+
+```text
+pointWorld = pointLocal * aspectScale * sourceCameraWorld
+transferAB = inverse(entranceFrame) * exitFrame
+pointMapped = pointWorld * transferAB
+transferBA = inverse(transferAB)
+```
+
+These are row-vector transforms, so they apply from left to right. `sourceCameraWorld` is the inverse of the source camera's view matrix. `Transforms.portalMapping` creates both directed transfers from the portal frames. This scene aligns those frames directly, with no additional half-turn. The same `transferAB` maps the camera, player, and FOV. The mapped camera's view matrix is the inverse of its mapped world frame. `transferBA` is available for reverse mapping, but a reverse portal view is not currently drawn.
+
+The CPU computes complete world model matrices once per frame, before drawing either viewport. The `scene_vertex` shader then applies only `model * view * projection`; it does not apply the portal mapping again. Lighting receives the resulting world position and a normal transformed by the final model's inverse transpose. `lit_fragment` shades solid objects and `fov_fragment` gives the outline a constant color.
+
+Both observing viewports draw the same mapped outline using the **source** viewport's aspect. Each viewport uses its own aspect for its projection and its own world-space eye for lighting. `Renderer.encodeFrame` receives the full render-target size in pixels and splits it into the two viewports internally; onscreen and offscreen rendering use the same contract.
 
 ## Start editing here
 
 | Change | File |
 | --- | --- |
-| Sphere color, position, mesh detail, background, camera speed | `Sources/Scene/SceneConfiguration.swift` |
-| Vertex transforms or fragment color | `Sources/Shaders/Shaders.metal` |
-| Render pipeline and drawing | `Sources/Rendering/Renderer.swift` |
-| Sphere geometry and vertex layout | `Sources/Rendering/SphereMesh.swift` |
+| FOV, near/far distances, placements, colors, lights, camera speed/sensitivity | `Sources/Scene/SceneConfiguration.swift` |
+| FOV corners, line edges, mesh parameters | `Sources/Rendering/ConeMesh.swift` |
+| Shared packed vertex descriptor for all meshes | `Sources/Rendering/MeshVertexLayout.swift` |
+| Scene objects, mapping, viewport setup, drawing | `Sources/Rendering/Renderer.swift` |
+| Object identity, placement, model matrix, rigid frame | `Sources/Rendering/RenderObject.swift` |
 | Camera state and movement | `Sources/Scene/Camera.swift` |
-| Projection and translation math | `Sources/Scene/Transforms.swift` |
-| Keyboard handling | `Sources/Input/KeyboardMetalView.swift` |
-| View setup, draw rate, renderer lifetime | `Sources/Views/MetalView.swift` |
-| Window title and initial size | `Sources/App/MetslStarterApp.swift` |
+| Portal mapping, normal matrices, projection, translation, rotation, scale | `Sources/Scene/Transforms.swift` |
+| Keyboard and mouse capture | `Sources/Input/KeyboardMetalView.swift` |
+| Vertex transforms, lighting, unlit FOV color | `Sources/Shaders/Shaders.metal` |
+| CPU uniform layout, kept in sync with Metal | `Sources/Rendering/ShaderUniforms.swift` |
+| MTKView setup and renderer lifetime | `Sources/Views/MetalView.swift` |
 
-The color is a single RGBA value:
+The transform convention is `position * model * view * projection`, with +Z forward and Metal depth 0...1. Depth clears to 1 and compares with `.less`. Mesh attributes use buffer 0; uniforms use buffer 1 in both shader stages. `MeshVertexLayout` supplies the shared layout: position at byte 0, normal at byte 12, UV at byte 24, and a 32-byte stride.
 
-```swift
-static let sphereColor = SIMD4<Float>(0.20, 0.45, 0.90, 1.0)
-```
-
-The fragment shader returns that value directly. The mesh is three-dimensional; its unlit, uniformly colored surface has a flat circular appearance. Normals and UVs are already present in the mesh for future experiments.
-
-## Rendering setup
-
-- `MetalView` owns a coordinator that retains the renderer while `MTKView` holds its weak delegate.
-- The 60 fps loop supports smooth held-key movement. Camera movement uses elapsed time, normalizes diagonals, and clamps long debugger pauses.
-- The mesh and render/depth states are created once. Each frame encodes the draw, presents the drawable, and commits the command buffer.
-- Depth uses `.depth32Float`, clears to 1, and compares with `.less`.
-- Projection uses the drawable's current aspect ratio so resizing does not stretch the sphere.
-- Matrix conventions match `metsl`: **row vectors, +Z forward**, and `position * model * view * projection`. Near/far map to Metal depth 0/1.
-- Mesh attributes use buffer 0. Uniforms use buffer 1 in both shader stages. Keep `ShaderUniforms.swift` and the Metal struct's field order/types synchronized.
-- Xcode compiles `Shaders.metal` as a source into `default.metallib`; the renderer loads it with `makeDefaultLibrary()`.
+Swift and Metal uniform names, order, and types match, including `lightPositionWorld` and the active camera's `eyeWorld`. With complete world models computed on the CPU, uniforms no longer need separate camera/portal mapping matrices. Their current stride is 304 bytes, including the padded normal matrix; the checks verify the offsets.
 
 ## Verify
 
-```sh
-./Scripts/check.sh
-```
-
-This builds the Debug app and runs the actual renderer on the GPU with Metal API validation enabled. Checks cover projection depth, camera movement, Swift/Metal uniform layout, the flat sphere color, a stationary resting frame, and square/wide/tall drawable sizes. The checks are for this starter scene; update their expectations when intentionally changing the scene. Build products stay in `MetslStarter-build` under your macOS temporary directory. This avoids signing problems caused by File Provider metadata on synced Desktop/Documents folders. Override the location with `BUILD_DIR` if desired. Running from Xcode uses its normal DerivedData location.
-
-To build Release:
+Use an isolated build directory for this 3D project, separate from the sibling 2D experiment:
 
 ```sh
-xcodebuild -project MetslStarter.xcodeproj -scheme MetslStarter \
-  -configuration Release -destination "platform=macOS,arch=$(uname -m)" build
+BUILD_DIR="$(mktemp -d /tmp/portal-demo-3d-check.XXXXXX)" ./Scripts/check.sh
+git diff --check
 ```
 
-## Apple documentation
+The script builds the Debug app, compiles the files in `Tests/`, and attempts offscreen GPU rendering with Metal API validation enabled. A successful app build alone does not verify the rendered output. A Metal GPU and access to the Xcode toolchain are required for the full check.
 
-Checked against the current Apple docs on September 15, 2026; built using Xcode 27.0.
+Checks cover custom frustum corners and edges, invalid parameters, near/far projection depth, aspect scaling, placement pivots and order, forward/reverse portal transforms, inverse-transpose normals, and uniform offsets. Deterministic renderer fixtures check transformed solid and mapped objects against independent geometry and lighting calculations, including each viewport's world-space eye. Scene and outline rendering also run at square, wide, tall, and odd-width sizes. Invalid scenes test missing portals, duplicate IDs, and singular scales.
 
-- [MTKView and drawing modes](https://developer.apple.com/documentation/metalkit/mtkview/)
-- [SwiftUI view coordinator](https://developer.apple.com/documentation/swiftui/nsviewrepresentable/makecoordinator%28%29)
-- [SwiftUI view cleanup](https://developer.apple.com/documentation/swiftui/nsviewrepresentable/dismantlensview%28_%3Acoordinator%3A%29)
-- [Model I/O sphere generation](https://developer.apple.com/documentation/modelio/mdlmesh/init%28spherewithextent%3Asegments%3Ainwardnormals%3Ageometrytype%3Aallocator%3A%29)
-- [Compiled Metal shader libraries](https://developer.apple.com/documentation/metal/metal-libraries)
-- [Per-draw inline uniform data](https://developer.apple.com/documentation/metal/mtlrendercommandencoder/setvertexbytes%28_%3Alength%3Aindex%3A%29)
-- [Depth testing](https://developer.apple.com/documentation/metal/calculating-primitive-visibility-using-depth-testing)
+Input checks cover held keys, camera movement/look, consuming mouse deltas once, and native view/window lifecycle callbacks for Escape, focus loss, detachment, window close/reopen, reattachment, and SwiftUI dismantling. They inject inert cursor callbacks, so they can verify release balance without changing the user's cursor. Actual cursor visibility and mouse association after those interactions remain a separate manual macOS check; the automated checks do not prove those operating-system effects.
+
+Keep generated products outside synced Desktop/Documents source directories to avoid signing metadata problems. Running from Xcode uses its normal DerivedData location.

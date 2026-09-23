@@ -17,9 +17,14 @@
 		000000000000000000000107 /* SphereMesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000207 /* SphereMesh.swift */; };
 		000000000000000000000108 /* ShaderUniforms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000208 /* ShaderUniforms.swift */; };
 		000000000000000000000109 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000209 /* Shaders.metal */; };
+		7201D8053062C1E5001C52DE /* ConeMesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7201D8043062C1E5001C52DE /* ConeMesh.swift */; };
+		72CCC6F0305CE3E10050CCA2 /* CubeMesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72CCC6EF305CE3E10050CCA2 /* CubeMesh.swift */; };
+		72CCC6F2305CE92D0050CCA2 /* RenderObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72CCC6F1305CE9260050CCA2 /* RenderObject.swift */; };
+		A10000000000000000000101 /* MeshVertexLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000102 /* MeshVertexLayout.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		000000000000000000000015 /* MetslStarter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MetslStarter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		000000000000000000000200 /* MetslStarterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetslStarterApp.swift; sourceTree = "<group>"; };
 		000000000000000000000201 /* MetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalView.swift; sourceTree = "<group>"; };
 		000000000000000000000202 /* KeyboardMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardMetalView.swift; sourceTree = "<group>"; };
@@ -30,10 +35,13 @@
 		000000000000000000000207 /* SphereMesh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SphereMesh.swift; sourceTree = "<group>"; };
 		000000000000000000000208 /* ShaderUniforms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShaderUniforms.swift; sourceTree = "<group>"; };
 		000000000000000000000209 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
-		000000000000000000000015 /* MetslStarter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MetslStarter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		000000000000000000000220 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		000000000000000000000221 /* SmokeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmokeTests.swift; sourceTree = "<group>"; };
 		000000000000000000000222 /* check.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = check.sh; sourceTree = "<group>"; };
+		7201D8043062C1E5001C52DE /* ConeMesh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConeMesh.swift; sourceTree = "<group>"; };
+		72CCC6EF305CE3E10050CCA2 /* CubeMesh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CubeMesh.swift; sourceTree = "<group>"; };
+		72CCC6F1305CE9260050CCA2 /* RenderObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderObject.swift; sourceTree = "<group>"; };
+		A10000000000000000000102 /* MeshVertexLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeshVertexLayout.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +77,14 @@
 				000000000000000000000305 /* Shaders */,
 			);
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		000000000000000000000023 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				000000000000000000000015 /* MetslStarter.app */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		000000000000000000000300 /* App */ = {
@@ -108,8 +124,12 @@
 		000000000000000000000304 /* Rendering */ = {
 			isa = PBXGroup;
 			children = (
+				A10000000000000000000102 /* MeshVertexLayout.swift */,
 				000000000000000000000206 /* Renderer.swift */,
+				72CCC6F1305CE9260050CCA2 /* RenderObject.swift */,
 				000000000000000000000207 /* SphereMesh.swift */,
+				72CCC6EF305CE3E10050CCA2 /* CubeMesh.swift */,
+				7201D8043062C1E5001C52DE /* ConeMesh.swift */,
 				000000000000000000000208 /* ShaderUniforms.swift */,
 			);
 			path = Rendering;
@@ -137,14 +157,6 @@
 				000000000000000000000222 /* check.sh */,
 			);
 			path = Scripts;
-			sourceTree = "<group>";
-		};
-		000000000000000000000023 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				000000000000000000000015 /* MetslStarter.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -222,10 +234,14 @@
 				000000000000000000000103 /* SceneConfiguration.swift in Sources */,
 				000000000000000000000104 /* Camera.swift in Sources */,
 				000000000000000000000105 /* Transforms.swift in Sources */,
+				72CCC6F0305CE3E10050CCA2 /* CubeMesh.swift in Sources */,
+				A10000000000000000000101 /* MeshVertexLayout.swift in Sources */,
 				000000000000000000000106 /* Renderer.swift in Sources */,
+				72CCC6F2305CE92D0050CCA2 /* RenderObject.swift in Sources */,
 				000000000000000000000107 /* SphereMesh.swift in Sources */,
 				000000000000000000000108 /* ShaderUniforms.swift in Sources */,
 				000000000000000000000109 /* Shaders.metal in Sources */,
+				7201D8053062C1E5001C52DE /* ConeMesh.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

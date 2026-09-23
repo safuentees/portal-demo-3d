@@ -3,6 +3,27 @@ import simd
 /// Matches metsl: row vectors, +Z forward, and Metal depth in the 0...1 range.
 /// Shaders multiply position * model * view * projection.
 enum Transforms {
+    /// Identity connection: source world -> entrance-local -> destination world.
+    static func portalMapping(
+        entranceFrame: simd_float4x4,
+        exitFrame: simd_float4x4
+    ) -> PortalMapping {
+        precondition(simd_determinant(entranceFrame).isFinite && simd_determinant(entranceFrame) != 0)
+        precondition(simd_determinant(exitFrame).isFinite && simd_determinant(exitFrame) != 0)
+        return PortalMapping(transferAB: simd_inverse(entranceFrame) * exitFrame)
+    }
+
+    /// Row-vector normals remain perpendicular to surfaces after nonuniform scale.
+    static func normalMatrix(for modelMatrix: simd_float4x4) -> simd_float3x3 {
+        let linear = simd_float3x3(
+            SIMD3(modelMatrix.columns.0.x, modelMatrix.columns.0.y, modelMatrix.columns.0.z),
+            SIMD3(modelMatrix.columns.1.x, modelMatrix.columns.1.y, modelMatrix.columns.1.z),
+            SIMD3(modelMatrix.columns.2.x, modelMatrix.columns.2.y, modelMatrix.columns.2.z)
+        )
+        precondition(simd_determinant(linear).isFinite && simd_determinant(linear) != 0)
+        return simd_transpose(simd_inverse(linear))
+    }
+
     static func translation(_ offset: SIMD3<Float>) -> simd_float4x4 {
         simd_float4x4(columns: (
             SIMD4<Float>(1, 0, 0, offset.x),
@@ -72,4 +93,10 @@ enum Transforms {
             SIMD4<Float>(0, 0, 1, 0)
         ))
     }
+}
+
+/// Directed rigid mappings. Callers supply rotation/translation frames, never visual scale.
+struct PortalMapping {
+    let transferAB: simd_float4x4
+    var transferBA: simd_float4x4 { simd_inverse(transferAB) }
 }
