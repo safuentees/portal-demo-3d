@@ -238,6 +238,7 @@ struct SmokeTests {
         let outline = RenderObject(id: .fov, mesh: mesh,
             placement: ObjectPlacement(position: [0, 0, -100]))
         for id: ObjectID in [.sphere, .player] {
+            let materialColor = id == .player ? SceneConfiguration.mappedPlayerColor : SceneConfiguration.sceneObjectColor
             let object = RenderObject(id: id, mesh: mesh, placement: placement)
             let renderer = try Renderer(view: view, library: library,
                 objects: [entrance, exit, outline, object], camera: camera)
@@ -273,14 +274,16 @@ struct SmokeTests {
                         let rayDirection = xyz(farClip / farClip.w) - rayStart
                         let distance = simd_dot(planePoint - rayStart, normalWorld) / simd_dot(rayDirection, normalWorld)
                         let pointWorld = rayStart + rayDirection * distance
-                        let expected = lightingBytes(pointWorld: pointWorld, normalWorld: normalWorld, eyeWorld: eyeWorld)
+                        let expected = lightingBytes(pointWorld: pointWorld, normalWorld: normalWorld,
+                                                     eyeWorld: eyeWorld, materialColor: materialColor)
                         let index = (pixelY * width + viewport * viewportWidth + pixelX) * 4
                         try expect((0..<4).allSatisfy { abs(Int(pixels[index + $0]) - expected[$0]) <= 3 },
                             "Renderer \(id) lighting/placement mismatch in viewport \(viewport) at \(pixelX),\(pixelY): "
                             + "got \(Array(pixels[index..<(index + 4)])), expected \(expected).")
                         if viewport == 1 {
                             let wrongEye = xyz(SIMD4<Float>(0, 0, 0, 1) * cameraWorld)
-                            let wrong = lightingBytes(pointWorld: pointWorld, normalWorld: normalWorld, eyeWorld: wrongEye)
+                            let wrong = lightingBytes(pointWorld: pointWorld, normalWorld: normalWorld,
+                                                      eyeWorld: wrongEye, materialColor: materialColor)
                             wrongEyeDifference = max(wrongEyeDifference, zip(expected, wrong).map { abs($0.0 - $0.1) }.max() ?? 0)
                         }
                     }
@@ -317,15 +320,17 @@ struct SmokeTests {
         SIMD3(value.x, value.y, value.z)
     }
 
-    static func lightingBytes(pointWorld: SIMD3<Float>, normalWorld: SIMD3<Float>, eyeWorld: SIMD3<Float>) -> [Int] {
+    static func lightingBytes(
+        pointWorld: SIMD3<Float>, normalWorld: SIMD3<Float>, eyeWorld: SIMD3<Float>, materialColor: SIMD4<Float>
+    ) -> [Int] {
         let lightDirection = simd_normalize(xyz(SceneConfiguration.lightPositionWorld) - pointWorld)
         let viewDirection = simd_normalize(eyeWorld - pointWorld)
         let halfDirection = simd_normalize(lightDirection + viewDirection)
         let diffuse = max(simd_dot(normalWorld, lightDirection), 0)
         let specular: Float = diffuse > 0 ? 0.12 * pow(max(simd_dot(normalWorld, halfDirection), 0), 32) : 0
-        let color = (0.35 + diffuse) * xyz(SceneConfiguration.lightColor) * xyz(SceneConfiguration.sceneColor)
+        let color = (0.35 + diffuse) * xyz(SceneConfiguration.lightColor) * xyz(materialColor)
             + specular * xyz(SceneConfiguration.lightColor)
-        return [color.z, color.y, color.x, SceneConfiguration.sceneColor.w]
+        return [color.z, color.y, color.x, materialColor.w]
             .map { Int((min(max($0, 0), 1) * 255).rounded()) }
     }
 

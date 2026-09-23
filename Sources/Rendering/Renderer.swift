@@ -243,12 +243,19 @@ final class Renderer: NSObject, MTKViewDelegate {
             for (objectIndex, object) in objects.enumerated() {
                 // Explicit for EVERY object, including spheres after an FOV draw.
                 encoder.setRenderPipelineState(object.id == .fov ? fovPipelineState : pipelineState)
+                let color: SIMD4<Float>
+                switch object.id {
+                case .entrance, .exit: color = SceneConfiguration.portalColor
+                case .player: color = SceneConfiguration.mappedPlayerColor
+                case .fov: color = SceneConfiguration.mappedFOVColor
+                case .sphere, .cube: color = SceneConfiguration.sceneObjectColor
+                }
                 var uniforms = ShaderUniforms(
                     modelMatrix: worldModels[objectIndex],
                     viewMatrix: activeViewMatrix,
                     projectionMatrix: projectionMatrix,
                     normalMatrix: normalMatrices[objectIndex],
-                    color: object.id == .fov ? SceneConfiguration.fovColor : SceneConfiguration.sceneColor,
+                    color: color,
                     lightColor: SceneConfiguration.lightColor,
                     lightPositionWorld: SceneConfiguration.lightPositionWorld,
                     eyeWorld: eyeWorld
