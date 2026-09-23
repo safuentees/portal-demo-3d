@@ -77,7 +77,8 @@ final class Renderer: NSObject, MTKViewDelegate {
         let deltaTime = Float(now - (lastFrameTime ?? now))
         lastFrameTime = now
         if let keyboardView = view as? KeyboardMetalView {
-            camera.update(direction: keyboardView.movementDirection, deltaTime: deltaTime)
+            camera.updateMovement(direction: keyboardView.movementDirection, deltaTime: deltaTime)
+            camera.updateDirection(keyboardView.consumeMouseDelta())
         }
 
         guard view.drawableSize.width > 0, view.drawableSize.height > 0,

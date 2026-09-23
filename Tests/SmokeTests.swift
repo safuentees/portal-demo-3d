@@ -16,6 +16,7 @@ struct SmokeTests {
     @MainActor
     static func main() throws {
         try checkMath()
+        try InputChecks.run()
         guard CommandLine.arguments.count == 2 else {
             throw Failure(description: "Pass the built default.metallib path.")
         }
@@ -51,15 +52,15 @@ struct SmokeTests {
 
         var straight = Camera()
         var diagonal = Camera()
-        straight.update(direction: [0, 0, 1], deltaTime: 0.05)
-        diagonal.update(direction: [1, 0, 1], deltaTime: 0.05)
+        straight.updateMovement(direction: [0, 0, 1], deltaTime: 0.05)
+        diagonal.updateMovement(direction: [1, 0, 1], deltaTime: 0.05)
         try expect(abs(simd_length(straight.position) - simd_length(diagonal.position)) < 0.0001,
                    "Diagonal movement must not be faster.")
         let eye = SIMD4<Float>(straight.position.x, straight.position.y, straight.position.z, 1)
         try expect(simd_length((eye * straight.viewMatrix) - SIMD4<Float>(0, 0, 0, 1)) < 0.0001,
                    "The view transform must invert the camera position.")
         var paused = Camera()
-        paused.update(direction: [0, 0, 1], deltaTime: 100)
+        paused.updateMovement(direction: [0, 0, 1], deltaTime: 100)
         try expect(abs(paused.position.z - SceneConfiguration.cameraSpeed * 0.1) < 0.0001,
                    "A debugger pause must not cause a camera jump.")
         try expect(MemoryLayout<ShaderUniforms>.stride == 208, "Swift/Metal uniform stride changed.")

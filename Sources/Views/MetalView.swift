@@ -37,13 +37,16 @@ struct MetalView: NSViewRepresentable {
     func updateNSView(_ nsView: KeyboardMetalView, context: Context) {}
 
     static func dismantleNSView(_ nsView: KeyboardMetalView, coordinator: Coordinator) {
+        nsView.tearDownInput()
         nsView.isPaused = true
         nsView.delegate = nil
         coordinator.renderer = nil
     }
 }
 
-#Preview("Solid sphere") {
+#if DEBUG
+#Preview("Portal scene") {
     MetalView()
         .frame(width: 500, height: 500)
 }
+#endif

@@ -14,4 +14,5 @@ enum SceneConfiguration {
     static let nearPlane: Float = 0.1
     static let farPlane: Float = 100
     static let cameraSpeed: Float = 1.5
+    static let mouseSensitivity: Float = 0.01
 }

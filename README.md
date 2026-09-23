@@ -22,7 +22,9 @@ Get future updates with `git pull --ff-only`. To use this exact starting point, 
 2. Select the **MetslStarter** scheme and **My Mac**.
 3. Press **Command-R**.
 
-Click the scene to focus it. **W/S** moves the camera forward/backward; **A/D** moves left/right. Closing and reopening the window resets the camera.
+Click the scene to capture the mouse for looking around. **W/S** moves forward/backward; **A/D** moves left/right. **Escape** releases capture and clears held input. Closing and reopening the window resets the camera. Mouse sensitivity lives in `SceneConfiguration.swift`; movement ignores pitch and uses inverse yaw to preserve grounded controls.
+
+Input checks exercise Escape, focus loss, retained detachment, teardown, and close/reopen in hidden windows with inert cursor callbacks. System cursor visibility and mouse association remain separate manual checks.
 
 The project uses SwiftUI, AppKit, MetalKit, Model I/O, and SIMD. There are no external packages or setup commands. It keeps the original macOS 14 minimum and Swift 5 language mode, uses the installed macOS SDK, and uses local ad hoc signing without an Apple development team.
 

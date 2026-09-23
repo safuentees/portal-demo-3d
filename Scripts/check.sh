@@ -16,7 +16,8 @@ xcrun swiftc -swift-version 5 \
     "$project_root"/Sources/Scene/*.swift \
     "$project_root"/Sources/Rendering/*.swift \
     "$project_root"/Sources/Input/*.swift \
-    "$project_root/Tests/SmokeTests.swift" \
+    "$project_root/Sources/Views/MetalView.swift" \
+    "$project_root"/Tests/*.swift \
     -o "$build_dir/SmokeTests"
 
 MTL_DEBUG_LAYER=1 "$build_dir/SmokeTests" \
