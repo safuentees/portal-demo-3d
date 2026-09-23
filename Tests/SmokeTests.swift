@@ -25,6 +25,7 @@ struct SmokeTests {
             throw Failure(description: "A Metal GPU is required for the render checks.")
         }
         let library = try device.makeLibrary(URL: URL(fileURLWithPath: CommandLine.arguments[1]))
+        try LightingChecks.run(device: device, queue: queue, library: library)
         try checkFrustumMesh(device: device)
         let view = MTKView(frame: .zero, device: device)
         view.colorPixelFormat = .bgra8Unorm
@@ -87,11 +88,14 @@ struct SmokeTests {
         let direction = SIMD4<Float>(0.2, 0.3, 0.8, 0)
         try expect(abs(simd_length(direction * placement.rigidFrame) - simd_length(direction)) < 0.0001,
                    "Portal rigid frames must exclude visual scale.")
-        try expect(MemoryLayout<ShaderUniforms>.stride == 304, "Swift/Metal uniform stride changed.")
+        try expect(MemoryLayout<ShaderUniforms>.stride == 352, "Swift/Metal uniform stride changed.")
         let offsets: [(PartialKeyPath<ShaderUniforms>, Int)] = [
             (\.modelMatrix, 0), (\.viewMatrix, 64), (\.projectionMatrix, 128),
             (\.normalMatrix, 192), (\.color, 240), (\.lightColor, 256),
-            (\.lightPositionWorld, 272), (\.eyeWorld, 288)
+            (\.lightPositionWorld, 272), (\.eyeWorld, 288),
+            (\.ambientIntensity, 304), (\.diffuseIntensity, 308),
+            (\.specularIntensity, 312), (\.specularShininess, 316),
+            (\.fillLightDirectionWorld, 320), (\.fillIntensity, 336)
         ]
         for (field, offset) in offsets {
             try expect(MemoryLayout<ShaderUniforms>.offset(of: field) == offset,
@@ -205,13 +209,15 @@ struct SmokeTests {
             * Transforms.translation([0.4, -0.3, -1])
         let camera = Camera(viewMatrix: simd_inverse(cameraWorld))
         let mappingYaw: Float = 0.15
-        let expectedTransfer = Transforms.rotateY(mappingYaw) * Transforms.translation([1.5, 0.2, 0])
+        let expectedTransfer = Transforms.rotateY(mappingYaw) * Transforms.translation([3.5, 0.2, 0])
         let entrance = RenderObject(id: .entrance, mesh: mesh,
             placement: ObjectPlacement(position: [0, 0, -20], scale: [0.1, 0.2, 0.3]))
         let exitPoint = SIMD4<Float>(0, 0, -20, 1) * expectedTransfer
         let exit = RenderObject(id: .exit, mesh: mesh,
             placement: ObjectPlacement(position: xyz(exitPoint), scale: [0.3, 0.1, 0.2], yaw: mappingYaw))
-        let placement = ObjectPlacement(position: [0.4, -0.2, 4], scale: [2.2, 1.7, 0.55], yaw: -0.12, pitch: 0.1)
+        // Orient the tilted fixture toward the key light and separate the eyes enough
+        // to keep the specular regression sensitive with the scene's restrained gloss.
+        let placement = ObjectPlacement(position: [0.4, -0.2, 4], scale: [2.2, 1.7, 0.55], yaw: -0.45, pitch: 0.35)
         let sphere = RenderObject(id: .sphere, mesh: mesh, placement: placement)
         let invalidScenes = [
             [sphere], [entrance, exit, sphere, sphere],
@@ -228,7 +234,7 @@ struct SmokeTests {
             try expect(rejected, "Renderer accepted missing portals, duplicate IDs, or a singular placement.")
         }
 
-        let width = 960, height = 320, viewportWidth = width / 2
+        let width = 1280, height = 320, viewportWidth = width / 2
         let projection = Transforms.perspective(aspect: Float(viewportWidth) / Float(height),
             fieldOfView: SceneConfiguration.fieldOfViewRadians,
             near: SceneConfiguration.nearPlane, far: SceneConfiguration.farPlane)
@@ -323,12 +329,19 @@ struct SmokeTests {
     static func lightingBytes(
         pointWorld: SIMD3<Float>, normalWorld: SIMD3<Float>, eyeWorld: SIMD3<Float>, materialColor: SIMD4<Float>
     ) -> [Int] {
-        let lightDirection = simd_normalize(xyz(SceneConfiguration.lightPositionWorld) - pointWorld)
-        let viewDirection = simd_normalize(eyeWorld - pointWorld)
-        let halfDirection = simd_normalize(lightDirection + viewDirection)
+        func directionOrZero(_ vector: SIMD3<Float>) -> SIMD3<Float> {
+            simd_length_squared(vector) > 1e-12 ? simd_normalize(vector) : .zero
+        }
+        let lightDirection = directionOrZero(xyz(SceneConfiguration.lightPositionWorld) - pointWorld)
+        let viewDirection = directionOrZero(eyeWorld - pointWorld)
+        let halfDirection = directionOrZero(lightDirection + viewDirection)
         let diffuse = max(simd_dot(normalWorld, lightDirection), 0)
-        let specular: Float = diffuse > 0 ? 0.12 * pow(max(simd_dot(normalWorld, halfDirection), 0), 32) : 0
-        let color = (0.35 + diffuse) * xyz(SceneConfiguration.lightColor) * xyz(materialColor)
+        let specular: Float = diffuse > 0 && simd_length_squared(viewDirection) > 0 ? SceneConfiguration.specularIntensity
+            * pow(max(simd_dot(normalWorld, halfDirection), 0), SceneConfiguration.specularShininess) : 0
+        let fill = max(simd_dot(normalWorld, directionOrZero(xyz(SceneConfiguration.fillLightDirectionWorld))), 0)
+        let color = (SceneConfiguration.ambientIntensity + SceneConfiguration.diffuseIntensity * diffuse
+                     + SceneConfiguration.fillIntensity * fill)
+            * xyz(SceneConfiguration.lightColor) * xyz(materialColor)
             + specular * xyz(SceneConfiguration.lightColor)
         return [color.z, color.y, color.x, materialColor.w]
             .map { Int((min(max($0, 0), 1) * 255).rounded()) }
@@ -470,7 +483,13 @@ struct SmokeTests {
                     modelMatrix: matrix_identity_float4x4, viewMatrix: matrix_identity_float4x4,
                     projectionMatrix: projection, normalMatrix: matrix_identity_float3x3,
                     color: colors[viewport], lightColor: SIMD4(repeating: 1),
-                    lightPositionWorld: [0, 0, 0, 1], eyeWorld: [0, 0, 0, 1])
+                    lightPositionWorld: [0, 0, 0, 1], eyeWorld: [0, 0, 0, 1],
+                    ambientIntensity: SceneConfiguration.ambientIntensity,
+                    diffuseIntensity: SceneConfiguration.diffuseIntensity,
+                    specularIntensity: SceneConfiguration.specularIntensity,
+                    specularShininess: SceneConfiguration.specularShininess,
+                    fillLightDirectionWorld: SceneConfiguration.fillLightDirectionWorld,
+                    fillIntensity: SceneConfiguration.fillIntensity)
                 encoder.setVertexBytes(&uniforms, length: MemoryLayout<ShaderUniforms>.stride, index: 1)
                 encoder.setFragmentBytes(&uniforms, length: MemoryLayout<ShaderUniforms>.stride, index: 1)
                 for submesh in mesh.submeshes {

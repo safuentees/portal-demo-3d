@@ -83,6 +83,20 @@ The CPU computes complete world model matrices once per frame, before drawing ei
 
 Both observing viewports draw the same mapped outline using the **source** viewport's aspect. Each viewport uses its own aspect for its projection and its own world-space eye for lighting. `Renderer.encodeFrame` receives the full render-target size in pixels and splits it into the two viewports internally; onscreen and offscreen rendering use the same contract.
 
+## Adjusting the lighting
+
+The lighting controls live in `SceneConfiguration.swift`. The main light is a white point light at `lightPositionWorld = [-3, 5, -1, 1]`; its position stays fixed in the world as the camera moves. It has no distance falloff.
+
+| Control | What it changes |
+| --- | --- |
+| `lightPositionWorld`, `lightColor` | Where the main light sits, and a shared color tint for all illumination. Move the main light to change which faces catch it. |
+| `ambientIntensity` (`0.38`) | The constant illumination that keeps the darkest faces visible. |
+| `diffuseIntensity` (`0.85`) | How strongly faces brighten when they face the main light. |
+| `fillLightDirectionWorld` (`[2, 3, 5, 0]`), `fillIntensity` (`0.22`) | A weaker light that reveals faces turned away from the main light. This is a world-space direction **toward** the fill light, rather than a position; it adds diffuse light only. |
+| `specularIntensity` (`0.045`), `specularShininess` (`20`) | The strength and concentration of the highlight. Higher shininess makes the highlight smaller and sharper. |
+
+The diffuse lighting stays attached to the world; the highlight depends on the active viewport's eye. The FOV outline remains unlit. There are no shadow maps, so objects do not cast shadows onto one another. Colors and lighting strengths are artistic display values written directly to `.bgra8Unorm`, with no explicit sRGB transfer or calibrated linear-light workflow.
+
 ## Start editing here
 
 | Change | File |
@@ -101,7 +115,7 @@ Both observing viewports draw the same mapped outline using the **source** viewp
 
 The transform convention is `position * model * view * projection`, with +Z forward and Metal depth 0...1. Depth clears to 1 and compares with `.less`. Mesh attributes use buffer 0; uniforms use buffer 1 in both shader stages. `MeshVertexLayout` supplies the shared layout: position at byte 0, normal at byte 12, UV at byte 24, and a 32-byte stride.
 
-Swift and Metal uniform names, order, and types match, including `lightPositionWorld` and the active camera's `eyeWorld`. With complete world models computed on the CPU, uniforms no longer need separate camera/portal mapping matrices. Their current stride is 304 bytes, including the padded normal matrix; the checks verify the offsets.
+Swift and Metal uniform names, order, and types match, including `lightPositionWorld` and the active camera's `eyeWorld`. With complete world models computed on the CPU, uniforms no longer need separate camera/portal mapping matrices. Their current stride is 352 bytes, including the padded normal matrix and lighting controls; the checks verify the offsets.
 
 ## Verify
 
@@ -115,6 +129,8 @@ git diff --check
 The script builds the Debug app, compiles the files in `Tests/`, and attempts offscreen GPU rendering with Metal API validation enabled. A successful app build alone does not verify the rendered output. A Metal GPU and access to the Xcode toolchain are required for the full check.
 
 Checks cover custom frustum corners and edges, invalid parameters, near/far projection depth, aspect scaling, placement pivots and order, forward/reverse portal transforms, inverse-transpose normals, and uniform offsets. Deterministic renderer fixtures check transformed solid and mapped objects against independent geometry and lighting calculations, including each viewport's world-space eye. Scene and outline rendering also run at square, wide, tall, and odd-width sizes. Invalid scenes test missing portals, duplicate IDs, and singular scales.
+
+The lighting checks verify each control independently, diffuse/fill lighting that stays fixed as the camera moves, highlights that respond to the active eye, and finite output for coincident or opposing light/eye directions. They also verify the synchronized 352-byte uniform layout and the outline's exact unlit color. The app build and full Metal API validation suite passed after the lighting update.
 
 Input checks cover held keys, camera movement/look, consuming mouse deltas once, and native view/window lifecycle callbacks for Escape, focus loss, detachment, window close/reopen, reattachment, and SwiftUI dismantling. They inject inert cursor callbacks, so they can verify release balance without changing the user's cursor. Actual cursor visibility and mouse association after those interactions remain a separate manual macOS check; the automated checks do not prove those operating-system effects.
 

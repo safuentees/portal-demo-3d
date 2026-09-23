@@ -258,7 +258,13 @@ final class Renderer: NSObject, MTKViewDelegate {
                     color: color,
                     lightColor: SceneConfiguration.lightColor,
                     lightPositionWorld: SceneConfiguration.lightPositionWorld,
-                    eyeWorld: eyeWorld
+                    eyeWorld: eyeWorld,
+                    ambientIntensity: SceneConfiguration.ambientIntensity,
+                    diffuseIntensity: SceneConfiguration.diffuseIntensity,
+                    specularIntensity: SceneConfiguration.specularIntensity,
+                    specularShininess: SceneConfiguration.specularShininess,
+                    fillLightDirectionWorld: SceneConfiguration.fillLightDirectionWorld,
+                    fillIntensity: SceneConfiguration.fillIntensity
                 )
 
                 for (index, buffer) in object.mesh.vertexBuffers.enumerated() {
