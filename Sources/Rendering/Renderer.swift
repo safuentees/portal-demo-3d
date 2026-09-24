@@ -28,11 +28,13 @@ final class Renderer: NSObject, MTKViewDelegate {
     private let depthPixelFormat: MTLPixelFormat
     private let commandQueue: MTLCommandQueue
     private let objects: [RenderObject]
+    private let hasEntranceSurface: Bool
     private let pipelineState: MTLRenderPipelineState
     private let fovPipelineState: MTLRenderPipelineState
     private let textureScenePipelineState: MTLRenderPipelineState
     private let textureFOVPipelineState: MTLRenderPipelineState
     private let texturePreviewPipelineState: MTLRenderPipelineState
+    private let textureSurfacePipelineState: MTLRenderPipelineState
 
     private let depthState: MTLDepthStencilState
     private let previewDepthState: MTLDepthStencilState
@@ -78,9 +80,11 @@ final class Renderer: NSObject, MTKViewDelegate {
                 RenderObject(id: .exit, mesh: cubeMesh, placement: SceneConfiguration.exitPlacement),
                 RenderObject(id: .player, mesh: cubeMesh, placement: SceneConfiguration.playerPlacement),
                 RenderObject(id: .fov, mesh: coneMesh),
-                RenderObject(id: .quad, mesh: quadMesh, placement: SceneConfiguration.exitPlacement)
+                // Unit XY quad: the same scale/frame puts it in the entrance opening.
+                RenderObject(id: .quad, mesh: quadMesh, placement: SceneConfiguration.entrancePlacement)
             ]
         }
+        hasEntranceSurface = objects.contains { $0.id == .quad }
         guard Set(objects.map(\.id)).count == objects.count else { throw SetupError.duplicateObjectID }
         guard objects.allSatisfy({
             $0.placement.isValid && simd_determinant($0.modelMatrix).isFinite
@@ -99,7 +103,9 @@ final class Renderer: NSObject, MTKViewDelegate {
               let fragment = library.makeFunction(name: "lit_fragment"),
               let fovFragment = library.makeFunction(name: "fov_fragment"),
               let previewVertex = library.makeFunction(name: "texture_preview_vertex"),
-              let previewFragment = library.makeFunction(name: "texture_preview_fragment") else {
+              let previewFragment = library.makeFunction(name: "texture_preview_fragment"),
+              let surfaceVertex = library.makeFunction(name: "texture_surface_vertex"),
+              let surfaceFragment = library.makeFunction(name: "texture_surface_fragment") else {
             throw SetupError.missingShaders
         }
 
@@ -146,6 +152,16 @@ final class Renderer: NSObject, MTKViewDelegate {
         previewPipeline.depthAttachmentPixelFormat = view.depthStencilPixelFormat
         previewPipeline.rasterSampleCount = view.sampleCount
         texturePreviewPipelineState = try device.makeRenderPipelineState(descriptor: previewPipeline)
+
+        let surfacePipeline = MTLRenderPipelineDescriptor()
+        surfacePipeline.label = "Mapped image on entrance quad"
+        surfacePipeline.vertexFunction = surfaceVertex
+        surfacePipeline.fragmentFunction = surfaceFragment
+        surfacePipeline.vertexDescriptor = vertexDescriptor
+        surfacePipeline.colorAttachments[0].pixelFormat = view.colorPixelFormat
+        surfacePipeline.depthAttachmentPixelFormat = view.depthStencilPixelFormat
+        surfacePipeline.rasterSampleCount = view.sampleCount
+        textureSurfacePipelineState = try device.makeRenderPipelineState(descriptor: surfacePipeline)
 
         let depth = MTLDepthStencilDescriptor()
         depth.label = "Depth test"
@@ -332,11 +348,17 @@ final class Renderer: NSObject, MTKViewDelegate {
         let eyeWorld = cameraPoint / cameraPoint.w
 
         for (objectIndex, object) in objects.enumerated() {
-            // The filled exit and its temporary quad would hide the recorded scene.
-            // This is not exit-plane clipping or an aperture mask.
+            // Keep the exit out of the capture, and never sample the image while
+            // writing it. The entrance stays an ordinary solid in that capture.
             if intoCameraTexture && (object.id == .exit || object.id == .quad) { continue }
+            // In the source view the quad replaces the filled entrance. Drawing
+            // the cube too would hide the quad at its local Z = 0 opening plane.
+            if !intoCameraTexture && hasEntranceSurface && object.id == .entrance { continue }
             let style: (pipeline: MTLRenderPipelineState, color: SIMD4<Float>)
             switch object.id {
+            case .quad:
+                style = (textureSurfacePipelineState, SIMD4<Float>(repeating: 1))
+                encoder.setFragmentTexture(mappedColorTexture, index: 0)
             case .fov:
                 style = (intoCameraTexture ? textureFOVPipelineState : fovPipelineState,
                          SceneConfiguration.mappedFOVColor)

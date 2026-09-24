@@ -62,6 +62,37 @@ struct TexturePreviewOut {
     float4 position [[position]];
 };
 
+struct TexturedVertexIn {
+    float3 position [[attribute(0)]];
+    float2 uv [[attribute(2)]];
+};
+
+struct TexturedSurfaceOut {
+    float4 position [[position]];
+    float2 uv;
+};
+
+vertex TexturedSurfaceOut texture_surface_vertex(
+    TexturedVertexIn in [[stage_in]],
+    constant ShaderUniforms &uniforms [[buffer(1)]]
+) {
+    TexturedSurfaceOut out;
+    out.position = float4(in.position, 1.0) * uniforms.modelMatrix
+        * uniforms.viewMatrix * uniforms.projectionMatrix;
+    // QuadMesh has V = 0 at the bottom; a rendered Metal image starts at the top.
+    out.uv = float2(in.uv.x, 1.0 - in.uv.y);
+    return out;
+}
+
+fragment float4 texture_surface_fragment(
+    TexturedSurfaceOut in [[stage_in]],
+    texture2d<float> cameraTexture [[texture(0)]]
+) {
+    constexpr sampler imageSampler(coord::normalized, address::clamp_to_edge, filter::linear);
+    // Fit the whole camera image onto the quad, like a monitor. It is already lit.
+    return cameraTexture.sample(imageSampler, in.uv);
+}
+
 // One oversized triangle covers the viewport; no mesh or vertex buffer is needed.
 vertex TexturePreviewOut texture_preview_vertex(uint vertexID [[vertex_id]]) {
     const float2 corners[] = { float2(-1, -1), float2(3, -1), float2(-1, 3) };

@@ -51,14 +51,14 @@ enum TexturePassChecks {
                 position: [0.36, -0.38, 3], material: SceneConfiguration.mappedPlayerColor)
             try checkPreview(frame, width: width, height: height, texture: texturePixels, textureWidth: textureWidth)
 
-            // The source pass still draws the user's quad; only the capture excludes it.
+            // The source quad now samples the same image through its mesh UVs.
             let sourceCenter = ((height / 2) * width + textureWidth / 2) * 4
             let sourcePoint = worldPoint(pixelX: textureWidth / 2, pixelY: height / 2,
                                          width: textureWidth, height: height, depth: 1)
-            let sourceExpected = SmokeTests.lightingBytes(pointWorld: sourcePoint, normalWorld: [0, 0, 1],
-                eyeWorld: .zero, materialColor: SceneConfiguration.sceneObjectColor)
-            try SmokeTests.expect((0..<4).allSatisfy { abs(Int(frame[sourceCenter + $0]) - sourceExpected[$0]) <= 2 },
-                                  "The source scene must retain its ordinary quad draw.")
+            let sourceExpected = sample(texturePixels, width: textureWidth, height: height,
+                uv: [0.5 + sourcePoint.x / 20, 0.5 - sourcePoint.y / 20])
+            try SmokeTests.expect((0..<4).allSatisfy { abs(Float(frame[sourceCenter + $0]) - sourceExpected[$0]) <= 2 },
+                                  "The source quad must display the captured image without lighting it again.")
 
             let second = try SmokeTests.render(renderer, device: device, queue: queue, width: width, height: height)
             try SmokeTests.expect(renderer.mappedColorTexture === color && renderer.mappedDepthTexture === depth,
@@ -67,7 +67,121 @@ enum TexturePassChecks {
             previousColor = color
             previousDepth = depth
         }
+        try checkEntranceSurface(view: view, library: library, device: device, queue: queue, mesh: quad)
         print("PASS: mapped color/depth pass, excluded preview surfaces, orientation, sampling, resize, and resource reuse")
+    }
+
+    @MainActor
+    static func checkEntranceSurface(
+        view: MTKView, library: MTLLibrary, device: MTLDevice, queue: MTLCommandQueue, mesh: MTKMesh
+    ) throws {
+        let portalMesh = try CubeMesh.make(device: device)
+        let cameras = [matrix_identity_float4x4,
+            Transforms.rotateY(-0.08) * Transforms.rotateX(0.04) * Transforms.translation([-0.2, 0.15, -0.2])]
+        for (fixture, cameraWorld) in cameras.enumerated() {
+            let placement = ObjectPlacement(position: [0, 0, 3], scale: [2, 2.4, 0.15],
+                yaw: fixture == 0 ? 0 : 0.3, pitch: fixture == 0 ? 0 : -0.18)
+            let surface = RenderObject(id: .quad, mesh: mesh, placement: placement)
+            let foreground = RenderObject(id: .cube, mesh: mesh,
+                placement: ObjectPlacement(position: [0.3, -0.25, 2], scale: [0.5, 0.6, 1], yaw: .pi))
+            let background = RenderObject(id: .sphere, mesh: mesh,
+                placement: ObjectPlacement(position: [0, 0, 5], scale: [8, 7, 1], yaw: .pi))
+            let objects = [
+                // The solid cube's front is nearer than the coincident surface.
+                // Its removal from the source pass is required for the texture to show.
+                RenderObject(id: .entrance, mesh: portalMesh, placement: placement),
+                RenderObject(id: .exit, mesh: portalMesh,
+                    placement: ObjectPlacement(position: [8, 0, 3], scale: [2, 2.4, 0.15])),
+                // Asymmetric, differently colored camera-relative marks in the capture.
+                RenderObject(id: .player, mesh: mesh,
+                    placement: ObjectPlacement(position: [-0.6, 0.5, 4], scale: [0.7, 0.5, 1], yaw: .pi)),
+                RenderObject(id: .fov, mesh: mesh,
+                    placement: ObjectPlacement(position: [0.5, -0.4, 4.5], scale: [0.4, 0.8, 1])),
+                foreground, surface, background
+            ]
+            let renderer = try Renderer(view: view, library: library, objects: objects,
+                                        camera: Camera(viewMatrix: simd_inverse(cameraWorld)))
+            let width = fixture == 0 ? 800 : 801, height = 400
+            let viewportWidth = width / 2
+            let frame = try SmokeTests.render(renderer, device: device, queue: queue, width: width, height: height)
+            guard let texture = renderer.mappedColorTexture else {
+                throw SmokeTests.Failure(description: "The entrance surface has no camera texture.")
+            }
+            let texturePixels = try read(texture, device: device, queue: queue)
+            try checkPreview(frame, width: width, height: height, texture: texturePixels, textureWidth: viewportWidth)
+            let inverseModels = [surface, foreground, background].map { simd_inverse($0.modelMatrix) }
+            let eyeWorld = SIMD4<Float>(0, 0, 0, 1) * cameraWorld
+            let eyesLocal = inverseModels.map { eyeWorld * $0 }
+            let slope = tan(SceneConfiguration.fieldOfViewRadians / 2)
+            let clear = SceneConfiguration.backgroundColor
+            let clearBytes = SIMD4<Float>(Float(clear.blue), Float(clear.green), Float(clear.red), Float(clear.alpha)) * 255
+            var checked = [0, 0, 0, 0]
+            for y in stride(from: 1, to: height - 1, by: 2) {
+                for x in stride(from: 1, to: viewportWidth - 1, by: 2) {
+                    let ndcX = (Float(x) + 0.5) / Float(viewportWidth) * 2 - 1
+                    let ndcY = 1 - (Float(y) + 0.5) / Float(height) * 2
+                    let rayWorld = SIMD4<Float>(ndcX * Float(viewportWidth) / Float(height) * slope, ndcY * slope, 1, 0)
+                        * cameraWorld
+                    var nearest: (surface: Int, distance: Float, local: SIMD4<Float>)?
+                    var nearBoundary = false
+                    for index in inverseModels.indices {
+                        let direction = rayWorld * inverseModels[index]
+                        if abs(direction.z) < 0.000001 { continue }
+                        let distance = -eyesLocal[index].z / direction.z
+                        let local = eyesLocal[index] + distance * direction
+                        if distance <= 0 { continue }
+                        // Exclude the one-pixel raster boundary; retain dense interior
+                        // samples of the textured face, occluder, and surrounding scene.
+                        if abs(local.x) < 0.51 && abs(local.y) < 0.51
+                            && (abs(abs(local.x) - 0.5) < 0.01 || abs(abs(local.y) - 0.5) < 0.01) {
+                            nearBoundary = true
+                        }
+                        if abs(local.x) < 0.5 && abs(local.y) < 0.5
+                            && distance < (nearest?.distance ?? .infinity) {
+                            nearest = (index, distance, local)
+                        }
+                    }
+                    if nearBoundary { continue }
+                    let expected: SIMD4<Float>
+                    if let nearest {
+                        checked[nearest.surface] += 1
+                        if nearest.surface == 0 {
+                            expected = sample(texturePixels, width: viewportWidth, height: height,
+                                uv: [nearest.local.x + 0.5, 0.5 - nearest.local.y])
+                        } else {
+                            let point = SmokeTests.xyz(eyeWorld + nearest.distance * rayWorld)
+                            let bytes = SmokeTests.lightingBytes(pointWorld: point, normalWorld: [0, 0, -1],
+                                eyeWorld: SmokeTests.xyz(eyeWorld), materialColor: SceneConfiguration.sceneObjectColor)
+                            expected = SIMD4(Float(bytes[0]), Float(bytes[1]), Float(bytes[2]), Float(bytes[3]))
+                        }
+                    } else {
+                        checked[3] += 1
+                        expected = clearBytes
+                    }
+                    let pixel = (y * width + x) * 4
+                    try SmokeTests.expect((0..<4).allSatisfy { abs(Float(frame[pixel + $0]) - expected[$0]) <= 3 },
+                        "Entrance surface fixture \(fixture), hit \(nearest?.surface ?? 3), pixel \(x),\(y): "
+                        + "got \(Array(frame[pixel..<(pixel + 4)])), expected \(expected).")
+                }
+            }
+            try SmokeTests.expect(checked[0] > 1000 && checked[1] > 100 && checked[2] > 1000,
+                "The entrance fixture must exercise textured area, foreground occlusion, and outside/background depth.")
+        }
+        print("PASS: entrance quad UV orientation, perspective placement, unlit sampling, bounds, and foreground/background depth")
+    }
+
+    /// Expected linear clamp-to-edge texture sampling, expressed in byte values.
+    static func sample(_ pixels: [UInt8], width: Int, height: Int, uv: SIMD2<Float>) -> SIMD4<Float> {
+        let texel = uv * SIMD2(Float(width), Float(height)) - SIMD2(repeating: 0.5)
+        let left = Int(floor(texel.x)), top = Int(floor(texel.y))
+        let fraction = texel - SIMD2(Float(left), Float(top))
+        func at(_ x: Int, _ y: Int) -> SIMD4<Float> {
+            let index = (min(max(y, 0), height - 1) * width + min(max(x, 0), width - 1)) * 4
+            return SIMD4(Float(pixels[index]), Float(pixels[index + 1]), Float(pixels[index + 2]), Float(pixels[index + 3]))
+        }
+        let upper = at(left, top) * (1 - fraction.x) + at(left + 1, top) * fraction.x
+        let lower = at(left, top + 1) * (1 - fraction.x) + at(left + 1, top + 1) * fraction.x
+        return upper * (1 - fraction.y) + lower * fraction.y
     }
 
     static func worldPoint(pixelX: Int, pixelY: Int, width: Int, height: Int, depth: Float) -> SIMD3<Float> {

@@ -1,23 +1,10 @@
 import MetalKit
 import ModelIO
 
-/// A camera's rectangular viewing frustum, drawn as its twelve boundary edges.
-/// Local origin is the eye; +Z is forward. FOV is vertical and measured in radians.
-/// Near/far are distances from the eye; the frustum's axial length is far - near.
+/// Unit rectangle centered in local XY, at Z = 0, with a +Z normal.
+/// UVs run from (0, 0) at bottom-left to (1, 1) at top-right.
 enum QuadMesh {
-    enum ParameterError: LocalizedError {
-        case invalidProjection
-
-        var errorDescription: String? {
-            "ConeMesh needs finite values: 0 < fieldOfView < pi, aspect > 0, and 0 < near < far."
-        }
-    }
-
-    static func make(
-        device: MTLDevice,
-    ) throws -> MTKMesh {
-        // TODO: add guard
-
+    static func make(device: MTLDevice) throws -> MTKMesh {
         let vertices: [Float] = [
             // Position          Normal      UV
             -0.5, -0.5, 0,       0, 0, 1,    0, 0,
@@ -25,7 +12,7 @@ enum QuadMesh {
              0.5,  0.5, 0,       0, 0, 1,    1, 1,
             -0.5,  0.5, 0,       0, 0, 1,    0, 1,
         ]
-        
+
         let indices: [UInt16] = [
             0, 1, 2,
             0, 2, 3,

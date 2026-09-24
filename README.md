@@ -1,8 +1,8 @@
 # MetslStarter 3D
 
-A macOS Swift/Metal experiment with entrance and exit objects, a mapped player and camera field-of-view outline, and two side-by-side views. The left viewport draws the scene from the source camera; the right displays an image rendered from that camera's pose mapped from the entrance to the exit.
+A macOS Swift/Metal experiment with entrance and exit objects, a mapped player and camera field-of-view outline, and two side-by-side views. The left viewport draws the scene from the source camera. Its entrance quad and the full right viewport both display the image rendered from the camera's pose mapped from the entrance to the exit.
 
-The right image and FOV outline are debugging views. The image is not yet drawn onto the entrance object. Player traversal, collision, aperture masking, exit-plane clipping, and a composited portal surface are not implemented.
+The entrance currently behaves like a live monitor. The right image and FOV outline are debugging views. Screen-space projection for a seamless portal view, exit-plane clipping, player traversal, collision, and recursive portals are not implemented.
 
 ## Run and controls
 
@@ -83,18 +83,22 @@ The CPU computes complete world model matrices once per frame, before rendering 
 
 Both camera renders observe the same mapped outline using the **source** viewport's aspect. Each uses its own world-space eye for lighting. The mapped image uses the source viewport's dimensions and projection aspect; the right viewport displays that complete image.
 
-## How the texture preview works
+## How the entrance image and preview work
 
 A texture is a GPU image. Each frame now has two render passes:
 
 1. Render the scene from the mapped camera into a color texture, with a separate depth texture so nearer surfaces hide farther ones.
-2. Draw the normal scene on the left, then sample that color texture across the entire right viewport.
+2. Draw the scene on the left with the captured color texture on the entrance quad, then display the same image across the entire right viewport.
 
-The depth texture is used while making the image; the right preview displays its color. The capture omits the filled exit object and its temporary quad so they do not cover the recorded scene; the left view keeps both. This object filter does not clip geometry against the exit plane or mask the portal opening. Entrance-surface compositing is also still to come.
+The depth texture is used while making the image. The capture retains the filled entrance object and omits the exit object and textured quad. In the source view, the quad replaces the filled entrance object whenever a quad is present, so the cube does not cover the image. These object filters do not clip geometry against the exit plane or implement recursive portal views.
+
+The quad uses `entrancePlacement` and lies in its local XY plane at `z = 0`. Its mesh UV coordinates fit the full camera image onto the rectangle, with V flipped so the image stays upright. The image is opaque and unlit because it already contains the captured scene's lighting. Normal depth testing and depth writes let foreground objects cover it and hide objects behind it.
+
+This is ordinary UV image placement: the whole picture fits the quad even if their proportions differ, so it can look squeezed or stretched. Looking at it from an angle behaves like looking at a live monitor. A seamless portal view would need a later screen-space projection step. Apple's [Creating and sampling textures](https://developer.apple.com/documentation/metal/creating-and-sampling-textures) sample explains texture coordinates and sampling an image onto a quad.
 
 `Renderer.encodeFrame` receives the full render-target size in pixels and divides it internally. The cached textures are `floor(fullWidth / 2)` pixels wide and `fullHeight` pixels tall, matching the source viewport. They are reused until their required size changes. The right viewport receives the remaining width and samples the full image, including when an odd target width gives it one extra pixel. Resizing updates the textures and projection together.
 
-`Renderer.swift` owns the textures and encodes the passes. The preview shaders in `Shaders.metal` read the image from texture slot 0. A `viewportRect` value in fragment buffer 2 contains the right viewport's pixel origin and size, allowing the shader to convert fragment pixel positions into image coordinates from 0 to 1. The existing 352-byte scene uniforms in buffer 1 are unchanged.
+`Renderer.swift` owns the textures and encodes the passes. Separate quad and preview shaders in `Shaders.metal` read the same image from texture slot 0. The quad uses its mesh UVs; the right preview uses a `viewportRect` in fragment buffer 2 to convert fragment pixel positions into image coordinates from 0 to 1. The existing 352-byte scene uniforms in buffer 1 are unchanged.
 
 ## Adjusting the lighting
 
@@ -116,13 +120,14 @@ The diffuse lighting stays attached to the world; the highlight depends on the a
 | --- | --- |
 | FOV, near/far distances, placements, colors, lights, camera speed/sensitivity | `Sources/Scene/SceneConfiguration.swift` |
 | FOV corners, line edges, mesh parameters | `Sources/Rendering/ConeMesh.swift` |
+| Entrance quad geometry and UV coordinates | `Sources/Rendering/QuadMesh.swift` |
 | Shared packed vertex descriptor for all meshes | `Sources/Rendering/MeshVertexLayout.swift` |
 | Scene objects, mapping, offscreen textures, render passes, viewport setup | `Sources/Rendering/Renderer.swift` |
 | Object identity, placement, model matrix, rigid frame | `Sources/Rendering/RenderObject.swift` |
 | Camera state and movement | `Sources/Scene/Camera.swift` |
 | Portal mapping, normal matrices, projection, translation, rotation, scale | `Sources/Scene/Transforms.swift` |
 | Keyboard and mouse capture | `Sources/Input/KeyboardMetalView.swift` |
-| Vertex transforms, lighting, unlit FOV color, texture preview sampling | `Sources/Shaders/Shaders.metal` |
+| Vertex transforms, lighting, unlit FOV color, quad/preview texture sampling | `Sources/Shaders/Shaders.metal` |
 | CPU uniform layout, kept in sync with Metal | `Sources/Rendering/ShaderUniforms.swift` |
 | MTKView setup and renderer lifetime | `Sources/Views/MetalView.swift` |
 
@@ -143,7 +148,9 @@ The script builds the Debug app, compiles the files in `Tests/`, and attempts of
 
 Checks cover custom frustum corners and edges, invalid parameters, near/far projection depth, aspect scaling, placement pivots and order, forward/reverse portal transforms, inverse-transpose normals, and uniform offsets. Deterministic renderer fixtures check transformed solid and mapped objects against independent geometry and lighting calculations, including each viewport's world-space eye. Scene and outline rendering also run at square, wide, tall, and odd-width sizes. Invalid scenes test missing portals, duplicate IDs, and singular scales.
 
-Texture-preview checks compare the right view's pixels with the captured image, including orientation and resampling at odd widths. They verify depth occlusion in the capture, omission of the filled exit and temporary quad from that capture, texture dimensions and usage, resource reuse, resize reallocation, and stable repeated frames. These GPU fixtures use single-sample targets; they do not verify MSAA. The app build and full Metal API validation suite passed after the texture-preview update.
+Texture-preview checks compare the right view's pixels with the captured image, including orientation and resampling at odd widths. They verify depth occlusion in the capture, omission of the exit and textured quad from that capture, texture dimensions and usage, resource reuse, resize reallocation, and stable repeated frames. These GPU fixtures use single-sample targets; they do not verify MSAA.
+
+Entrance-surface checks verify unlit image sampling and upright UVs on frontal and tilted quads with moved/rotated cameras. They also check replacement of the filled entrance, foreground occlusion, and depth rejection of geometry behind the quad. The app build and full Metal API validation suite passed after this update; the right preview also matched the previous version pixel for pixel across nine camera poses.
 
 The lighting checks verify each control independently, diffuse/fill lighting that stays fixed as the camera moves, highlights that respond to the active eye, and finite output for coincident or opposing light/eye directions. They also verify the synchronized 352-byte uniform layout and the outline's exact unlit color.
 
