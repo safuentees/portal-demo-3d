@@ -32,6 +32,7 @@ struct SmokeTests {
         view.depthStencilPixelFormat = .depth32Float
         let renderer = try Renderer(view: view, library: library)
         try checkRendererFixtures(view: view, library: library, device: device, queue: queue)
+        try TexturePassChecks.run(view: view, library: library, device: device, queue: queue)
 
         for (width, height) in [(512, 512), (800, 400), (400, 800), (801, 401)] {
             let first = try render(renderer, device: device, queue: queue, width: width, height: height)

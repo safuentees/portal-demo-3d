@@ -1,8 +1,8 @@
 # MetslStarter 3D
 
-A macOS Swift/Metal experiment with entrance and exit objects, a mapped player and camera field-of-view outline, and two side-by-side perspective viewports. The left viewport uses the source camera; the right uses its pose mapped from the entrance to the exit.
+A macOS Swift/Metal experiment with entrance and exit objects, a mapped player and camera field-of-view outline, and two side-by-side views. The left viewport draws the scene from the source camera; the right displays an image rendered from that camera's pose mapped from the entrance to the exit.
 
-The second viewport and FOV outline are debugging views. Player traversal, collision, aperture masking, and a composited portal surface are not implemented by this camera mapping.
+The right image and FOV outline are debugging views. The image is not yet drawn onto the entrance object. Player traversal, collision, aperture masking, exit-plane clipping, and a composited portal surface are not implemented.
 
 ## Run and controls
 
@@ -79,9 +79,22 @@ transferBA = inverse(transferAB)
 
 These are row-vector transforms, so they apply from left to right. `sourceCameraWorld` is the inverse of the source camera's view matrix. `Transforms.portalMapping` creates both directed transfers from the portal frames. This scene aligns those frames directly, with no additional half-turn. The same `transferAB` maps the camera, player, and FOV. The mapped camera's view matrix is the inverse of its mapped world frame. `transferBA` is available for reverse mapping, but a reverse portal view is not currently drawn.
 
-The CPU computes complete world model matrices once per frame, before drawing either viewport. The `scene_vertex` shader then applies only `model * view * projection`; it does not apply the portal mapping again. Lighting receives the resulting world position and a normal transformed by the final model's inverse transpose. `lit_fragment` shades solid objects and `fov_fragment` gives the outline a constant color.
+The CPU computes complete world model matrices once per frame, before rendering either camera. The `scene_vertex` shader then applies only `model * view * projection`; it does not apply the portal mapping again. Lighting receives the resulting world position and a normal transformed by the final model's inverse transpose. `lit_fragment` shades solid objects and `fov_fragment` gives the outline a constant color.
 
-Both observing viewports draw the same mapped outline using the **source** viewport's aspect. Each viewport uses its own aspect for its projection and its own world-space eye for lighting. `Renderer.encodeFrame` receives the full render-target size in pixels and splits it into the two viewports internally; onscreen and offscreen rendering use the same contract.
+Both camera renders observe the same mapped outline using the **source** viewport's aspect. Each uses its own world-space eye for lighting. The mapped image uses the source viewport's dimensions and projection aspect; the right viewport displays that complete image.
+
+## How the texture preview works
+
+A texture is a GPU image. Each frame now has two render passes:
+
+1. Render the scene from the mapped camera into a color texture, with a separate depth texture so nearer surfaces hide farther ones.
+2. Draw the normal scene on the left, then sample that color texture across the entire right viewport.
+
+The depth texture is used while making the image; the right preview displays its color. The capture omits the filled exit object and its temporary quad so they do not cover the recorded scene; the left view keeps both. This object filter does not clip geometry against the exit plane or mask the portal opening. Entrance-surface compositing is also still to come.
+
+`Renderer.encodeFrame` receives the full render-target size in pixels and divides it internally. The cached textures are `floor(fullWidth / 2)` pixels wide and `fullHeight` pixels tall, matching the source viewport. They are reused until their required size changes. The right viewport receives the remaining width and samples the full image, including when an odd target width gives it one extra pixel. Resizing updates the textures and projection together.
+
+`Renderer.swift` owns the textures and encodes the passes. The preview shaders in `Shaders.metal` read the image from texture slot 0. A `viewportRect` value in fragment buffer 2 contains the right viewport's pixel origin and size, allowing the shader to convert fragment pixel positions into image coordinates from 0 to 1. The existing 352-byte scene uniforms in buffer 1 are unchanged.
 
 ## Adjusting the lighting
 
@@ -104,12 +117,12 @@ The diffuse lighting stays attached to the world; the highlight depends on the a
 | FOV, near/far distances, placements, colors, lights, camera speed/sensitivity | `Sources/Scene/SceneConfiguration.swift` |
 | FOV corners, line edges, mesh parameters | `Sources/Rendering/ConeMesh.swift` |
 | Shared packed vertex descriptor for all meshes | `Sources/Rendering/MeshVertexLayout.swift` |
-| Scene objects, mapping, viewport setup, drawing | `Sources/Rendering/Renderer.swift` |
+| Scene objects, mapping, offscreen textures, render passes, viewport setup | `Sources/Rendering/Renderer.swift` |
 | Object identity, placement, model matrix, rigid frame | `Sources/Rendering/RenderObject.swift` |
 | Camera state and movement | `Sources/Scene/Camera.swift` |
 | Portal mapping, normal matrices, projection, translation, rotation, scale | `Sources/Scene/Transforms.swift` |
 | Keyboard and mouse capture | `Sources/Input/KeyboardMetalView.swift` |
-| Vertex transforms, lighting, unlit FOV color | `Sources/Shaders/Shaders.metal` |
+| Vertex transforms, lighting, unlit FOV color, texture preview sampling | `Sources/Shaders/Shaders.metal` |
 | CPU uniform layout, kept in sync with Metal | `Sources/Rendering/ShaderUniforms.swift` |
 | MTKView setup and renderer lifetime | `Sources/Views/MetalView.swift` |
 
@@ -130,7 +143,9 @@ The script builds the Debug app, compiles the files in `Tests/`, and attempts of
 
 Checks cover custom frustum corners and edges, invalid parameters, near/far projection depth, aspect scaling, placement pivots and order, forward/reverse portal transforms, inverse-transpose normals, and uniform offsets. Deterministic renderer fixtures check transformed solid and mapped objects against independent geometry and lighting calculations, including each viewport's world-space eye. Scene and outline rendering also run at square, wide, tall, and odd-width sizes. Invalid scenes test missing portals, duplicate IDs, and singular scales.
 
-The lighting checks verify each control independently, diffuse/fill lighting that stays fixed as the camera moves, highlights that respond to the active eye, and finite output for coincident or opposing light/eye directions. They also verify the synchronized 352-byte uniform layout and the outline's exact unlit color. The app build and full Metal API validation suite passed after the lighting update.
+Texture-preview checks compare the right view's pixels with the captured image, including orientation and resampling at odd widths. They verify depth occlusion in the capture, omission of the filled exit and temporary quad from that capture, texture dimensions and usage, resource reuse, resize reallocation, and stable repeated frames. These GPU fixtures use single-sample targets; they do not verify MSAA. The app build and full Metal API validation suite passed after the texture-preview update.
+
+The lighting checks verify each control independently, diffuse/fill lighting that stays fixed as the camera moves, highlights that respond to the active eye, and finite output for coincident or opposing light/eye directions. They also verify the synchronized 352-byte uniform layout and the outline's exact unlit color.
 
 Input checks cover held keys, camera movement/look, consuming mouse deltas once, and native view/window lifecycle callbacks for Escape, focus loss, detachment, window close/reopen, reattachment, and SwiftUI dismantling. They inject inert cursor callbacks, so they can verify release balance without changing the user's cursor. Actual cursor visibility and mouse association after those interactions remain a separate manual macOS check; the automated checks do not prove those operating-system effects.
 

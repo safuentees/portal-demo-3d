@@ -58,6 +58,30 @@ fragment float4 fov_fragment(
     return uniforms.color;
 }
 
+struct TexturePreviewOut {
+    float4 position [[position]];
+};
+
+// One oversized triangle covers the viewport; no mesh or vertex buffer is needed.
+vertex TexturePreviewOut texture_preview_vertex(uint vertexID [[vertex_id]]) {
+    const float2 corners[] = { float2(-1, -1), float2(3, -1), float2(-1, 3) };
+    TexturePreviewOut out;
+    out.position = float4(corners[vertexID], 0, 1);
+    return out;
+}
+
+fragment float4 texture_preview_fragment(
+    TexturePreviewOut in [[stage_in]],
+    texture2d<float> cameraTexture [[texture(0)]],
+    constant float4 &viewportRect [[buffer(2)]]
+) {
+    constexpr sampler imageSampler(coord::normalized, address::clamp_to_edge, filter::linear);
+    // Fragment position and texture UVs both start at the top left. Subtract the
+    // right viewport's drawable-pixel origin before normalizing within that view.
+    float2 uv = (in.position.xy - viewportRect.xy) / viewportRect.zw;
+    return cameraTexture.sample(imageSampler, uv);
+}
+
 fragment float4 lit_fragment(
     VertexOut out [[stage_in]],
     constant ShaderUniforms &uniforms [[buffer(1)]]
