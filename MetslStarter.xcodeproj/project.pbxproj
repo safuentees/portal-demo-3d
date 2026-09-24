@@ -18,6 +18,7 @@
 		000000000000000000000108 /* ShaderUniforms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000208 /* ShaderUniforms.swift */; };
 		000000000000000000000109 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000209 /* Shaders.metal */; };
 		7201D8053062C1E5001C52DE /* ConeMesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7201D8043062C1E5001C52DE /* ConeMesh.swift */; };
+		720C64DB30637D6C007B0DD2 /* QuadMesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 720C64DA30637D6C007B0DD2 /* QuadMesh.swift */; };
 		72CCC6F0305CE3E10050CCA2 /* CubeMesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72CCC6EF305CE3E10050CCA2 /* CubeMesh.swift */; };
 		72CCC6F2305CE92D0050CCA2 /* RenderObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72CCC6F1305CE9260050CCA2 /* RenderObject.swift */; };
 		A10000000000000000000101 /* MeshVertexLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000102 /* MeshVertexLayout.swift */; };
@@ -39,6 +40,7 @@
 		000000000000000000000221 /* SmokeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmokeTests.swift; sourceTree = "<group>"; };
 		000000000000000000000222 /* check.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = check.sh; sourceTree = "<group>"; };
 		7201D8043062C1E5001C52DE /* ConeMesh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConeMesh.swift; sourceTree = "<group>"; };
+		720C64DA30637D6C007B0DD2 /* QuadMesh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuadMesh.swift; sourceTree = "<group>"; };
 		72CCC6EF305CE3E10050CCA2 /* CubeMesh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CubeMesh.swift; sourceTree = "<group>"; };
 		72CCC6F1305CE9260050CCA2 /* RenderObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderObject.swift; sourceTree = "<group>"; };
 		A10000000000000000000102 /* MeshVertexLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeshVertexLayout.swift; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 				000000000000000000000207 /* SphereMesh.swift */,
 				72CCC6EF305CE3E10050CCA2 /* CubeMesh.swift */,
 				7201D8043062C1E5001C52DE /* ConeMesh.swift */,
+				720C64DA30637D6C007B0DD2 /* QuadMesh.swift */,
 				000000000000000000000208 /* ShaderUniforms.swift */,
 			);
 			path = Rendering;
@@ -232,6 +235,7 @@
 				000000000000000000000101 /* MetalView.swift in Sources */,
 				000000000000000000000102 /* KeyboardMetalView.swift in Sources */,
 				000000000000000000000103 /* SceneConfiguration.swift in Sources */,
+				720C64DB30637D6C007B0DD2 /* QuadMesh.swift in Sources */,
 				000000000000000000000104 /* Camera.swift in Sources */,
 				000000000000000000000105 /* Transforms.swift in Sources */,
 				72CCC6F0305CE3E10050CCA2 /* CubeMesh.swift in Sources */,

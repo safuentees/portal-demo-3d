@@ -1,7 +1,7 @@
 import MetalKit
 
 enum ObjectID: Hashable {
-    case sphere, cube, player, entrance, exit, fov
+    case sphere, cube, player, entrance, exit, fov, quad
 }
 
 /// Editable placement is the source of truth; every matrix is derived from it.

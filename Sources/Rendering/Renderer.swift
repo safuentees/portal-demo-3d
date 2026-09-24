@@ -27,6 +27,8 @@ final class Renderer: NSObject, MTKViewDelegate {
     private let objects: [RenderObject]
     private let pipelineState: MTLRenderPipelineState
     private let fovPipelineState: MTLRenderPipelineState
+    private let mappedPipelineState: MTLRenderPipelineState
+
     private let depthState: MTLDepthStencilState
     private let portalMapping: PortalMapping
     private var camera: Camera
@@ -54,11 +56,15 @@ final class Renderer: NSObject, MTKViewDelegate {
                 device: device, fieldOfView: SceneConfiguration.fieldOfViewRadians,
                 aspect: 1, near: SceneConfiguration.nearPlane, far: SceneConfiguration.farPlane
             )
+
+            let quadMesh = try QuadMesh.make(device: device)
+            
             objects = [
                 RenderObject(id: .entrance, mesh: cubeMesh, placement: SceneConfiguration.entrancePlacement),
                 RenderObject(id: .exit, mesh: cubeMesh, placement: SceneConfiguration.exitPlacement),
                 RenderObject(id: .player, mesh: cubeMesh, placement: SceneConfiguration.playerPlacement),
-                RenderObject(id: .fov, mesh: coneMesh)
+                RenderObject(id: .fov, mesh: coneMesh),
+                RenderObject(id: .quad, mesh: quadMesh, placement: SceneConfiguration.exitPlacement)
             ]
         }
         guard Set(objects.map(\.id)).count == objects.count else { throw SetupError.duplicateObjectID }
@@ -101,6 +107,10 @@ final class Renderer: NSObject, MTKViewDelegate {
         pipeline.label = "Mapped FOV outline"
         pipeline.fragmentFunction = fovFragment
         fovPipelineState = try device.makeRenderPipelineState(descriptor: pipeline)
+        
+        pipeline.label = "Mapped Viewport"
+        pipeline.fragmentFunction = fovFragment
+        mappedPipelineState = try device.makeRenderPipelineState(descriptor: pipeline)
 
         let depth = MTLDepthStencilDescriptor()
         depth.label = "Depth test"
@@ -241,21 +251,30 @@ final class Renderer: NSObject, MTKViewDelegate {
             )
 
             for (objectIndex, object) in objects.enumerated() {
+                if i == 1 && object.id != .quad { continue }
                 // Explicit for EVERY object, including spheres after an FOV draw.
-                encoder.setRenderPipelineState(object.id == .fov ? fovPipelineState : pipelineState)
-                let color: SIMD4<Float>
+                let style: (pipeline: MTLRenderPipelineState, color: SIMD4<Float>)
+
                 switch object.id {
-                case .entrance, .exit: color = SceneConfiguration.portalColor
-                case .player: color = SceneConfiguration.mappedPlayerColor
-                case .fov: color = SceneConfiguration.mappedFOVColor
-                case .sphere, .cube: color = SceneConfiguration.sceneObjectColor
+                case .fov:
+                    style = (fovPipelineState, SceneConfiguration.mappedFOVColor)
+                case .quad where i == 1:
+                    style = (mappedPipelineState, SceneConfiguration.sceneObjectColor)
+                case .entrance, .exit:
+                    style = (pipelineState, SceneConfiguration.portalColor)
+                case .player:
+                    style = (pipelineState, SceneConfiguration.mappedPlayerColor)
+                default:
+                    style = (pipelineState, SceneConfiguration.sceneObjectColor)
                 }
+
+                encoder.setRenderPipelineState(style.pipeline)
                 var uniforms = ShaderUniforms(
                     modelMatrix: worldModels[objectIndex],
                     viewMatrix: activeViewMatrix,
                     projectionMatrix: projectionMatrix,
                     normalMatrix: normalMatrices[objectIndex],
-                    color: color,
+                    color: style.color,
                     lightColor: SceneConfiguration.lightColor,
                     lightPositionWorld: SceneConfiguration.lightPositionWorld,
                     eyeWorld: eyeWorld,
