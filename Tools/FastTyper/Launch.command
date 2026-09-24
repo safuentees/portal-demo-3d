@@ -11,10 +11,11 @@ if ! xcrun --find swiftc >/dev/null 2>&1; then
     exit 1
 fi
 
-if [[ ! -x "$binary" || "$source_dir/FastTyper.swift" -nt "$binary" || "$source_dir/Info.plist" -nt "$binary" ]]; then
+if [[ ! -x "$binary" || "$source_dir/FastTyper.swift" -nt "$binary" || "$source_dir/ClipboardLease.swift" -nt "$binary" || "$source_dir/Info.plist" -nt "$binary" ]]; then
     mkdir -p "$bundle/Contents/MacOS"
     cp "$source_dir/Info.plist" "$bundle/Contents/Info.plist"
-    xcrun swiftc -swift-version 5 -O -module-cache-path "$build_dir/ModuleCache" "$source_dir/FastTyper.swift" -o "$binary"
+    xcrun swiftc -swift-version 5 -parse-as-library -O -module-cache-path "$build_dir/ModuleCache" \
+        "$source_dir/FastTyper.swift" "$source_dir/ClipboardLease.swift" -o "$binary"
     codesign --force --sign - --identifier local.fast-typer "$bundle"
 fi
 

@@ -8,6 +8,8 @@ final class FastTyper: NSObject, NSApplicationDelegate {
     private let editor = NSTextView()
     private let status = NSTextField(wrappingLabelWithString: "Paste text above, then click a destination and press Control + Option + T.")
     private let speed = NSPopUpButton()
+    private let exactText = NSButton(checkboxWithTitle: "Exact text — recommended for code (paste once)", target: nil, action: nil)
+    private var clipboardLease: ClipboardLease?
     private var hotKey: EventHotKeyRef?
     private var handler: EventHandlerRef?
     private var generation = 0
@@ -54,12 +56,12 @@ final class FastTyper: NSObject, NSApplicationDelegate {
     }
 
     private func makeWindow() {
-        window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 620, height: 460),
+        window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 620, height: 560),
                           styleMask: [.titled, .closable, .miniaturizable, .resizable],
                           backing: .buffered, defer: false)
         window.title = "Fast Typer"
         window.isReleasedWhenClosed = false
-        window.minSize = NSSize(width: 520, height: 380)
+        window.minSize = NSSize(width: 600, height: 560)
         window.center()
 
         editor.isRichText = false
@@ -81,14 +83,18 @@ final class FastTyper: NSObject, NSApplicationDelegate {
 
         speed.addItems(withTitles: ["Fast · 8–22 ms per character", "Very fast · 3–10 ms per character", "Slower · 25–50 ms per character"])
         speed.setAccessibilityLabel("Typing speed")
+        exactText.state = .on
+        exactText.target = self
+        exactText.action = #selector(outputModeChanged)
+        speed.isEnabled = false
         let permission = NSButton(title: "Enable Accessibility…", target: self, action: #selector(enableAccessibility))
         let hide = NSButton(title: "Hide Window", target: self, action: #selector(hideWindow))
         let controls = NSStackView(views: [permission, hide])
         controls.spacing = 12
         status.textColor = .secondaryLabelColor
-        let hint = NSTextField(wrappingLabelWithString: "Control + Option + T starts or stops. Escape also stops. Text stays in memory until you quit.")
+        let hint = NSTextField(wrappingLabelWithString: "Control + Option + T inserts text. Turn off Exact text for timed typing; the shortcut or Escape stops it.")
         hint.textColor = .secondaryLabelColor
-        let stack = NSStackView(views: [NSTextField(labelWithString: "Text to type"), scroll, speed, hint, controls, status])
+        let stack = NSStackView(views: [NSTextField(labelWithString: "Text to type"), scroll, exactText, speed, hint, controls, status])
         stack.orientation = .vertical
         stack.alignment = .leading
         stack.spacing = 12
@@ -113,6 +119,13 @@ final class FastTyper: NSObject, NSApplicationDelegate {
 
     @objc private func hideWindow() { NSApp.hide(nil) }
 
+    @objc private func outputModeChanged() {
+        speed.isEnabled = exactText.state != .on
+        status.stringValue = exactText.state == .on
+            ? "Exact text uses one paste to avoid typing-triggered indentation and bracket completion."
+            : "Timed typing uses real keys. Disable the destination editor’s auto-indent and bracket completion when typing code."
+    }
+
     @objc private func enableAccessibility() {
         let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
         let trusted = AXIsProcessTrustedWithOptions(options)
@@ -123,11 +136,15 @@ final class FastTyper: NSObject, NSApplicationDelegate {
         generation += 1
         typing = false
         editor.isEditable = true
-        speed.isEnabled = true
+        speed.isEnabled = exactText.state != .on
+        exactText.isEnabled = true
         status.stringValue = message
     }
 
     private func toggleTyping() {
+        // A paste already sent to the target cannot be canceled. Let the target
+        // read the clipboard before restoring it or allowing another operation.
+        if clipboardLease != nil { return }
         if typing { stop("Stopped."); return }
         guard AXIsProcessTrusted() else {
             status.stringValue = "Click Enable Accessibility, then allow Fast Typer in System Settings."
@@ -149,7 +166,8 @@ final class FastTyper: NSObject, NSApplicationDelegate {
         typing = true
         editor.isEditable = false
         speed.isEnabled = false
-        status.stringValue = "Typing into \(target.localizedName ?? "the selected app")… Press the shortcut again or Escape to stop."
+        exactText.isEnabled = false
+        status.stringValue = "Ready to insert into \(target.localizedName ?? "the selected app") — release the shortcut keys."
         let delays: [ClosedRange<Double>] = [0.008...0.022, 0.003...0.010, 0.025...0.050]
         let token = generation
         let characters = Array(text)
@@ -177,10 +195,35 @@ final class FastTyper: NSObject, NSApplicationDelegate {
             return
         }
         guard index < characters.count else { stop("Done — typed \(characters.count) characters."); return }
+        if exactText.state == .on {
+            pasteExactText(String(characters))
+            return
+        }
         guard postCharacter(characters[index]) else { stop("Unable to create keyboard events."); return }
         DispatchQueue.main.asyncAfter(deadline: .now() + Double.random(in: delay)) { [weak self] in
             self?.sendNext(characters, index: index + 1, targetPID: targetPID, delay: delay,
                            token: token, releaseDeadline: Date().addingTimeInterval(3))
+        }
+    }
+
+    private func pasteExactText(_ text: String) {
+        let source = CGEventSource(stateID: .privateState)
+        guard let down = CGEvent(keyboardEventSource: source, virtualKey: CGKeyCode(kVK_ANSI_V), keyDown: true),
+              let up = CGEvent(keyboardEventSource: source, virtualKey: CGKeyCode(kVK_ANSI_V), keyDown: false),
+              let lease = ClipboardLease(text: text) else {
+            stop("Could not prepare a paste while preserving your clipboard. Try again.")
+            return
+        }
+        clipboardLease = lease
+        down.flags = .maskCommand
+        up.flags = .maskCommand
+        down.post(tap: .cghidEventTap)
+        up.post(tap: .cghidEventTap)
+        status.stringValue = "Paste sent. Restoring the clipboard…"
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            lease.restore()
+            self?.clipboardLease = nil
+            self?.stop("Paste sent. Check the destination; websites can apply their own paste rules.")
         }
     }
 
@@ -212,13 +255,19 @@ final class FastTyper: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ notification: Notification) {
         stop("Stopped.")
+        clipboardLease?.restore()
         if let hotKey { UnregisterEventHotKey(hotKey) }
         if let handler { RemoveEventHandler(handler) }
     }
 }
 
-let application = NSApplication.shared
-let delegate = FastTyper()
-application.setActivationPolicy(.regular)
-application.delegate = delegate
-application.run()
+@main
+enum FastTyperApplication {
+    static func main() {
+        let application = NSApplication.shared
+        let delegate = FastTyper()
+        application.setActivationPolicy(.regular)
+        application.delegate = delegate
+        withExtendedLifetime(delegate) { application.run() }
+    }
+}
