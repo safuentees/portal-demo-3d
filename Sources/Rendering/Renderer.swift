@@ -39,6 +39,7 @@ final class Renderer: NSObject, MTKViewDelegate {
     private let depthState: MTLDepthStencilState
     private let previewDepthState: MTLDepthStencilState
     private let portalMapping: PortalMapping
+    private let showsMappedPreview: Bool
     private var camera: Camera
 
     private var lastFrameTime: CFTimeInterval?
@@ -53,7 +54,8 @@ final class Renderer: NSObject, MTKViewDelegate {
         view: MTKView,
         library suppliedLibrary: MTLLibrary? = nil,
         objects suppliedObjects: [RenderObject]? = nil,
-        camera: Camera = Camera()
+        camera: Camera = Camera(),
+        showsMappedPreview: Bool = SceneConfiguration.showsMappedPreview
     ) throws {
         guard let device = view.device else { throw SetupError.missingDevice }
         self.device = device
@@ -62,6 +64,7 @@ final class Renderer: NSObject, MTKViewDelegate {
         guard let queue = device.makeCommandQueue() else { throw SetupError.missingCommandQueue }
         commandQueue = queue
         self.camera = camera
+        self.showsMappedPreview = showsMappedPreview
 
         if let suppliedObjects {
             objects = suppliedObjects
@@ -183,8 +186,13 @@ final class Renderer: NSObject, MTKViewDelegate {
     }
 
     func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
-        guard size.width.isFinite, size.height.isFinite, size.width >= 2, size.height >= 1 else { return }
-        _ = updateMappedTargets(width: Int(size.width) / 2, height: Int(size.height))
+        guard size.width.isFinite, size.height.isFinite, size.width >= 1, size.height >= 1 else { return }
+        _ = updateMappedTargets(width: sourceViewportWidth(for: Int(size.width)), height: Int(size.height))
+    }
+
+    /// Shared by resize and drawing so the capture always matches the main view.
+    private func sourceViewportWidth(for drawableWidth: Int) -> Int {
+        showsMappedPreview ? drawableWidth / 2 : drawableWidth
     }
 
     func draw(in view: MTKView) {
@@ -240,8 +248,8 @@ final class Renderer: NSObject, MTKViewDelegate {
     }
 
     /// drawableSize is the FULL attachment size in pixels, not one viewport's size.
-    /// Pass 1 records the mapped camera. Pass 2 draws the source scene and previews
-    /// that recording. Neither pass changes the camera or consumes input.
+    /// Pass 1 records the mapped camera for the entrance surface. Pass 2 draws the
+    /// source scene and optional preview. Neither pass changes the camera or input.
     @discardableResult
     func encodeFrame(
         commandBuffer: MTLCommandBuffer,
@@ -249,23 +257,20 @@ final class Renderer: NSObject, MTKViewDelegate {
         drawableSize: CGSize
     ) -> Bool {
         guard drawableSize.width.isFinite, drawableSize.height.isFinite,
-              drawableSize.width >= 2, drawableSize.height >= 1,
+              drawableSize.width >= 1, drawableSize.height >= 1,
               let target = renderPass.colorAttachments[0].texture,
               drawableSize.width == CGFloat(target.width),
               drawableSize.height == CGFloat(target.height) else {
             return false
         }
-        let leftWidth = target.width / 2
-        let rightWidth = target.width - leftWidth
+        let sourceWidth = sourceViewportWidth(for: target.width)
         let height = target.height
-        guard updateMappedTargets(width: leftWidth, height: height),
+        guard updateMappedTargets(width: sourceWidth, height: height),
               let mappedColorTexture, let mappedDepthTexture else { return false }
 
         let sourceViewport = MTLViewport(originX: 0, originY: 0,
-            width: Double(leftWidth), height: Double(height), znear: 0, zfar: 1)
-        let previewViewport = MTLViewport(originX: Double(leftWidth), originY: 0,
-            width: Double(rightWidth), height: Double(height), znear: 0, zfar: 1)
-        let sourceAspect = Float(leftWidth) / Float(height)
+            width: Double(sourceWidth), height: Double(height), znear: 0, zfar: 1)
+        let sourceAspect = Float(sourceWidth) / Float(height)
         let projection = Transforms.perspective(
             aspect: sourceAspect, fieldOfView: SceneConfiguration.fieldOfViewRadians,
             near: SceneConfiguration.nearPlane, far: SceneConfiguration.farPlane
@@ -308,23 +313,28 @@ final class Renderer: NSObject, MTKViewDelegate {
                 intoCameraTexture: true)
         }
 
-        // Second pass: source scene on the left, completed camera image on the right.
+        // Second pass: the source fills the window unless a right preview is enabled.
         guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPass) else { return false }
-        encoder.label = "Source scene and camera texture preview"
+        encoder.label = "Source scene and optional camera preview"
         defer { encoder.endEncoding() }
         encodeScene(encoder: encoder, viewport: sourceViewport,
             viewMatrix: camera.viewMatrix, cameraWorld: sourceCameraWorld,
             projection: projection, worldModels: worldModels, normalMatrices: normalMatrices,
             intoCameraTexture: false)
 
-        setViewport(previewViewport, on: encoder)
-        encoder.setRenderPipelineState(texturePreviewPipelineState)
-        encoder.setDepthStencilState(previewDepthState)
-        encoder.setFragmentTexture(mappedColorTexture, index: 0)
-        // Buffer 2 is a separate 16-byte preview contract; scene uniforms stay at 1.
-        var viewportRect = SIMD4<Float>(Float(leftWidth), 0, Float(rightWidth), Float(height))
-        encoder.setFragmentBytes(&viewportRect, length: MemoryLayout<SIMD4<Float>>.stride, index: 2)
-        encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
+        if showsMappedPreview {
+            let previewWidth = target.width - sourceWidth
+            let previewViewport = MTLViewport(originX: Double(sourceWidth), originY: 0,
+                width: Double(previewWidth), height: Double(height), znear: 0, zfar: 1)
+            setViewport(previewViewport, on: encoder)
+            encoder.setRenderPipelineState(texturePreviewPipelineState)
+            encoder.setDepthStencilState(previewDepthState)
+            encoder.setFragmentTexture(mappedColorTexture, index: 0)
+            // Buffer 2 is a separate 16-byte preview contract; scene uniforms stay at 1.
+            var viewportRect = SIMD4<Float>(Float(sourceWidth), 0, Float(previewWidth), Float(height))
+            encoder.setFragmentBytes(&viewportRect, length: MemoryLayout<SIMD4<Float>>.stride, index: 2)
+            encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
+        }
         return true
     }
 

@@ -23,7 +23,7 @@ enum TexturePassChecks {
             RenderObject(id: .cube, mesh: quad,
                 placement: ObjectPlacement(position: [0, 0, 5], scale: [20, 20, 1], yaw: .pi))
         ]
-        let renderer = try Renderer(view: view, library: library, objects: objects)
+        let renderer = try Renderer(view: view, library: library, objects: objects, showsMappedPreview: true)
         var previousColor: MTLTexture?
         var previousDepth: MTLTexture?
         for (width, height) in [(512, 512), (800, 400), (400, 800), (801, 401), (512, 512)] {
@@ -67,8 +67,93 @@ enum TexturePassChecks {
             previousColor = color
             previousDepth = depth
         }
+        try checkPreviewModes(view: view, library: library, device: device, queue: queue,
+                              objects: objects + [RenderObject(id: .fov, mesh: quad,
+                                placement: ObjectPlacement(position: [-0.42, -0.52, 2.5], scale: [0.3, 0.2, 1]))])
         try checkEntranceSurface(view: view, library: library, device: device, queue: queue, mesh: quad)
         print("PASS: mapped color/depth pass, excluded preview surfaces, orientation, sampling, resize, and resource reuse")
+    }
+
+    @MainActor
+    static func checkPreviewModes(
+        view: MTKView, library: MTLLibrary, device: MTLDevice, queue: MTLCommandQueue, objects: [RenderObject]
+    ) throws {
+        let hidden = try Renderer(view: view, library: library, objects: objects, showsMappedPreview: false)
+        let enabled = try Renderer(view: view, library: library, objects: objects, showsMappedPreview: true)
+        var previousColor: MTLTexture?
+        var previousDepth: MTLTexture?
+        for (width, height) in [(512, 512), (800, 400), (400, 800), (801, 401)] {
+            // A full W-pixel view and the source half of a 2W-pixel split have
+            // identical projection, FOV geometry, capture, and source rasterization.
+            hidden.mtkView(view, drawableSizeWillChange: CGSize(width: width, height: height))
+            enabled.mtkView(view, drawableSizeWillChange: CGSize(width: width * 2, height: height))
+            guard let hiddenColor = hidden.mappedColorTexture, let hiddenDepth = hidden.mappedDepthTexture,
+                  let enabledColor = enabled.mappedColorTexture, let enabledDepth = enabled.mappedDepthTexture else {
+                throw SmokeTests.Failure(description: "Resize callbacks did not prepare both preview modes.")
+            }
+            try SmokeTests.expect([hiddenColor, hiddenDepth, enabledColor, enabledDepth].allSatisfy {
+                $0.width == width && $0.height == height
+            }, "Resize callbacks must size capture targets to each mode's source viewport.")
+            if let previousColor, let previousDepth {
+                try SmokeTests.expect(hiddenColor !== previousColor && hiddenDepth !== previousDepth,
+                                      "Resizing the full view must replace both capture targets.")
+            }
+            let fullFrame = try SmokeTests.render(hidden, device: device, queue: queue, width: width, height: height)
+            let splitFrame = try SmokeTests.render(enabled, device: device, queue: queue, width: width * 2, height: height)
+            try SmokeTests.expect(hidden.mappedColorTexture === hiddenColor && hidden.mappedDepthTexture === hiddenDepth
+                && enabled.mappedColorTexture === enabledColor && enabled.mappedDepthTexture === enabledDepth,
+                "Encoding must reuse the dimensions prepared by each resize callback.")
+            let fullCapture = try read(hiddenColor, device: device, queue: queue)
+            let splitCapture = try read(enabledColor, device: device, queue: queue)
+            try SmokeTests.expect(fullCapture == splitCapture,
+                                  "Hiding the preview changed the mapped projection or FOV aspect.")
+            for y in 0..<height {
+                let fullStart = y * width * 4
+                let splitStart = y * width * 8
+                try SmokeTests.expect(fullFrame[fullStart..<(fullStart + width * 4)]
+                    == splitFrame[splitStart..<(splitStart + width * 4)],
+                    "The full-width scene differs from an equivalent split source view at row \(y).")
+            }
+            try checkPreview(splitFrame, width: width * 2, height: height, texture: fullCapture, textureWidth: width)
+            let fov = SceneConfiguration.mappedFOVColor
+            let fovBytes = [fov.z, fov.y, fov.x, fov.w].map { Int(($0 * 255).rounded()) }
+            let fovPixels = stride(from: 0, to: fullCapture.count, by: 4).filter { index in
+                (0..<4).allSatisfy { abs(Int(fullCapture[index + $0]) - fovBytes[$0]) <= 1 }
+            }.count
+            try SmokeTests.expect(fovPixels > 20, "The mode-comparison fixture must visibly exercise mapped FOV geometry.")
+
+            // Test the far right independently: it must remain scene geometry with
+            // the entrance texture, rather than an empty strip or a preview panel.
+            for y in [height / 4, height / 2, height * 3 / 4] {
+                for x in [width / 2, width - 3, width - 1] {
+                    let point = worldPoint(pixelX: x, pixelY: y, width: width, height: height, depth: 1)
+                    let expected = sample(fullCapture, width: width, height: height,
+                                          uv: [0.5 + point.x / 20, 0.5 - point.y / 20])
+                    let pixel = (y * width + x) * 4
+                    try SmokeTests.expect((0..<4).allSatisfy { abs(Float(fullFrame[pixel + $0]) - expected[$0]) <= 2 },
+                        "The hidden-preview source did not render its textured quad at \(x),\(y).")
+                }
+            }
+            let repeated = try SmokeTests.render(hidden, device: device, queue: queue, width: width, height: height)
+            try SmokeTests.expect(fullFrame == repeated && hidden.mappedColorTexture === hiddenColor
+                && hidden.mappedDepthTexture === hiddenDepth, "The full view must stay stable and reuse its targets.")
+            previousColor = hiddenColor
+            previousDepth = hiddenDepth
+        }
+        hidden.mtkView(view, drawableSizeWillChange: CGSize(width: 1, height: 64))
+        _ = try SmokeTests.render(hidden, device: device, queue: queue, width: 1, height: 64)
+        guard let narrowColor = hidden.mappedColorTexture, let narrowDepth = hidden.mappedDepthTexture,
+              let command = queue.makeCommandBuffer() else {
+            throw SmokeTests.Failure(description: "The one-pixel full view did not allocate its targets.")
+        }
+        try SmokeTests.expect(narrowColor.width == 1 && narrowDepth.width == 1,
+                              "A one-pixel full-width view must remain valid.")
+        let pass = MTLRenderPassDescriptor()
+        pass.colorAttachments[0].texture = narrowColor
+        pass.depthAttachment.texture = narrowDepth
+        try SmokeTests.expect(!enabled.encodeFrame(commandBuffer: command, renderPass: pass,
+            drawableSize: CGSize(width: 1, height: 64)), "A one-pixel attachment cannot fit two preview viewports.")
+        print("PASS: hidden/enabled preview modes, full-width texture/FOV, callback sizing, resizing, reuse, and minimum width")
     }
 
     @MainActor
@@ -100,7 +185,7 @@ enum TexturePassChecks {
                 foreground, surface, background
             ]
             let renderer = try Renderer(view: view, library: library, objects: objects,
-                                        camera: Camera(viewMatrix: simd_inverse(cameraWorld)))
+                                        camera: Camera(viewMatrix: simd_inverse(cameraWorld)), showsMappedPreview: true)
             let width = fixture == 0 ? 800 : 801, height = 400
             let viewportWidth = width / 2
             let frame = try SmokeTests.render(renderer, device: device, queue: queue, width: width, height: height)

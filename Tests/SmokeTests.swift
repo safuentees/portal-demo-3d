@@ -30,7 +30,7 @@ struct SmokeTests {
         let view = MTKView(frame: .zero, device: device)
         view.colorPixelFormat = .bgra8Unorm
         view.depthStencilPixelFormat = .depth32Float
-        let renderer = try Renderer(view: view, library: library)
+        let renderer = try Renderer(view: view, library: library, showsMappedPreview: true)
         try checkRendererFixtures(view: view, library: library, device: device, queue: queue)
         try TexturePassChecks.run(view: view, library: library, device: device, queue: queue)
 
@@ -228,7 +228,7 @@ struct SmokeTests {
         for objects in invalidScenes {
             var rejected = false
             do {
-                _ = try Renderer(view: view, library: library, objects: objects, camera: camera)
+                _ = try Renderer(view: view, library: library, objects: objects, camera: camera, showsMappedPreview: true)
             } catch {
                 rejected = true
             }
@@ -248,7 +248,7 @@ struct SmokeTests {
             let materialColor = id == .player ? SceneConfiguration.mappedPlayerColor : SceneConfiguration.sceneObjectColor
             let object = RenderObject(id: id, mesh: mesh, placement: placement)
             let renderer = try Renderer(view: view, library: library,
-                objects: [entrance, exit, outline, object], camera: camera)
+                objects: [entrance, exit, outline, object], camera: camera, showsMappedPreview: true)
             let pixels = try render(renderer, device: device, queue: queue, width: width, height: height)
             let finalModel = id == .player ? placement.modelMatrix * cameraWorld * expectedTransfer : placement.modelMatrix
             let planePoint = xyz(SIMD4<Float>(0, 0, 0, 1) * finalModel)

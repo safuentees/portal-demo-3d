@@ -3,6 +3,10 @@ import simd
 
 /// Start here when changing the scene. RGBA components use the 0...1 range.
 enum SceneConfiguration {
+    // False fills the window with the main view. True restores the right preview.
+    // The mapped camera still renders the entrance texture in either mode.
+    static let showsMappedPreview = false
+
     // Opaque role palette, authored for direct .bgra8Unorm output (no sRGB transfer).
     // The FOV is unlit and deliberately dimmer than the solid objects.
     static let backgroundColor = MTLClearColor(red: 24.0 / 255, green: 24.0 / 255, blue: 27.0 / 255, alpha: 1)
