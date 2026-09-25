@@ -137,11 +137,11 @@ enum LightingChecks {
 
     static func sample(
         device: MTLDevice, queue: MTLCommandQueue, mesh: MTKMesh,
-        pipeline: MTLRenderPipelineState, uniforms: ShaderUniforms
+        pipeline: MTLRenderPipelineState, uniforms: ShaderUniforms,
+        floorUniforms: FloorUniforms? = nil, size: Int = 65
     ) throws -> SIMD4<Float> {
         // An odd-sized target puts one pixel exactly on the optical axis while
         // avoiding the coarse vertex snapping of a single-pixel viewport.
-        let size = 65
         let bytesPerRow = ((size * 16 + 255) / 256) * 256
         let descriptor = MTLTextureDescriptor.texture2DDescriptor(
             pixelFormat: .rgba32Float, width: size, height: size, mipmapped: false)
@@ -167,6 +167,9 @@ enum LightingChecks {
         var uploaded = uniforms
         encoder.setVertexBytes(&uploaded, length: MemoryLayout<ShaderUniforms>.stride, index: 1)
         encoder.setFragmentBytes(&uploaded, length: MemoryLayout<ShaderUniforms>.stride, index: 1)
+        if var floor = floorUniforms {
+            encoder.setFragmentBytes(&floor, length: MemoryLayout<FloorUniforms>.stride, index: 2)
+        }
         for submesh in mesh.submeshes {
             encoder.drawIndexedPrimitives(type: submesh.primitiveType, indexCount: submesh.indexCount,
                 indexType: submesh.indexType, indexBuffer: submesh.indexBuffer.buffer,

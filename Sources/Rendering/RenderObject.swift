@@ -2,8 +2,7 @@ import MetalKit
 
 enum ObjectID: Hashable {
     case sphere, cube, player, entrance, exit, fov, quad
-    case floor, floorLineX(Int), floorLineZ(Int)
-    case entranceRim(Int), exitRim(Int)
+    case floor, entranceBoundary(Int)
     case foregroundBlock, nearBlock, farPillar, edgePillar, nearSideProbe
 }
 

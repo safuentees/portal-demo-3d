@@ -6,7 +6,7 @@ final class Renderer: NSObject, MTKViewDelegate {
     private enum SetupError: LocalizedError {
         case missingDevice, missingCommandQueue, missingLibrary
         case missingShaders, invalidVertexDescriptor, missingDepthState
-        case duplicateObjectID, missingPortals, invalidPlacement
+        case duplicateObjectID, missingPortals, invalidPlacement, invalidFloorCheckerSize
 
         var errorDescription: String? {
             switch self {
@@ -19,6 +19,7 @@ final class Renderer: NSObject, MTKViewDelegate {
             case .duplicateObjectID: return "Scene object IDs must be unique."
             case .missingPortals: return "The scene needs an entrance and an exit."
             case .invalidPlacement: return "Object placements must be finite with nonzero, invertible scale."
+            case .invalidFloorCheckerSize: return "Floor checker size must be finite and positive."
             }
         }
     }
@@ -31,8 +32,10 @@ final class Renderer: NSObject, MTKViewDelegate {
     private let hasEntranceSurface: Bool
     private let pipelineState: MTLRenderPipelineState
     private let fovPipelineState: MTLRenderPipelineState
+    private let floorPipelineState: MTLRenderPipelineState
     private let textureScenePipelineState: MTLRenderPipelineState
     private let textureFOVPipelineState: MTLRenderPipelineState
+    private let textureFloorPipelineState: MTLRenderPipelineState
     private let texturePreviewPipelineState: MTLRenderPipelineState
     private let textureSurfacePipelineState: MTLRenderPipelineState
 
@@ -55,12 +58,16 @@ final class Renderer: NSObject, MTKViewDelegate {
         library suppliedLibrary: MTLLibrary? = nil,
         objects suppliedObjects: [RenderObject]? = nil,
         camera: Camera = Camera(),
-        showsMappedPreview: Bool = SceneConfiguration.showsMappedPreview
+        showsMappedPreview: Bool = SceneConfiguration.showsMappedPreview,
+        showsDiagnosticObjects: Bool = SceneConfiguration.showsDiagnosticObjects
     ) throws {
         guard let device = view.device else { throw SetupError.missingDevice }
         self.device = device
         colorPixelFormat = view.colorPixelFormat
         depthPixelFormat = view.depthStencilPixelFormat
+        guard SceneConfiguration.floorCheckerSize.isFinite, SceneConfiguration.floorCheckerSize > 0 else {
+            throw SetupError.invalidFloorCheckerSize
+        }
         guard let queue = device.makeCommandQueue() else { throw SetupError.missingCommandQueue }
         commandQueue = queue
         self.camera = camera
@@ -70,51 +77,36 @@ final class Renderer: NSObject, MTKViewDelegate {
             objects = suppliedObjects
         } else {
             let cubeMesh = try CubeMesh.make(device: device)
-            // Build once at aspect 1; resize by scaling camera-local X, never GPU buffers.
-            let coneMesh = try ConeMesh.make(
-                device: device, fieldOfView: SceneConfiguration.fieldOfViewRadians,
-                aspect: 1, near: SceneConfiguration.nearPlane, far: SceneConfiguration.farPlane
-            )
-
             let quadMesh = try QuadMesh.make(device: device)
 
             var scene = [
                 RenderObject(id: .entrance, mesh: cubeMesh, placement: SceneConfiguration.entrancePlacement),
                 RenderObject(id: .exit, mesh: cubeMesh, placement: SceneConfiguration.exitPlacement),
                 RenderObject(id: .player, mesh: cubeMesh, placement: SceneConfiguration.playerPlacement),
-                RenderObject(id: .fov, mesh: coneMesh),
                 // Unit XY quad: the same scale/frame puts it in the entrance opening.
                 RenderObject(id: .quad, mesh: quadMesh, placement: SceneConfiguration.entrancePlacement),
-                RenderObject(id: .floor, mesh: cubeMesh, placement: SceneConfiguration.floorPlacement),
-                RenderObject(id: .foregroundBlock, mesh: cubeMesh, placement: SceneConfiguration.foregroundBlockPlacement),
-                RenderObject(id: .cube, mesh: cubeMesh, placement: SceneConfiguration.rearBlockPlacement),
+                RenderObject(id: .floor, mesh: quadMesh, placement: SceneConfiguration.floorPlacement),
+                RenderObject(id: .nearBlock, mesh: cubeMesh, placement: SceneConfiguration.exitBlockPlacement),
                 RenderObject(id: .sphere, mesh: try SphereMesh.make(device: device),
                              placement: SceneConfiguration.exitSpherePlacement)
             ]
-            scene += SceneConfiguration.exitBoxPlacements.map {
-                RenderObject(id: $0.id, mesh: cubeMesh, placement: $0.placement)
+            for (index, placement) in SceneConfiguration.portalBoundaryPlacements(for: SceneConfiguration.entrancePlacement).enumerated() {
+                scene.append(RenderObject(id: .entranceBoundary(index), mesh: quadMesh, placement: placement))
             }
-            for (index, placement) in SceneConfiguration.portalRimPlacements(for: SceneConfiguration.entrancePlacement).enumerated() {
-                scene.append(RenderObject(id: .entranceRim(index), mesh: cubeMesh, placement: placement))
-            }
-            for (index, placement) in SceneConfiguration.portalRimPlacements(for: SceneConfiguration.exitPlacement).enumerated() {
-                scene.append(RenderObject(id: .exitRim(index), mesh: cubeMesh, placement: placement))
-            }
-            // Thin solid strips sit just above the floor, avoiding coplanar flicker.
-            // All boxes, rims and grid strips share one immutable unit-cube mesh.
-            let size = SceneConfiguration.floorSize
-            let center = SceneConfiguration.floorCenterXZ
-            let lineHeight = SceneConfiguration.floorGridHeight
-            let y = SceneConfiguration.floorHeight + lineHeight / 2
-            let lineCount = Int(size / SceneConfiguration.floorGridSpacing)
-            for index in 0...lineCount {
-                let offset = -size / 2 + Float(index) * SceneConfiguration.floorGridSpacing
-                scene.append(RenderObject(id: .floorLineX(index), mesh: cubeMesh,
-                    placement: ObjectPlacement(position: [center.x + offset, y, center.y],
-                        scale: [SceneConfiguration.floorGridWidth, lineHeight, size])))
-                scene.append(RenderObject(id: .floorLineZ(index), mesh: cubeMesh,
-                    placement: ObjectPlacement(position: [center.x, y, center.y + offset],
-                        scale: [size, lineHeight, SceneConfiguration.floorGridWidth])))
+            if showsDiagnosticObjects {
+                // Build once at aspect 1; resize by scaling camera-local X.
+                let coneMesh = try ConeMesh.make(
+                    device: device, fieldOfView: SceneConfiguration.fieldOfViewRadians,
+                    aspect: 1, near: SceneConfiguration.nearPlane, far: SceneConfiguration.farPlane
+                )
+                scene += [
+                    RenderObject(id: .fov, mesh: coneMesh),
+                    RenderObject(id: .foregroundBlock, mesh: cubeMesh, placement: SceneConfiguration.foregroundBlockPlacement),
+                    RenderObject(id: .cube, mesh: cubeMesh, placement: SceneConfiguration.rearBlockPlacement)
+                ]
+                scene += SceneConfiguration.diagnosticExitPlacements.map {
+                    RenderObject(id: $0.id, mesh: cubeMesh, placement: $0.placement)
+                }
             }
             objects = scene
         }
@@ -136,6 +128,7 @@ final class Renderer: NSObject, MTKViewDelegate {
         guard let vertex = library.makeFunction(name: "scene_vertex"),
               let fragment = library.makeFunction(name: "lit_fragment"),
               let fovFragment = library.makeFunction(name: "fov_fragment"),
+              let floorFragment = library.makeFunction(name: "floor_fragment"),
               let previewVertex = library.makeFunction(name: "texture_preview_vertex"),
               let previewFragment = library.makeFunction(name: "texture_preview_fragment"),
               let surfaceVertex = library.makeFunction(name: "texture_surface_vertex"),
@@ -164,10 +157,15 @@ final class Renderer: NSObject, MTKViewDelegate {
         pipeline.fragmentFunction = fovFragment
         fovPipelineState = try device.makeRenderPipelineState(descriptor: pipeline)
 
+        pipeline.label = "Filtered checker ground"
+        pipeline.fragmentFunction = floorFragment
+        floorPipelineState = try device.makeRenderPipelineState(descriptor: pipeline)
+
         // The sampled camera image is single-sample, even if the window uses MSAA.
         if view.sampleCount == 1 {
             textureScenePipelineState = pipelineState
             textureFOVPipelineState = fovPipelineState
+            textureFloorPipelineState = floorPipelineState
         } else {
             pipeline.rasterSampleCount = 1
             pipeline.label = "Lit scene into camera texture"
@@ -176,6 +174,9 @@ final class Renderer: NSObject, MTKViewDelegate {
             pipeline.label = "FOV into camera texture"
             pipeline.fragmentFunction = fovFragment
             textureFOVPipelineState = try device.makeRenderPipelineState(descriptor: pipeline)
+            pipeline.label = "Filtered checker ground into camera texture"
+            pipeline.fragmentFunction = floorFragment
+            textureFloorPipelineState = try device.makeRenderPipelineState(descriptor: pipeline)
         }
 
         let previewPipeline = MTLRenderPipelineDescriptor()
@@ -392,6 +393,7 @@ final class Renderer: NSObject, MTKViewDelegate {
             // Keep the exit out of the capture, and never sample the image while
             // writing it. The entrance stays an ordinary solid in that capture.
             if intoCameraTexture && (object.id == .exit || object.id == .quad || object.id == .fov) { continue }
+            if intoCameraTexture, case .entranceBoundary = object.id { continue }
             // In the source view the quad replaces the filled entrance. Drawing
             // the cube too would hide the quad at its local Z = 0 opening plane.
             if !intoCameraTexture && hasEntranceSurface && object.id == .entrance { continue }
@@ -403,18 +405,19 @@ final class Renderer: NSObject, MTKViewDelegate {
             case .fov:
                 style = (intoCameraTexture ? textureFOVPipelineState : fovPipelineState,
                          SceneConfiguration.mappedFOVColor)
-            case .entrance, .exit, .entranceRim, .exitRim:
+            case .entrance, .exit, .entranceBoundary:
                 style = (intoCameraTexture ? textureScenePipelineState : pipelineState,
                          SceneConfiguration.portalColor)
             case .player:
                 style = (intoCameraTexture ? textureScenePipelineState : pipelineState,
                          SceneConfiguration.mappedPlayerColor)
             case .floor:
-                style = (intoCameraTexture ? textureScenePipelineState : pipelineState,
-                         SceneConfiguration.floorColor)
-            case .floorLineX, .floorLineZ:
-                style = (intoCameraTexture ? textureScenePipelineState : pipelineState,
-                         SceneConfiguration.floorGridColor)
+                style = (intoCameraTexture ? textureFloorPipelineState : floorPipelineState,
+                         SceneConfiguration.floorColorA)
+                var floor = FloorUniforms(colorA: SceneConfiguration.floorColorA,
+                    colorB: SceneConfiguration.floorColorB, checkerSize: SceneConfiguration.floorCheckerSize)
+                // A separate material contract; the 352-byte scene layout is unchanged.
+                encoder.setFragmentBytes(&floor, length: MemoryLayout<FloorUniforms>.stride, index: 2)
             default:
                 style = (intoCameraTexture ? textureScenePipelineState : pipelineState,
                          SceneConfiguration.sceneObjectColor)

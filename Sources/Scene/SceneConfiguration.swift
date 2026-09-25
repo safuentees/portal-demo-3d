@@ -6,6 +6,8 @@ enum SceneConfiguration {
     // False fills the window with the main view. True restores the right preview.
     // The mapped camera still renders the entrance texture in either mode.
     static let showsMappedPreview = false
+    // Extra occlusion/clipping probes and the mapped FOV outline are opt-in.
+    static let showsDiagnosticObjects = false
 
     // Opaque role palette, authored for direct .bgra8Unorm output (no sRGB transfer).
     // The FOV is unlit and deliberately dimmer than the solid objects.
@@ -15,8 +17,10 @@ enum SceneConfiguration {
     static let portalColor = SIMD4<Float>(0.38, 0.49, 0.64, 1.0)
     static let mappedPlayerColor = SIMD4<Float>(0.38, 0.65, 0.58, 1.0)
     static let mappedFOVColor = SIMD4<Float>(0.14, 0.27, 0.25, 1.0)
-    static let floorColor = SIMD4<Float>(0.19, 0.21, 0.24, 1)
-    static let floorGridColor = SIMD4<Float>(0.28, 0.31, 0.35, 1)
+    // Two nearby material tones, shaded by the same neutral scene lighting.
+    static let floorColorA = SIMD4<Float>(0.125, 0.14, 0.165, 1)
+    static let floorColorB = SIMD4<Float>(0.14, 0.155, 0.18, 1)
+    static let floorCheckerSize: Float = 1 // World units per square, in world XZ.
 
     static let lightColor = SIMD4<Float>(repeating: 1.0)
     // A neutral, elevated main light, fixed in world space. No distance falloff.
@@ -42,23 +46,20 @@ enum SceneConfiguration {
     // Equal 2 x 3 openings rest on the floor. The 60-degree exit makes the
     // connection visibly directional without relying on a half-turn arrangement.
     static let entrancePlacement = ObjectPlacement(position: [0, 0, 3], scale: [2, 3, 0.1])
-    static let exitPlacement = ObjectPlacement(position: [4, 0, 6], scale: [2, 3, 0.1], yaw: .pi / 3)
+    static let exitPlacement = ObjectPlacement(position: [4.8, 0, 6], scale: [2, 3, 0.1], yaw: .pi / 3)
     static let playerPlacement = ObjectPlacement(scale: [0.01, 0.01, 0.01], yaw: .pi / 2)
 
-    // A thin unit cube becomes an 18 x 18 floor; its TOP is at floorHeight.
+    // One flat quad, extending beyond the usual view without a slab edge.
     static let floorHeight: Float = -1.5
     static let floorCenterXZ = SIMD2<Float>(1, 5)
-    static let floorSize: Float = 18
-    static let floorThickness: Float = 0.2
-    static let floorGridSpacing: Float = 1
-    static let floorGridWidth: Float = 0.014
-    static let floorGridHeight: Float = 0.004
-    static let portalRimWidth: Float = 0.09
-    static let portalRimDepth: Float = 0.16
+    static let floorSize: Float = 200
+    static let portalBoundaryWidth: Float = 0.012
 
     static var floorPlacement: ObjectPlacement {
-        ObjectPlacement(position: [floorCenterXZ.x, floorHeight - floorThickness / 2, floorCenterXZ.y],
-                        scale: [floorSize, floorThickness, floorSize])
+        // QuadMesh lies in XY with normal +Z. -90 degrees around X makes it
+        // horizontal with normal +Y; the last scale stays nonzero for normals.
+        ObjectPlacement(position: [floorCenterXZ.x, floorHeight, floorCenterXZ.y],
+                        scale: [floorSize, floorSize, 1], pitch: -.pi / 2)
     }
 
     // World-space landmarks near the source opening exercise ordinary depth:
@@ -71,9 +72,12 @@ enum SceneConfiguration {
     // These positions are EXIT-LOCAL: X across the opening, Y up, +Z beyond it.
     // Convert once during scene construction so moving the exit carries its set
     // of landmarks along. They become ordinary world objects, not mapped clones.
-    static var exitBoxPlacements: [(id: ObjectID, placement: ObjectPlacement)] {
+    static var exitBlockPlacement: ObjectPlacement {
+        placement(in: exitPlacement, at: [-0.65, -1, 1.8], scale: [0.75, 1, 0.75])
+    }
+
+    static var diagnosticExitPlacements: [(id: ObjectID, placement: ObjectPlacement)] {
         [
-            (.nearBlock, placement(in: exitPlacement, at: [-0.6, -0.95, 1.5], scale: [0.8, 1.1, 0.8])),
             (.farPillar, placement(in: exitPlacement, at: [-0.4, -0.1, 5], scale: [0.45, 2.8, 0.45])),
             (.edgePillar, placement(in: exitPlacement, at: [1.35, -0.4, 0.65], scale: [0.16, 2.2, 0.16])),
             // Negative Z is on the virtual-eye side of the exit. This low block
@@ -83,18 +87,20 @@ enum SceneConfiguration {
     }
 
     static var exitSpherePlacement: ObjectPlacement {
-        // Model I/O's sphere extent is its radius; this makes a 1.1-unit ball.
-        placement(in: exitPlacement, at: [0.55, -0.95, 2.8],
-                  scale: SIMD3<Float>(repeating: 0.55) / sphereExtent)
+        // Model I/O's sphere extent is its radius; this makes a 1.2-unit ball.
+        placement(in: exitPlacement, at: [0.7, -0.9, 3.6],
+                  scale: SIMD3<Float>(repeating: 0.6) / sphereExtent)
     }
 
-    static func portalRimPlacements(for portal: ObjectPlacement) -> [ObjectPlacement] {
-        let width = portal.scale.x, height = portal.scale.y, rim = portalRimWidth
-        // A doorway frame: no bottom beam coplanar with the floor surface.
+    static func portalBoundaryPlacements(for portal: ObjectPlacement) -> [ObjectPlacement] {
+        let width = portal.scale.x, height = portal.scale.y, line = portalBoundaryWidth
+        // Flat strips sit immediately outside the aperture at local Z = 0.
+        // They share QuadMesh with the opening; no depth, bevel or inset frame.
         return [
-            placement(in: portal, at: [-(width + rim) / 2, 0, 0], scale: [rim, height, portalRimDepth]),
-            placement(in: portal, at: [(width + rim) / 2, 0, 0], scale: [rim, height, portalRimDepth]),
-            placement(in: portal, at: [0, (height + rim) / 2, 0], scale: [width + 2 * rim, rim, portalRimDepth])
+            placement(in: portal, at: [-(width + line) / 2, 0, 0], scale: [line, height + 2 * line, 1]),
+            placement(in: portal, at: [(width + line) / 2, 0, 0], scale: [line, height + 2 * line, 1]),
+            placement(in: portal, at: [0, (height + line) / 2, 0], scale: [width, line, 1]),
+            placement(in: portal, at: [0, -(height + line) / 2, 0], scale: [width, line, 1])
         ]
     }
 

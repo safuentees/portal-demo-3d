@@ -26,6 +26,7 @@ struct SmokeTests {
         }
         let library = try device.makeLibrary(URL: URL(fileURLWithPath: CommandLine.arguments[1]))
         try LightingChecks.run(device: device, queue: queue, library: library)
+        try FloorChecks.run(device: device, queue: queue, library: library)
         try checkFrustumMesh(device: device)
         let view = MTKView(frame: .zero, device: device)
         view.colorPixelFormat = .bgra8Unorm
@@ -103,6 +104,11 @@ struct SmokeTests {
             try expect(MemoryLayout<ShaderUniforms>.offset(of: field) == offset,
                        "Swift/Metal uniform field offset changed: \(field).")
         }
+        try expect(MemoryLayout<FloorUniforms>.stride == 48
+            && MemoryLayout<FloorUniforms>.offset(of: \.colorA) == 0
+            && MemoryLayout<FloorUniforms>.offset(of: \.colorB) == 16
+            && MemoryLayout<FloorUniforms>.offset(of: \.checkerSize) == 32,
+            "Swift/Metal floor material layout changed.")
     }
 
     static func checkFrustumMesh(device: MTLDevice) throws {
@@ -325,8 +331,8 @@ struct SmokeTests {
             // This cube rests on Y = -1. Draw it first so the floor must respect depth.
             RenderObject(id: .cube, mesh: mesh,
                 placement: ObjectPlacement(position: [0.7, -0.4, 3], scale: [1.2, 1.2, 1.2])),
-            RenderObject(id: .floor, mesh: mesh,
-                placement: ObjectPlacement(position: [0, -1.1, 7], scale: [20, 0.2, 20]))
+            RenderObject(id: .floor, mesh: try QuadMesh.make(device: device),
+                placement: ObjectPlacement(position: [0, -1, 7], scale: [20, 20, 1], pitch: -.pi / 2))
         ]
         let renderer = try Renderer(view: view, library: library, objects: objects, showsMappedPreview: true)
         let width = 1280, height = 320, viewportWidth = width / 2
@@ -335,8 +341,8 @@ struct SmokeTests {
             fieldOfView: SceneConfiguration.fieldOfViewRadians,
             near: SceneConfiguration.nearPlane, far: SceneConfiguration.farPlane)
         let samples: [(target: SIMD3<Float>, normal: SIMD3<Float>, plane: SIMD3<Float>, color: SIMD4<Float>)] = [
-            ([-2, -1, 4], [0, 1, 0], [0, -1, 0], SceneConfiguration.floorColor),
-            ([4, -1, 6], [0, 1, 0], [0, -1, 0], SceneConfiguration.floorColor),
+            ([-2.25, -1, 4.25], [0, 1, 0], [0, -1, 0], SceneConfiguration.floorColorA),
+            ([4.25, -1, 6.25], [0, 1, 0], [0, -1, 0], SceneConfiguration.floorColorA),
             ([0.7, -0.4, 3], [0, 0, -1], [0, 0, 2.4], SceneConfiguration.sceneObjectColor)
         ]
         for (viewport, eyeWorld) in [SIMD3<Float>.zero, SIMD3<Float>(2.5, 0, 0)].enumerated() {
@@ -354,8 +360,19 @@ struct SmokeTests {
                 let ray = xyz(farPoint / farPoint.w) - eyeWorld
                 let distance = simd_dot(sample.plane - eyeWorld, sample.normal) / simd_dot(ray, sample.normal)
                 let hitWorld = eyeWorld + distance * ray
+                var materialColor = sample.color
+                if sampleIndex < 2 {
+                    let checker = SIMD2(hitWorld.x, hitWorld.z) / SceneConfiguration.floorCheckerSize
+                    // These near samples are inside individual squares. A hard
+                    // parity oracle is independent of the shader's box integral.
+                    let fraction = checker - SIMD2(floor(checker.x), floor(checker.y))
+                    try expect(min(fraction.x, 1 - fraction.x, fraction.y, 1 - fraction.y) > 0.1,
+                               "The floor shading fixture must sample away from checker boundaries.")
+                    materialColor = (Int(floor(checker.x)) + Int(floor(checker.y))) % 2 == 0
+                        ? SceneConfiguration.floorColorA : SceneConfiguration.floorColorB
+                }
                 let expected = lightingBytes(pointWorld: hitWorld, normalWorld: sample.normal,
-                    eyeWorld: eyeWorld, materialColor: sample.color)
+                    eyeWorld: eyeWorld, materialColor: materialColor)
                 let pixel = (y * width + viewport * viewportWidth + x) * 4
                 try expect((0..<4).allSatisfy { abs(Int(pixels[pixel + $0]) - expected[$0]) <= 3 },
                     "Floor fixture viewport \(viewport), sample \(sampleIndex): "

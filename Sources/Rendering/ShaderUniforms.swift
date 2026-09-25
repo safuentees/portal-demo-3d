@@ -22,3 +22,12 @@ struct ShaderUniforms {
     var fillLightDirectionWorld: SIMD4<Float>
     var fillIntensity: Float
 }
+
+/// Floor-only fragment buffer 2; scene lighting keeps its existing buffer 1.
+/// Match FloorUniforms in Shaders.metal: offsets 0/16/32, padded stride 48.
+struct FloorUniforms {
+    var colorA: SIMD4<Float>
+    var colorB: SIMD4<Float>
+    /// World units per square, independent of the floor mesh's size or camera.
+    var checkerSize: Float
+}

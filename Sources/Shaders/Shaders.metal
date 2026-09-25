@@ -30,6 +30,13 @@ struct ShaderUniforms {
     float fillIntensity;
 };
 
+// Separate floor material in fragment buffer 2; offsets 0/16/32, stride 48.
+struct FloorUniforms {
+    float4 colorA;
+    float4 colorB;
+    float checkerSize;
+};
+
 // Coincident light/eye positions and opposing L/V have no defined direction.
 // Returning zero also gives those cases zero diffuse/specular contribution.
 float3 directionOrZero(float3 vector) {
@@ -123,10 +130,7 @@ fragment float4 texture_preview_fragment(
     return cameraTexture.sample(imageSampler, uv);
 }
 
-fragment float4 lit_fragment(
-    VertexOut out [[stage_in]],
-    constant ShaderUniforms &uniforms [[buffer(1)]]
-) {
+float4 shadeSurface(VertexOut out, constant ShaderUniforms &uniforms, float4 materialColor) {
     float3 N = normalize(out.normalWorld);
 
     float3 lightDirection = directionOrZero(
@@ -140,7 +144,7 @@ fragment float4 lit_fragment(
     float3 ambient =
         uniforms.ambientIntensity *
         uniforms.lightColor.rgb *
-        uniforms.color.rgb;
+        materialColor.rgb;
 
     float diffuseStrength =
         max(dot(N, lightDirection), 0.0);
@@ -149,12 +153,12 @@ fragment float4 lit_fragment(
         uniforms.diffuseIntensity *
         diffuseStrength *
         uniforms.lightColor.rgb *
-        uniforms.color.rgb;
+        materialColor.rgb;
 
     // A weaker, neutral Lambert fill distinguishes faces away from the main light.
     // It is fixed in world space and intentionally contributes no specular highlight.
     float fillStrength = max(dot(N, directionOrZero(uniforms.fillLightDirectionWorld.xyz)), 0.0);
-    float3 fill = uniforms.fillIntensity * fillStrength * uniforms.lightColor.rgb * uniforms.color.rgb;
+    float3 fill = uniforms.fillIntensity * fillStrength * uniforms.lightColor.rgb * materialColor.rgb;
 
     float3 H = directionOrZero(lightDirection + cameraDirection);
 
@@ -175,5 +179,33 @@ fragment float4 lit_fragment(
     // values directly. Keep this in sync with the palette's encoding convention.
     float3 finalColor = ambient + diffuse + fill + specular;
 
-    return float4(finalColor, uniforms.color.a);
+    return float4(finalColor, materialColor.a);
+}
+
+fragment float4 lit_fragment(
+    VertexOut out [[stage_in]],
+    constant ShaderUniforms &uniforms [[buffer(1)]]
+) {
+    return shadeSurface(out, uniforms, uniforms.color);
+}
+
+// Integral of a repeating +1/-1 square wave, including negative coordinates.
+float2 checkerIntegral(float2 p) {
+    return 1.0 - abs(2.0 * fract(p * 0.5) - 1.0);
+}
+
+fragment float4 floor_fragment(
+    VertexOut out [[stage_in]],
+    constant ShaderUniforms &uniforms [[buffer(1)]],
+    constant FloorUniforms &floor [[buffer(2)]]
+) {
+    float2 p = out.positionWorld.xz / floor.checkerSize;
+    // Approximate the pixel's footprint by its axis-aligned box in world XZ.
+    // Integrating each wave averages covered squares instead of point-sampling
+    // them. Many squares per pixel tend to 50/50; close squares retain detail.
+    float2 footprint = max(fwidth(p), float2(1e-4));
+    float2 wave = (checkerIntegral(p + footprint * 0.5)
+                 - checkerIntegral(p - footprint * 0.5)) / footprint;
+    float checker = saturate(0.5 - 0.5 * wave.x * wave.y);
+    return shadeSurface(out, uniforms, mix(floor.colorA, floor.colorB, checker));
 }
