@@ -88,11 +88,21 @@ fragment float4 texture_surface_fragment(
     TexturedSurfaceOut in [[stage_in]],
     texture2d<float> cameraTexture [[texture(0)]]
 ) {
-    constexpr sampler imageSampler(coord::normalized, address::clamp_to_edge, filter::linear);
-    // Fit the whole camera image onto the quad, like a monitor. It is already lit.
-    return cameraTexture.sample(imageSampler, in.uv);
-}
+    float2 viewportSize = float2(
+        cameraTexture.get_width(),
+        cameraTexture.get_height()
+    );
 
+    float2 screenUV = in.position.xy / viewportSize;
+
+    constexpr sampler imageSampler(
+        coord::normalized,
+        address::clamp_to_edge,
+        filter::linear
+    );
+
+    return cameraTexture.sample(imageSampler, screenUV);
+}
 // One oversized triangle covers the viewport; no mesh or vertex buffer is needed.
 vertex TexturePreviewOut texture_preview_vertex(uint vertexID [[vertex_id]]) {
     const float2 corners[] = { float2(-1, -1), float2(3, -1), float2(-1, 3) };

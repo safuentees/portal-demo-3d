@@ -360,7 +360,7 @@ final class Renderer: NSObject, MTKViewDelegate {
         for (objectIndex, object) in objects.enumerated() {
             // Keep the exit out of the capture, and never sample the image while
             // writing it. The entrance stays an ordinary solid in that capture.
-            if intoCameraTexture && (object.id == .exit || object.id == .quad) { continue }
+            if intoCameraTexture && (object.id == .exit || object.id == .quad || object.id == .fov) { continue }
             // In the source view the quad replaces the filled entrance. Drawing
             // the cube too would hide the quad at its local Z = 0 opening plane.
             if !intoCameraTexture && hasEntranceSurface && object.id == .entrance { continue }
