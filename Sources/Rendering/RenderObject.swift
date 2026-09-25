@@ -1,7 +1,7 @@
 import MetalKit
 
 enum ObjectID: Hashable {
-    case sphere, cube, torus, player, entrance, exit, fov, quad
+    case sphere, cube, torus, player, entrance, exit, fov, entrance_quad, exit_quad
     case floor, entranceBoundary(Int)
     case foregroundBlock, nearBlock, farPillar, edgePillar, nearSideProbe
 }

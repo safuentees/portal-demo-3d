@@ -109,7 +109,8 @@ final class Renderer: NSObject, MTKViewDelegate {
                 RenderObject(id: .exit, mesh: cubeMesh, placement: SceneConfiguration.exitPlacement),
                 RenderObject(id: .player, mesh: cubeMesh, placement: SceneConfiguration.playerPlacement),
                 // Unit XY quad: the same scale/frame puts it in the entrance opening.
-                RenderObject(id: .quad, mesh: quadMesh, placement: SceneConfiguration.entrancePlacement),
+                RenderObject(id: .entrance_quad, mesh: quadMesh, placement: SceneConfiguration.entrancePlacement),
+                RenderObject(id: .exit_quad, mesh: quadMesh, placement: SceneConfiguration.exitPlacement),
                 RenderObject(id: .floor, mesh: quadMesh, placement: SceneConfiguration.floorPlacement),
                 RenderObject(id: .nearBlock, mesh: cubeMesh, placement: SceneConfiguration.exitBlockPlacement),
                 RenderObject(id: .sphere, mesh: try SphereMesh.make(device: device),
@@ -141,7 +142,7 @@ final class Renderer: NSObject, MTKViewDelegate {
             }
             objects = scene
         }
-        hasEntranceSurface = objects.contains { $0.id == .quad }
+        hasEntranceSurface = objects.contains { $0.id == .entrance_quad }
         guard Set(objects.map(\.id)).count == objects.count else { throw SetupError.duplicateObjectID }
         guard objects.allSatisfy({
             $0.placement.isValid && simd_determinant($0.modelMatrix).isFinite
@@ -444,17 +445,20 @@ final class Renderer: NSObject, MTKViewDelegate {
             // Hide this direction's destination slab. Portal images and FOV
             // outlines are excluded from both captures to avoid recursive views.
             if let captureDirection {
-                if object.id == captureDirection.destination || object.id == .quad || object.id == .fov { continue }
+                if object.id == captureDirection.destination || object.id == .entrance_quad || object.id == .exit_quad || object.id == .fov { continue }
                 if case .entranceBoundary = object.id { continue }
             }
             // In the source view the quad replaces the filled entrance. Drawing
             // the cube too would hide the quad at its local Z = 0 opening plane.
-            if !intoCameraTexture && hasEntranceSurface && object.id == .entrance { continue }
+            if !intoCameraTexture && hasEntranceSurface && object.id == .entrance || object.id == .exit { continue }
             let style: (pipeline: MTLRenderPipelineState, color: SIMD4<Float>)
             switch object.id {
-            case .quad:
+            case .entrance_quad:
                 style = (textureSurfacePipelineState, SIMD4<Float>(repeating: 1))
                 encoder.setFragmentTexture(entranceToExitTextures?.color, index: 0)
+            case .exit_quad:
+                style = (textureSurfacePipelineState, SIMD4<Float>(repeating: 1))
+                encoder.setFragmentTexture(exitToEntranceTextures?.color, index: 0)
             case .fov:
                 style = (intoCameraTexture ? textureFOVPipelineState : fovPipelineState,
                          SceneConfiguration.mappedFOVColor)
