@@ -15,7 +15,7 @@ enum PortalDirection: CaseIterable, Hashable {
 enum ObjectID: Hashable {
     case sphere, cube, torus, player, entrance, exit, entrance_quad, exit_quad
     case fov(PortalDirection)
-    case floor, entranceBoundary(Int)
+    case floor, entranceBoundary(Int), exitBoundary(Int)
     case foregroundBlock, nearBlock, farPillar, edgePillar, nearSideProbe
 }
 

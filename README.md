@@ -24,7 +24,7 @@ The project uses SwiftUI, AppKit, MetalKit, Model I/O, and SIMD, with no externa
 
 The entrance is centered at `[0, 0, 3]`. The exit is at `[4.8, 0, 6]`, turned 60 degrees around Y. Both openings are 2 units wide and 3 units tall. They stand on a shared floor at `Y = -1.5`. This spacing leaves room to move around each opening, and the angled exit makes the change in viewing direction easy to see.
 
-A thin blue boundary marks the entrance aperture; four flat strips sit just outside its edges at the same plane. It has no thick rim, bevel, or glow, and is omitted from the mapped capture. The exit displays its reverse image on a flat quad. Neutral cube, sphere, and torus silhouettes identify the surroundings; the mapped player and A → B outline are teal, and the B → A outline is amber.
+A thin blue frame marks each portal aperture; four flat strips sit just outside each opening's edges at the same plane. Both frames use `portalBoundaryPlacements(for:)`, so each follows its portal's position, size, yaw, and pitch. They share the same width and color, have no thick rim, bevel, or glow, and are omitted from both captures. The exit displays its reverse image on a flat quad. Neutral cube, sphere, and torus silhouettes identify the surroundings; the mapped player and A → B outline are teal, and the B → A outline is amber.
 
 Beyond the exit, a nearer cube and a farther sphere make the destination recognizable. Their different distances reveal parallax: when you move sideways, the nearer cube moves farther across the image. Their starting silhouettes are separated, leaving empty space around the portal image. An upright torus sits on the opposite side of the exit plane, at exit-local `[2.2, -0.84, -1.5]`. It rests on the floor, offset sideways to keep the initial opening clear. Its hole helps distinguish it from the sphere when inspecting that side or looking back toward the exit. This is another world object; exit-plane clipping remains unimplemented.
 
@@ -41,7 +41,7 @@ Editable scene values live in `SceneConfiguration.swift`:
 | `floorColorA`, `floorColorB` | The two subdued floor material tones, before the existing lighting. |
 | `floorCheckerSize` | Positive, finite world units per square; larger values make larger squares. |
 | `floorHeight`, `floorCenterXZ`, `floorSize` | Position and extent of the flat ground. |
-| `portalBoundaryWidth` | Width of the flat entrance boundary, currently `0.012` world units. |
+| `portalBoundaryWidth` | Width of both flat portal frames, currently `0.012` world units. |
 | `exitBlockPlacement`, `exitSpherePlacement`, `exitTorusPlacement` | The default landmarks on both sides of the exit. |
 | `torusMajorRadius`, `torusTubeRadius`, `torusRingSegments`, `torusTubeSegments` | Ring size, tube thickness, and mesh detail; currently `0.5`, `0.16`, `64`, and `24`. |
 | `showsMappedFOV` | Shows both mapped camera FOV outlines in the main scene; on by default. |
@@ -139,7 +139,7 @@ A texture is a GPU image. Each frame has three render passes:
 2. Render the B → A camera into its own pair, `exitToEntranceTextures`.
 3. Draw the main scene with the A → B color texture on the entrance quad and the B → A texture on the exit quad. If `showsMappedPreview` is enabled, draw the A → B image in the right viewport.
 
-The depth texture is used while making each image. A → B omits the filled exit object; B → A omits the filled entrance object. Both captures omit both textured quads, the entrance boundary, and both FOV outlines. The ground and ordinary landmarks remain visible. In the main view, each textured quad replaces its corresponding filled portal slab so the slab does not cover the image. This replacement is restricted to the main pass; the source portal remains ordinary solid geometry in each capture. These object filters do not clip geometry against the destination plane or implement recursive portal views.
+The depth texture is used while making each image. A → B omits the filled exit object; B → A omits the filled entrance object. Both captures omit both textured quads, both portal frames, and both FOV outlines. The ground and ordinary landmarks remain visible. In the main view, each textured quad replaces its corresponding filled portal slab so the slab does not cover the image. This replacement is restricted to the main pass; the source portal remains ordinary solid geometry in each capture. These object filters do not clip geometry against the destination plane or implement recursive portal views.
 
 `encodeCapture` takes a required texture pair and chooses the color/depth attachments before creating its encoder. The shared `encodeScene` takes `captureDirection: PortalDirection? = nil`: omit it for the main view, or pass a direction for a capture. Direction selects the capture pipelines and which destination slab to omit. Each capture ends its encoder before the next pass begins. The direction-keyed texture storage reuses both pairs until the source viewport's pixel dimensions change.
 
@@ -171,7 +171,7 @@ The diffuse lighting stays attached to the world; the highlight depends on the a
 | --- | --- |
 | Preview/diagnostic flags, FOV, near/far distances, portal/landmark placements, floor tones/checker size, boundary width, colors, lights, camera speed/sensitivity | `Sources/Scene/SceneConfiguration.swift` |
 | FOV corners, line edges, mesh parameters | `Sources/Rendering/ConeMesh.swift` |
-| Shared flat geometry for the entrance, ground, and boundary strips | `Sources/Rendering/QuadMesh.swift` |
+| Shared flat geometry for both portal surfaces, ground, and boundary strips | `Sources/Rendering/QuadMesh.swift` |
 | Indexed ring geometry, smooth normals, UV seams, and parameter validation | `Sources/Rendering/TorusMesh.swift` |
 | Shared packed vertex descriptor for all meshes | `Sources/Rendering/MeshVertexLayout.swift` |
 | Scene objects, mapping, offscreen textures, render passes, viewport setup | `Sources/Rendering/Renderer.swift` |

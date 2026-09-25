@@ -113,6 +113,9 @@ final class Renderer: NSObject, MTKViewDelegate {
             for (index, placement) in SceneConfiguration.portalBoundaryPlacements(for: SceneConfiguration.entrancePlacement).enumerated() {
                 scene.append(RenderObject(id: .entranceBoundary(index), mesh: quadMesh, placement: placement))
             }
+            for (index, placement) in SceneConfiguration.portalBoundaryPlacements(for: SceneConfiguration.exitPlacement).enumerated() {
+                scene.append(RenderObject(id: .exitBoundary(index), mesh: quadMesh, placement: placement))
+            }
             if showsMappedFOV {
                 // Build once at aspect 1; resize by scaling camera-local X.
                 let coneMesh = try ConeMesh.make(
@@ -443,6 +446,7 @@ final class Renderer: NSObject, MTKViewDelegate {
                 if object.id == captureDirection.destination || object.id == .entrance_quad || object.id == .exit_quad { continue }
                 if case .fov = object.id { continue }
                 if case .entranceBoundary = object.id { continue }
+                if case .exitBoundary = object.id { continue }
             }
             // Only the main view replaces a slab with its corresponding surface.
             // The other portal stays an ordinary solid within each capture.
@@ -463,7 +467,7 @@ final class Renderer: NSObject, MTKViewDelegate {
                          direction == .entranceToExit
                             ? SceneConfiguration.entranceToExitFOVColor
                             : SceneConfiguration.exitToEntranceFOVColor)
-            case .entrance, .exit, .entranceBoundary:
+            case .entrance, .exit, .entranceBoundary, .exitBoundary:
                 style = (intoCameraTexture ? textureScenePipelineState : pipelineState,
                          SceneConfiguration.portalColor)
             case .player:

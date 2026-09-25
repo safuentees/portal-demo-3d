@@ -140,12 +140,14 @@ enum TexturePassChecks {
             RenderObject(id: .cube, mesh: mesh,
                 placement: ObjectPlacement(position: [1.7, 0.6, 5.8], scale: [0.7, 0.65, 0.55], yaw: -0.35, pitch: 0.25))
         ]
-        // The destination slab and coincident display surfaces would hide these landmarks.
+        // Place both boundary IDs over the destination too: any missed capture
+        // exclusion would hide these landmarks behind a full-size quad.
         let quad = try QuadMesh.make(device: device)
         let renderer = try Renderer(view: view, library: library,
             objects: [entrance, exit,
                 RenderObject(id: .entrance_quad, mesh: quad, placement: entrance.placement),
-                RenderObject(id: .entranceBoundary(0), mesh: quad, placement: entrance.placement)] + landmarks,
+                RenderObject(id: .entranceBoundary(0), mesh: quad, placement: entrance.placement),
+                RenderObject(id: .exitBoundary(0), mesh: quad, placement: entrance.placement)] + landmarks,
             camera: Camera(viewMatrix: simd_inverse(sourceWorld)), showsMappedPreview: false)
         let width = 512, height = 384
         _ = try SmokeTests.render(renderer, device: device, queue: queue, width: width, height: height)
