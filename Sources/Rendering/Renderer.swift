@@ -62,8 +62,16 @@ final class Renderer: NSObject, MTKViewDelegate {
 
     // The current capture still renders entrance -> exit. These read the same
     // storage while the reverse capture is being added, rather than owning copies.
-    var mappedColorTexture: MTLTexture? { mappedTextures[.entranceToExit]?.color }
-    var mappedDepthTexture: MTLTexture? { mappedTextures[.entranceToExit]?.depth }
+//    var mappedColorTexture: MTLTexture? { mappedTextures[.entranceToExit]?.color }
+//    var mappedDepthTexture: MTLTexture? { mappedTextures[.entranceToExit]?.depth }
+
+    var entranceToExitTextures: RenderTargets? {
+        mappedTextures[.entranceToExit]
+    }
+
+    var exitToEntranceTextures: RenderTargets? {
+        mappedTextures[.exitToEntrance]
+    }
 
     // Supplied resources/scene/camera let smoke checks use deterministic fixtures.
     init(
@@ -322,7 +330,7 @@ final class Renderer: NSObject, MTKViewDelegate {
         let sourceWidth = sourceViewportWidth(for: target.width)
         let height = target.height
         guard updateMappedTargets(width: sourceWidth, height: height),
-              let mappedColorTexture, let mappedDepthTexture else { return false }
+              let ab = entranceToExitTextures, let ba = exitToEntranceTextures else { return false }
 
         let sourceViewport = MTLViewport(originX: 0, originY: 0,
             width: Double(sourceWidth), height: Double(height), znear: 0, zfar: 1)
@@ -350,12 +358,12 @@ final class Renderer: NSObject, MTKViewDelegate {
 
         // First pass: the mapped camera draws into its own color/depth attachments.
         let cameraPass = MTLRenderPassDescriptor()
-        cameraPass.colorAttachments[0].texture = mappedColorTexture
+        cameraPass.colorAttachments[0].texture = ab.color
         cameraPass.colorAttachments[0].loadAction = .clear
         cameraPass.colorAttachments[0].clearColor = SceneConfiguration.backgroundColor
         cameraPass.colorAttachments[0].storeAction = .store
 
-        cameraPass.depthAttachment.texture = mappedDepthTexture
+        cameraPass.depthAttachment.texture = ab.depth
         cameraPass.depthAttachment.loadAction = .clear
         cameraPass.depthAttachment.clearDepth = 1
         cameraPass.depthAttachment.storeAction = .dontCare
@@ -370,9 +378,9 @@ final class Renderer: NSObject, MTKViewDelegate {
                 intoCameraTexture: true)
         }
 
-        cameraPass.colorAttachments[0].texture = mappedColorTexture
-        cameraPass.depthAttachment.texture = mappedDepthTexture
-
+        cameraPass.colorAttachments[0].texture = ba.color
+        cameraPass.depthAttachment.texture = ba.depth
+        
         do {
             guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: cameraPass) else { return false }
             encoder.label = "Record mapped camera"
@@ -421,8 +429,12 @@ final class Renderer: NSObject, MTKViewDelegate {
     private func encodeScene(
         encoder: MTLRenderCommandEncoder, viewport: MTLViewport,
         viewMatrix: simd_float4x4, cameraWorld: simd_float4x4, projection: simd_float4x4,
-        worldModels: [simd_float4x4], normalMatrices: [simd_float3x3], intoCameraTexture: Bool
+        worldModels: [simd_float4x4], normalMatrices: [simd_float3x3], textures: RenderTargets = 
     ) {
+        var intoCameraTexture = false
+        if let textures {
+            intoCameraTexture = true
+        }
         setViewport(viewport, on: encoder)
         encoder.setDepthStencilState(depthState)
         let cameraPoint = SIMD4<Float>(0, 0, 0, 1) * cameraWorld
