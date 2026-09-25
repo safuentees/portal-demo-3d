@@ -1,0 +1,325 @@
+{
+  "accessed": "2026-09-25",
+  "projects": [
+    {
+      "year": 2017,
+      "name": "Rent-A-Plug",
+      "url": "https://devpost.com/software/rent-a-plug",
+      "awards": [
+        "1st Place"
+      ],
+      "tier": "overall",
+      "target_user_problem": "People or machines buying short intervals of electricity",
+      "workflow": "Cryptocurrency payment activates a timed physical power outlet.",
+      "technology": "Ethereum, Solidity, Raspberry Pi, JavaScript, relay",
+      "flags": {
+        "ai_ml": {
+          "value": "unknown",
+          "evidence": "Private blockchain and Web3 connect payment to a Raspberry Pi relay; AI is discussed only as a future direction."
+        },
+        "external_api_service": {
+          "value": "yes",
+          "evidence": "Private blockchain and Web3 connect payment to a Raspberry Pi relay; AI is discussed only as a future direction."
+        },
+        "accessibility_inclusion": {
+          "value": "unknown",
+          "evidence": "Private blockchain and Web3 connect payment to a Raspberry Pi relay; AI is discussed only as a future direction."
+        },
+        "civic_social_environment": {
+          "value": "unknown",
+          "evidence": "Private blockchain and Web3 connect payment to a Raspberry Pi relay; AI is discussed only as a future direction."
+        },
+        "visual_demo_interface": {
+          "value": "yes",
+          "evidence": "Private blockchain and Web3 connect payment to a Raspberry Pi relay; AI is discussed only as a future direction."
+        },
+        "hardware": {
+          "value": "yes",
+          "evidence": "Private blockchain and Web3 connect payment to a Raspberry Pi relay; AI is discussed only as a future direction."
+        }
+      },
+      "evidence": "Private blockchain and Web3 connect payment to a Raspberry Pi relay; AI is discussed only as a future direction.",
+      "award_evidence": "Project page Submitted to ShellHacks 2017 lists Winner 1st Place",
+      "source_urls": [
+        "https://devpost.com/software/rent-a-plug"
+      ]
+    },
+    {
+      "year": 2017,
+      "name": "Pocket Park",
+      "url": "https://devpost.com/software/pocket-park",
+      "awards": [
+        "2nd Place",
+        "The ShellHack"
+      ],
+      "tier": "overall",
+      "target_user_problem": "Miami drivers and owners of unused parking",
+      "workflow": "Hosts list spaces and prices; drivers choose a map location and reserve parking.",
+      "technology": "React, Redux, Node.js, Express, MongoDB, Google Maps",
+      "flags": {
+        "ai_ml": {
+          "value": "unknown",
+          "evidence": "Names local parking costs and unused spaces; describes an API-connected map and payment workflow. No adoption outcome reported."
+        },
+        "external_api_service": {
+          "value": "yes",
+          "evidence": "Names local parking costs and unused spaces; describes an API-connected map and payment workflow. No adoption outcome reported."
+        },
+        "accessibility_inclusion": {
+          "value": "unknown",
+          "evidence": "Names local parking costs and unused spaces; describes an API-connected map and payment workflow. No adoption outcome reported."
+        },
+        "civic_social_environment": {
+          "value": "yes",
+          "evidence": "Names local parking costs and unused spaces; describes an API-connected map and payment workflow. No adoption outcome reported."
+        },
+        "visual_demo_interface": {
+          "value": "yes",
+          "evidence": "Names local parking costs and unused spaces; describes an API-connected map and payment workflow. No adoption outcome reported."
+        },
+        "hardware": {
+          "value": "unknown",
+          "evidence": "Names local parking costs and unused spaces; describes an API-connected map and payment workflow. No adoption outcome reported."
+        }
+      },
+      "evidence": "Names local parking costs and unused spaces; describes an API-connected map and payment workflow. No adoption outcome reported.",
+      "award_evidence": "Project page Submitted to ShellHacks 2017 lists Winner 2nd Place, The ShellHack",
+      "source_urls": [
+        "https://devpost.com/software/pocket-park"
+      ]
+    },
+    {
+      "year": 2017,
+      "name": "Mic Drop",
+      "url": "https://devpost.com/software/mic-drop-8a41o3",
+      "awards": [
+        "3rd Place"
+      ],
+      "tier": "overall",
+      "target_user_problem": "Presenters sharing a venue speaker system",
+      "workflow": "An Android phone streams microphone audio through a socket to a host computer.",
+      "technology": "Java, Android Studio, sockets",
+      "flags": {
+        "ai_ml": {
+          "value": "unknown",
+          "evidence": "Team reports working phone-to-speaker audio; multi-instance hosting, authentication and noise reduction remain future work."
+        },
+        "external_api_service": {
+          "value": "unknown",
+          "evidence": "Team reports working phone-to-speaker audio; multi-instance hosting, authentication and noise reduction remain future work."
+        },
+        "accessibility_inclusion": {
+          "value": "unknown",
+          "evidence": "Team reports working phone-to-speaker audio; multi-instance hosting, authentication and noise reduction remain future work."
+        },
+        "civic_social_environment": {
+          "value": "unknown",
+          "evidence": "Team reports working phone-to-speaker audio; multi-instance hosting, authentication and noise reduction remain future work."
+        },
+        "visual_demo_interface": {
+          "value": "yes",
+          "evidence": "Team reports working phone-to-speaker audio; multi-instance hosting, authentication and noise reduction remain future work."
+        },
+        "hardware": {
+          "value": "unknown",
+          "evidence": "Team reports working phone-to-speaker audio; multi-instance hosting, authentication and noise reduction remain future work."
+        }
+      },
+      "evidence": "Team reports working phone-to-speaker audio; multi-instance hosting, authentication and noise reduction remain future work.",
+      "award_evidence": "Project page Submitted to ShellHacks 2017 lists Winner 3rd Place",
+      "source_urls": [
+        "https://devpost.com/software/mic-drop-8a41o3"
+      ]
+    },
+    {
+      "year": 2018,
+      "name": "HurriHome",
+      "url": "https://devpost.com/software/hurrihome",
+      "awards": [
+        "First Place",
+        "GE Digital Web Optimization Challenge"
+      ],
+      "tier": "overall",
+      "target_user_problem": "Evacuated homeowners and disaster response groups",
+      "workflow": "Home sensors send status to a cloud platform, mobile app and neighborhood map.",
+      "technology": "Arduino, Ionic, Python, Firebase, Heroku, Wix, Google Maps",
+      "flags": {
+        "ai_ml": {
+          "value": "unknown",
+          "evidence": "Team tested paper wireframes with attendees and prioritized essential functions; connectivity and backup power were unresolved tradeoffs."
+        },
+        "external_api_service": {
+          "value": "yes",
+          "evidence": "Team tested paper wireframes with attendees and prioritized essential functions; connectivity and backup power were unresolved tradeoffs."
+        },
+        "accessibility_inclusion": {
+          "value": "unknown",
+          "evidence": "Team tested paper wireframes with attendees and prioritized essential functions; connectivity and backup power were unresolved tradeoffs."
+        },
+        "civic_social_environment": {
+          "value": "yes",
+          "evidence": "Team tested paper wireframes with attendees and prioritized essential functions; connectivity and backup power were unresolved tradeoffs."
+        },
+        "visual_demo_interface": {
+          "value": "yes",
+          "evidence": "Team tested paper wireframes with attendees and prioritized essential functions; connectivity and backup power were unresolved tradeoffs."
+        },
+        "hardware": {
+          "value": "yes",
+          "evidence": "Team tested paper wireframes with attendees and prioritized essential functions; connectivity and backup power were unresolved tradeoffs."
+        }
+      },
+      "evidence": "Team tested paper wireframes with attendees and prioritized essential functions; connectivity and backup power were unresolved tradeoffs.",
+      "award_evidence": "Project page Submitted to ShellHacks 2018 lists Winner First Place, GE Digital Web Optimization Challenge",
+      "source_urls": [
+        "https://devpost.com/software/hurrihome"
+      ]
+    },
+    {
+      "year": 2018,
+      "name": "Speak Free",
+      "url": "https://devpost.com/software/speak-free",
+      "awards": [
+        "Second Place"
+      ],
+      "tier": "overall",
+      "target_user_problem": "People practising public speaking",
+      "workflow": "A virtual audience reacts while the user rehearses a speech.",
+      "technology": "Unity, C#, Wix",
+      "flags": {
+        "ai_ml": {
+          "value": "unknown",
+          "evidence": "VR practice and companion Wix site are described; machine-learning speech analysis is a stretch goal. Claimed confidence benefits are unvalidated."
+        },
+        "external_api_service": {
+          "value": "yes",
+          "evidence": "VR practice and companion Wix site are described; machine-learning speech analysis is a stretch goal. Claimed confidence benefits are unvalidated."
+        },
+        "accessibility_inclusion": {
+          "value": "yes",
+          "evidence": "VR practice and companion Wix site are described; machine-learning speech analysis is a stretch goal. Claimed confidence benefits are unvalidated."
+        },
+        "civic_social_environment": {
+          "value": "yes",
+          "evidence": "VR practice and companion Wix site are described; machine-learning speech analysis is a stretch goal. Claimed confidence benefits are unvalidated."
+        },
+        "visual_demo_interface": {
+          "value": "yes",
+          "evidence": "VR practice and companion Wix site are described; machine-learning speech analysis is a stretch goal. Claimed confidence benefits are unvalidated."
+        },
+        "hardware": {
+          "value": "yes",
+          "evidence": "VR practice and companion Wix site are described; machine-learning speech analysis is a stretch goal. Claimed confidence benefits are unvalidated."
+        }
+      },
+      "evidence": "VR practice and companion Wix site are described; machine-learning speech analysis is a stretch goal. Claimed confidence benefits are unvalidated.",
+      "award_evidence": "Project page Submitted to ShellHacks 2018 lists Winner Second Place",
+      "source_urls": [
+        "https://devpost.com/software/speak-free"
+      ]
+    },
+    {
+      "year": 2018,
+      "name": "Remote Game Sharer",
+      "url": "https://devpost.com/software/sharerhost",
+      "awards": [
+        "Third Place"
+      ],
+      "tier": "overall",
+      "target_user_problem": "Players sharing access to games remotely",
+      "workflow": "Client inputs control an emulated controller on a host device.",
+      "technology": "C, C++, JavaScript, Node.js",
+      "flags": {
+        "ai_ml": {
+          "value": "unknown",
+          "evidence": "Sparse page describes host controller emulation, links code and a site; does not establish cloud APIs or custom hardware."
+        },
+        "external_api_service": {
+          "value": "unknown",
+          "evidence": "Sparse page describes host controller emulation, links code and a site; does not establish cloud APIs or custom hardware."
+        },
+        "accessibility_inclusion": {
+          "value": "unknown",
+          "evidence": "Sparse page describes host controller emulation, links code and a site; does not establish cloud APIs or custom hardware."
+        },
+        "civic_social_environment": {
+          "value": "unknown",
+          "evidence": "Sparse page describes host controller emulation, links code and a site; does not establish cloud APIs or custom hardware."
+        },
+        "visual_demo_interface": {
+          "value": "yes",
+          "evidence": "Sparse page describes host controller emulation, links code and a site; does not establish cloud APIs or custom hardware."
+        },
+        "hardware": {
+          "value": "unknown",
+          "evidence": "Sparse page describes host controller emulation, links code and a site; does not establish cloud APIs or custom hardware."
+        }
+      },
+      "evidence": "Sparse page describes host controller emulation, links code and a site; does not establish cloud APIs or custom hardware.",
+      "award_evidence": "Project page Submitted to ShellHacks 2018 lists Winner Third Place",
+      "source_urls": [
+        "https://devpost.com/software/sharerhost"
+      ]
+    },
+    {
+      "year": 2018,
+      "name": "JAM",
+      "url": "https://devpost.com/software/jam-83i15d",
+      "awards": [
+        "Third Place"
+      ],
+      "tier": "overall",
+      "target_user_problem": "Job seekers tracking multiple applications",
+      "workflow": "Dashboard compares application stage, location and compensation.",
+      "technology": "Wix database, Wix Code, React, JavaScript",
+      "flags": {
+        "ai_ml": {
+          "value": "unknown",
+          "evidence": "Describes application tracking and external APIs; college-application management is future work. Award verified by direct HTML retrieval."
+        },
+        "external_api_service": {
+          "value": "yes",
+          "evidence": "Describes application tracking and external APIs; college-application management is future work. Award verified by direct HTML retrieval."
+        },
+        "accessibility_inclusion": {
+          "value": "unknown",
+          "evidence": "Describes application tracking and external APIs; college-application management is future work. Award verified by direct HTML retrieval."
+        },
+        "civic_social_environment": {
+          "value": "unknown",
+          "evidence": "Describes application tracking and external APIs; college-application management is future work. Award verified by direct HTML retrieval."
+        },
+        "visual_demo_interface": {
+          "value": "yes",
+          "evidence": "Describes application tracking and external APIs; college-application management is future work. Award verified by direct HTML retrieval."
+        },
+        "hardware": {
+          "value": "unknown",
+          "evidence": "Describes application tracking and external APIs; college-application management is future work. Award verified by direct HTML retrieval."
+        }
+      },
+      "evidence": "Describes application tracking and external APIs; college-application management is future work. Award verified by direct HTML retrieval.",
+      "award_evidence": "Project page Submitted to ShellHacks 2018 lists Winner Third Place",
+      "source_urls": [
+        "https://devpost.com/software/jam-83i15d"
+      ]
+    }
+  ],
+  "events": [
+    {
+      "year": 2017,
+      "url": "https://shellhacks-2017.devpost.com/",
+      "gallery": "https://shellhacks-2017.devpost.com/project-gallery",
+      "criteria": "Overall Judging Criteria does not publish a detailed rubric.",
+      "sample": 3
+    },
+    {
+      "year": 2018,
+      "url": "https://shellhacks-2018.devpost.com/",
+      "gallery": "https://shellhacks-2018.devpost.com/project-gallery",
+      "criteria": "Design; Creativity; Technology.",
+      "sample": 4,
+      "note": "Two projects share Third Place; both included."
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "edition": 2026,
+  "accessed": "2026-09-25",
+  "current_event_status": "The current edition is scheduled September 25-27, 2026. It has not completed at this study's cutoff and has no completed-winner cohort in this report.",
+  "official_homepage": {
+    "url": "https://shellhacks.net/",
+    "access_method": "The web text reader returned no content, so the rendered official homepage and FAQ tabs were read in the browser.",
+    "dates": "2026-09-25 to 2026-09-27",
+    "location": "FIU Graham Center, Miami",
+    "format": "In person",
+    "maximum_team_size": 4,
+    "minimum_team_size": 1,
+    "building_window_hours": 36,
+    "building_window_local": "Friday 11pm to Sunday 11am",
+    "eligibility_summary": "Students and recent graduates within one year from colleges, universities or coding bootcamps are eligible according to the general FAQ.",
+    "current_judging_criteria": null,
+    "criteria_status": "No 2026 scoring rubric or project-specific rules were recovered from the public homepage and inspected FAQ categories. Do not label the 2025 rubric as the 2026 rubric.",
+    "evidence": "The rendered hero identifies 2026 dates. Event Details gives the building window, in-person format and solo-to-four-person team limit. General FAQ states participant eligibility."
+  },
+  "supporting_date_sources": [
+    {"url": "https://calendar.fiu.edu/event/shellhacks-2026", "evidence": "FIU lists the tenth annual ShellHacks beginning September 25, 2026."},
+    {"url": "https://www.mlh.com/seasons/2027/events", "evidence": "Under calendar year 2026, MLH lists ShellHacks in Miami on September 25-27."},
+    {"url": "https://interest.shellhacks.net/", "evidence": "Official INIT interest page announces September 25-27."}
+  ],
+  "discovery_limits": {
+    "searches": ["ShellHacks 2026 Devpost judging criteria rules", "site:shellhacks.net 2026 rules judges", "site:devpost.com ShellHacks 2026"],
+    "result": "Search returned historical 2025 ShellHacks rules and unrelated events; it did not establish a 2026 Devpost event or rubric. Attempts at plausible 2026 Devpost URLs were inaccessible and are not evidence that no event page exists.",
+    "account_access": "No private hacker dashboard, login or Discord content was accessed. A rubric may exist there or appear later."
+  },
+  "historical_reference_only": {
+    "edition": 2025,
+    "criteria_url": "https://shellhacks2025.devpost.com/",
+    "criteria": ["Completion", "Originality", "Design", "Technology", "Practicality"],
+    "rules_url": "https://shellhacks2025.devpost.com/rules",
+    "rules_summary": "The 2025 rules restricted teams to one submission, required work created during the event, prohibited entering the same project in another hackathon, and required disclosure of reused external code. Libraries, frameworks and open-source code were permitted with attribution.",
+    "recommendation": "Use historical patterns to prepare ideas, skills and evaluation plans, then check the current hacker guide and sponsor briefs before starting implementation or choosing a prize target. Current eligibility and submission rules take priority over historical examples."
+  },
+  "coding_audit": [
+    "EcoSort remains unknown for runtime AI: using an AI coding platform does not itself prove an AI product feature.",
+    "Lumi Lens has documented AI dialogue, but its live emotion detection was replaced by simulation in the demo.",
+    "Quests and Conflicts VR has no documented runtime AI; this is unknown, not proof that no AI was used.",
+    "Happy Head is coded AI/ML based on explicitly named MediaPipe FaceMesh. It does not claim a validated clinical classifier.",
+    "Visual-interface flags establish described user-facing interfaces or listed screenshots, not verified demo quality or reliability.",
+    "Hardware includes a VR headset for Quests and Conflicts; distinguish that from building custom embedded hardware.",
+    "Agent Zero's inclusion flag denotes a stated affordability/access objective, not disability accessibility or independently verified reduced financial exclusion.",
+    "Intended social benefits are project goals, not measured real-world outcomes."
+  ]
+}

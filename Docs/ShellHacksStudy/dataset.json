@@ -1,0 +1,1309 @@
+{
+  "version": "1.0.0",
+  "accessed": "2026-09-25",
+  "primary_cohort": "31 verified overall podium projects across all nine completed editions 2017\u20132025, including tied/shared 2018 third place and separate 2022 virtual podium.",
+  "supplementary_cohort": "5 purposively chosen 2025 category winners; exclude from primary prevalence rates.",
+  "coding": "yes means publicly documented; not_established combines missing, ambiguous, deferred and expressly excluded features and is not proof of absence. Technical capabilities are self-reported.",
+  "projects": [
+    {
+      "year": 2017,
+      "name": "Rent-A-Plug",
+      "url": "https://devpost.com/software/rent-a-plug",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": 1,
+      "awards": [
+        "1st Place"
+      ],
+      "problem": "People or machines buying short intervals of electricity",
+      "workflow": "Cryptocurrency payment activates a timed physical power outlet.",
+      "technologies": [
+        "Ethereum",
+        "Solidity",
+        "Raspberry Pi",
+        "JavaScript",
+        "relay"
+      ],
+      "codes": {
+        "ai_ml": "not_established",
+        "external_api_service": "not_established",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "not_established",
+        "visual_demo_interface": "yes",
+        "hardware": "yes",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Private Ethereum test network and Raspberry Pi GPIO/Web3 integration; local software APIs do not establish an external hosted service.",
+      "limitations": "Capability descriptions are participant reports and were not independently tested.",
+      "source_file": "research_2017_2018.json",
+      "id": "P01"
+    },
+    {
+      "year": 2017,
+      "name": "Pocket Park",
+      "url": "https://devpost.com/software/pocket-park",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": 2,
+      "awards": [
+        "2nd Place",
+        "The ShellHack"
+      ],
+      "problem": "Miami drivers and owners of unused parking",
+      "workflow": "Hosts list spaces and prices; drivers choose a map location and reserve parking.",
+      "technologies": [
+        "React",
+        "Redux",
+        "Node.js",
+        "Express",
+        "MongoDB",
+        "Google Maps"
+      ],
+      "codes": {
+        "ai_ml": "not_established",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "yes",
+        "visual_demo_interface": "yes",
+        "hardware": "not_established",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Names local parking costs and unused spaces; describes an API-connected map and payment workflow. No adoption outcome reported.",
+      "limitations": "Capability descriptions are participant reports and were not independently tested.",
+      "source_file": "research_2017_2018.json",
+      "id": "P02"
+    },
+    {
+      "year": 2017,
+      "name": "Mic Drop",
+      "url": "https://devpost.com/software/mic-drop-8a41o3",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": 3,
+      "awards": [
+        "3rd Place"
+      ],
+      "problem": "Presenters sharing a venue speaker system",
+      "workflow": "An Android phone streams microphone audio through a socket to a host computer.",
+      "technologies": [
+        "Java",
+        "Android Studio",
+        "sockets"
+      ],
+      "codes": {
+        "ai_ml": "not_established",
+        "external_api_service": "not_established",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "not_established",
+        "visual_demo_interface": "yes",
+        "hardware": "not_established",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Team reports working phone-to-speaker audio; multi-instance hosting, authentication and noise reduction remain future work.",
+      "limitations": "Capability descriptions are participant reports and were not independently tested.",
+      "source_file": "research_2017_2018.json",
+      "id": "P03"
+    },
+    {
+      "year": 2018,
+      "name": "HurriHome",
+      "url": "https://devpost.com/software/hurrihome",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": 1,
+      "awards": [
+        "First Place",
+        "GE Digital Web Optimization Challenge"
+      ],
+      "problem": "Evacuated homeowners and disaster response groups",
+      "workflow": "Home sensors send status to a cloud platform, mobile app and neighborhood map.",
+      "technologies": [
+        "Arduino",
+        "Ionic",
+        "Python",
+        "Firebase",
+        "Heroku",
+        "Wix",
+        "Google Maps"
+      ],
+      "codes": {
+        "ai_ml": "not_established",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "yes",
+        "visual_demo_interface": "yes",
+        "hardware": "yes",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Team tested paper wireframes with attendees and prioritized essential functions; connectivity and backup power were unresolved tradeoffs.",
+      "limitations": "Capability descriptions are participant reports and were not independently tested.",
+      "source_file": "research_2017_2018.json",
+      "id": "P04"
+    },
+    {
+      "year": 2018,
+      "name": "Speak Free",
+      "url": "https://devpost.com/software/speak-free",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": 2,
+      "awards": [
+        "Second Place"
+      ],
+      "problem": "People practising public speaking",
+      "workflow": "A virtual audience reacts while the user rehearses a speech.",
+      "technologies": [
+        "Unity",
+        "C#",
+        "Wix"
+      ],
+      "codes": {
+        "ai_ml": "not_established",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "yes",
+        "social_benefit": "yes",
+        "visual_demo_interface": "yes",
+        "hardware": "yes",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "VR practice and companion Wix site are described; machine-learning speech analysis is a stretch goal. Claimed confidence benefits are unvalidated.",
+      "limitations": "Capability descriptions are participant reports and were not independently tested.",
+      "source_file": "research_2017_2018.json",
+      "id": "P05"
+    },
+    {
+      "year": 2018,
+      "name": "JAM",
+      "url": "https://devpost.com/software/jam-83i15d",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": 3,
+      "awards": [
+        "Third Place"
+      ],
+      "problem": "Job seekers tracking multiple applications",
+      "workflow": "Dashboard compares application stage, location and compensation.",
+      "technologies": [
+        "Wix database",
+        "Wix Code",
+        "React",
+        "JavaScript"
+      ],
+      "codes": {
+        "ai_ml": "not_established",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "not_established",
+        "visual_demo_interface": "yes",
+        "hardware": "not_established",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Describes application tracking and external APIs; college-application management is future work. Award verified by direct HTML retrieval.",
+      "limitations": "Capability descriptions are participant reports and were not independently tested.",
+      "source_file": "research_2017_2018.json",
+      "id": "P06"
+    },
+    {
+      "year": 2018,
+      "name": "Remote Game Sharer",
+      "url": "https://devpost.com/software/sharerhost",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": 3,
+      "awards": [
+        "Third Place"
+      ],
+      "problem": "Players sharing access to games remotely",
+      "workflow": "Client inputs control an emulated controller on a host device.",
+      "technologies": [
+        "C",
+        "C++",
+        "JavaScript",
+        "Node.js"
+      ],
+      "codes": {
+        "ai_ml": "not_established",
+        "external_api_service": "not_established",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "not_established",
+        "visual_demo_interface": "yes",
+        "hardware": "not_established",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Sparse page describes host controller emulation, links code and a site; does not establish cloud APIs or custom hardware.",
+      "limitations": "Capability descriptions are participant reports and were not independently tested.",
+      "source_file": "research_2017_2018.json",
+      "id": "P07"
+    },
+    {
+      "year": 2019,
+      "name": "Freetear",
+      "url": "https://devpost.com/software/freetear",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": 1,
+      "awards": [
+        "First Place Overall"
+      ],
+      "problem": "Developers lose time configuring deployment, databases and hosting for side projects.",
+      "workflow": "CLI templates an application and automates connections to free-tier deployment services.",
+      "technologies": [
+        "Node.js",
+        "Python",
+        "Flask",
+        "React",
+        "shell",
+        "Zeit"
+      ],
+      "codes": {
+        "ai_ml": "not_established",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "not_established",
+        "visual_demo_interface": "yes",
+        "hardware": "not_established",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Describes free-tier service credential automation, an NPM CLI and React/HTML UI work. No explicit AI, inclusion, social-good or hardware component documented.",
+      "limitations": "No measured deployment-time improvement or independent validation.",
+      "source_file": "research_2019_2021.json",
+      "id": "P08"
+    },
+    {
+      "year": 2019,
+      "name": "No Vote Left Behind",
+      "url": "https://devpost.com/software/no-vote-left-behind",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": 2,
+      "awards": [
+        "Second Place Overall",
+        "JP Morgan Chase & Co. - Best Hack for Social Good",
+        "Citrix - Most Inclusive Hack"
+      ],
+      "problem": "People with limited time or resources face voter-registration barriers.",
+      "workflow": "Raspberry Pi generates QR/RFID credentials; a web form fills an official registration PDF and sends it to the relevant jurisdiction.",
+      "technologies": [
+        "Raspberry Pi",
+        "RFID/NFC",
+        "QR",
+        "Azure VM",
+        "Flask",
+        "MySQL",
+        "Python",
+        "Interfax",
+        "reCAPTCHA"
+      ],
+      "codes": {
+        "ai_ml": "not_established",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "yes",
+        "social_benefit": "yes",
+        "visual_demo_interface": "yes",
+        "hardware": "yes",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Explicit underserved-voter goal, Raspberry Pi circuit and web form; Azure and fax integration described. Machine learning appears only in future plans and is not counted as implemented.",
+      "limitations": "No independent election-process, security or real registration validation; do not adopt team's security claims as verified.",
+      "source_file": "research_2019_2021.json",
+      "id": "P09"
+    },
+    {
+      "year": 2019,
+      "name": "sock.it",
+      "url": "https://devpost.com/software/sock-it",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": 3,
+      "awards": [
+        "Third Place Overall",
+        "ShellHacks - Best Hardware Hack"
+      ],
+      "problem": "Caregivers need information about an infant's heart rate, oxygen levels and sleep.",
+      "workflow": "Senses heart rate and oxygen saturation; the public description stops before explaining the subsequent data flow.",
+      "technologies": [
+        "Arduino",
+        "Node.js",
+        "Pusher",
+        "React",
+        "sockets"
+      ],
+      "codes": {
+        "ai_ml": "not_established",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "yes",
+        "visual_demo_interface": "not_established",
+        "hardware": "yes",
+        "concrete_task": "yes",
+        "described_workflow": "not_established"
+      },
+      "evidence": "Infant-health objective and sensing explicitly stated; Arduino and Pusher listed. React tag alone does not establish a documented interface.",
+      "limitations": "Most narrative sections empty. No clinical accuracy, completed UI or alerting workflow established.",
+      "source_file": "research_2019_2021.json",
+      "id": "P10"
+    },
+    {
+      "year": 2020,
+      "name": "Farsense",
+      "url": "https://devpost.com/software/farsense",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": 1,
+      "awards": [
+        "Best Overall - 1st Place",
+        "Wolfram Award by Wolfram Language"
+      ],
+      "problem": "Remote environmental monitoring can help assess disaster-related property and environmental damage.",
+      "workflow": "Battery-powered sensor stations send weather observations over a LoRa mesh to a dashboard.",
+      "technologies": [
+        "ESP32",
+        "RFM95",
+        "MTK3333 GPS",
+        "BME680",
+        "LoRa",
+        "Arduino",
+        "C",
+        "React"
+      ],
+      "codes": {
+        "ai_ml": "not_established",
+        "external_api_service": "not_established",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "yes",
+        "visual_demo_interface": "yes",
+        "hardware": "yes",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Explicit environmental/disaster goal, dashboard and sensor components. Open-source LoRa library described; no external hosted service or ML implementation established.",
+      "limitations": "Damage prediction is a potential use; an operational predictive model or disaster-outcome improvement is not established.",
+      "source_file": "research_2019_2021.json",
+      "id": "P11"
+    },
+    {
+      "year": 2020,
+      "name": "Social Distance Beer Pong",
+      "url": "https://devpost.com/software/social-distance-beer-pong-8nkfe6",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": 2,
+      "awards": [
+        "Best Overall - 2nd Place",
+        "Wolfram Award by Wolfram Language"
+      ],
+      "problem": "Friends wanted to play a familiar social game while remaining physically distant during COVID-19.",
+      "workflow": "Infrared cup sensors and a microcontroller send data by USB to a C++ terminal game.",
+      "technologies": [
+        "Adafruit ItsyBitsy",
+        "Arduino",
+        "IR sensors",
+        "C++",
+        "3D printing"
+      ],
+      "codes": {
+        "ai_ml": "not_established",
+        "external_api_service": "not_established",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "yes",
+        "visual_demo_interface": "yes",
+        "hardware": "yes",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Explicit pandemic-distancing purpose; physical sensors and terminal interface. Social benefit here is participant-stated safe social connection, not measured health impact.",
+      "limitations": "No remote network architecture or measured disease-risk reduction documented; terminal interface counts as interaction, not polished graphical UI.",
+      "source_file": "research_2019_2021.json",
+      "id": "P12"
+    },
+    {
+      "year": 2020,
+      "name": "CloudPlate",
+      "url": "https://devpost.com/software/cloudplate",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": 3,
+      "awards": [
+        "Best Overall - 3rd Place",
+        "Best Potential Startup by 1517 Fund (Undergraduate students only)",
+        "Wolfram Award by Wolfram Language"
+      ],
+      "problem": "Dealership arrival and service check-in can be slow and impersonal.",
+      "workflow": "Camera/OCR identifies an arriving car; dashboard displays customer and service records; personalized SMS greets the customer.",
+      "technologies": [
+        "Google Cloud Vision OCR",
+        "Google Cloud Datastore",
+        "Cloud Storage",
+        "Twilio",
+        "Python",
+        "Flask",
+        "HTML/CSS/JavaScript"
+      ],
+      "codes": {
+        "ai_ml": "yes",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "not_established",
+        "visual_demo_interface": "yes",
+        "hardware": "yes",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Cloud OCR/ML, API orchestration and dashboard screenshots documented; hardware is commodity cameras reportedly costing $15, not custom electronics.",
+      "limitations": "No quantified time savings or accuracy benchmark; repository kept private, code submitted as archive.",
+      "source_file": "research_2019_2021.json",
+      "id": "P13"
+    },
+    {
+      "year": 2021,
+      "name": "Tango",
+      "url": "https://devpost.com/software/tango-dikvm2",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": 1,
+      "awards": [
+        "Best Overall - 1st Place"
+      ],
+      "problem": "At-home dance learners lack interactive feedback from one-way tutorials.",
+      "workflow": "Pose estimation compares a learner to a reference routine; timing and body-size adjustments support live annotations, charts and replay.",
+      "technologies": [
+        "MediaPipe",
+        "OpenCV",
+        "dynamic time warping",
+        "React",
+        "Chakra UI",
+        "Recharts",
+        "FastAPI",
+        "FFmpeg",
+        "SQLite",
+        "ngrok"
+      ],
+      "codes": {
+        "ai_ml": "yes",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "yes",
+        "visual_demo_interface": "yes",
+        "hardware": "not_established",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "AI pose library and feedback charts explicitly described. ngrok is listed, so external service is yes under a broad hosting/tunnelling definition; MediaPipe itself is a library, not evidence of a cloud AI API.",
+      "limitations": "No validated coaching efficacy; responsive layout and robust edge-case handling are future work. Ordinary video input is not counted as custom hardware.",
+      "source_file": "research_2019_2021.json",
+      "id": "P14"
+    },
+    {
+      "year": 2021,
+      "name": "Bizchain",
+      "url": "https://devpost.com/software/we-can-change-this-at-any-time",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": 2,
+      "awards": [
+        "Best Overall - 2nd Place",
+        "Best Use of Notifications by Courier",
+        "CryptoCurrency Portfolio/Trading Application by CoinRoutes Inc."
+      ],
+      "problem": "Consumers and local merchants face complex cryptocurrency payments and portfolio management.",
+      "workflow": "Shop at local merchants, manage crypto holdings, run trading strategies and receive price alerts.",
+      "technologies": [
+        "React",
+        "Flask",
+        "Google App Engine",
+        "AutoML Tables",
+        "Firestore",
+        "CoinRoutes",
+        "CryptoCompare",
+        "Courier",
+        "Twilio",
+        "Figma"
+      ],
+      "codes": {
+        "ai_ml": "yes",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "yes",
+        "visual_demo_interface": "yes",
+        "hardware": "not_established",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Regression price model, external market/notification APIs and dashboard illustrated. Stated support for local businesses establishes a community-economic objective, not demonstrated benefit.",
+      "limitations": "No investment-return or model-accuracy validation; shopping/portfolio integration remained an improvement area. Financial simplicity is not coded as disability accessibility.",
+      "source_file": "research_2019_2021.json",
+      "id": "P15"
+    },
+    {
+      "year": 2021,
+      "name": "Kudos",
+      "url": "https://devpost.com/software/kudos",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": 3,
+      "awards": [
+        "Best Overall - 3rd Place",
+        "Best Use of Google Cloud by Google"
+      ],
+      "problem": "Students and other users struggled to maintain productivity during the pandemic.",
+      "workflow": "Collaborate on tasks/projects and earn completion rewards; public page primarily documents design and intended app behavior.",
+      "technologies": [
+        "React Native",
+        "JavaScript",
+        "Firebase",
+        "Figma"
+      ],
+      "codes": {
+        "ai_ml": "not_established",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "not_established",
+        "visual_demo_interface": "yes",
+        "hardware": "not_established",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Firebase backend, Figma interaction flows and design implementation documented.",
+      "limitations": "Explicit future work includes fixing authentication, continuing mobile-app construction and implementing reward finances. This is a counterexample to claims that all winners had a complete working product.",
+      "source_file": "research_2019_2021.json",
+      "id": "P16"
+    },
+    {
+      "year": 2022,
+      "name": "The Tilter",
+      "url": "https://devpost.com/software/the-tilter",
+      "cohort": "overall",
+      "division": "in_person",
+      "rank": 1,
+      "awards": [
+        "First Place"
+      ],
+      "problem": "A concrete control-engineering challenge: keep a golf ball balanced on a moving platform.",
+      "workflow": "Phone camera tracks the ball; Python PID control sends serial commands to Arduino servos.",
+      "technologies": [
+        "Python",
+        "PID control",
+        "C++",
+        "Arduino",
+        "DroidCam",
+        "servo motors"
+      ],
+      "codes": {
+        "ai_ml": "not_established",
+        "external_api_service": "not_established",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "not_established",
+        "visual_demo_interface": "yes",
+        "hardware": "yes",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Computer-vision tracking is described, but no learned model is specified. Working ball-balancing platform and video link. Arduino, servo motors and cardboard platform.",
+      "limitations": "Engineering demonstrator; no explicit civic/health/education beneficiary is claimed. Future joystick game is a proposal.",
+      "source_file": "research_2022_2024.json",
+      "id": "P17"
+    },
+    {
+      "year": 2022,
+      "name": "Pegasus",
+      "url": "https://devpost.com/software/pegasus-5x03j1",
+      "cohort": "overall",
+      "division": "virtual",
+      "rank": 1,
+      "awards": [
+        "First Place (Virtual)",
+        "MITRE: Building Web3 (4th Place)"
+      ],
+      "problem": "Help organizations search securities data and identify source-code vulnerabilities.",
+      "workflow": "Upload CSV data for indexed queries or source code for rule-based vulnerability scanning and alerts.",
+      "technologies": [
+        "React",
+        "Node.js",
+        "Python",
+        "Flask",
+        "Regex",
+        "IPFS",
+        "AWS Lambda",
+        "AWS API Gateway"
+      ],
+      "codes": {
+        "ai_ml": "not_established",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "not_established",
+        "visual_demo_interface": "yes",
+        "hardware": "not_established",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "AWS Lambda/API Gateway backend and IPFS network. React frontend accepts uploads and presents vulnerability results.",
+      "limitations": "Authors explicitly linked ideation to Schonfeld and MITRE challenges. Scanning is custom regex-based; do not relabel it ML.",
+      "source_file": "research_2022_2024.json",
+      "id": "P18"
+    },
+    {
+      "year": 2022,
+      "name": "Saberfy",
+      "url": "https://devpost.com/software/saberfy",
+      "cohort": "overall",
+      "division": "in_person",
+      "rank": 2,
+      "awards": [
+        "Second Place",
+        "ShellHacks - Best First-Time Hacker"
+      ],
+      "problem": "Beat Saber players lack maps for some preferred songs; manual creation takes time.",
+      "workflow": "Supply a Spotify song link; Python translates song characteristics into importable Beat Saber map files with difficulty variants.",
+      "technologies": [
+        "Python",
+        "Spotify Web API",
+        "spotdl",
+        "JSON",
+        "Wix"
+      ],
+      "codes": {
+        "ai_ml": "not_established",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "not_established",
+        "visual_demo_interface": "yes",
+        "hardware": "not_established",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Spotify Web API and other APIs provide song data. Website/graphics and playable map output described.",
+      "limitations": "A team member says the direct website-to-server integration was unfinished. VR game output does not establish custom hardware development.",
+      "source_file": "research_2022_2024.json",
+      "id": "P19"
+    },
+    {
+      "year": 2022,
+      "name": "DAOchow",
+      "url": "https://devpost.com/software/daochow",
+      "cohort": "overall",
+      "division": "virtual",
+      "rank": 2,
+      "awards": [
+        "Second Place (Virtual)",
+        "MITRE: Building Web3 (2nd Place)"
+      ],
+      "problem": "Food-insecure residents need access to community fridges and transparent funding.",
+      "workflow": "A decentralized web app connects users to food access and manages funds through a DAO.",
+      "technologies": [
+        "React",
+        "Tailwind",
+        "Azure",
+        "TensorFlow",
+        "Aragon",
+        "Twilio"
+      ],
+      "codes": {
+        "ai_ml": "yes",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "yes",
+        "social_benefit": "yes",
+        "visual_demo_interface": "yes",
+        "hardware": "not_established",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Authors explicitly report implementing TensorFlow for an ML model. Azure hosting and API calls described. Targets food-insecure and financially constrained users. Community food access. Map, proposals, tasks and profile screens.",
+      "limitations": "ML task is unspecified. USDA-based placement of new fridges is future work, not a demonstrated function.",
+      "source_file": "research_2022_2024.json",
+      "id": "P20"
+    },
+    {
+      "year": 2022,
+      "name": "AlgoSaurus",
+      "url": "https://devpost.com/software/algosaurus",
+      "cohort": "overall",
+      "division": "in_person",
+      "rank": 3,
+      "awards": [
+        "Third Place"
+      ],
+      "problem": "Beginning programmers struggle to understand sorting algorithms.",
+      "workflow": "Choose an algorithm, observe animated sorting, and adjust chart size or speed while reading explanations.",
+      "technologies": [
+        "TypeScript",
+        "React",
+        "Firebase"
+      ],
+      "codes": {
+        "ai_ml": "not_established",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "yes",
+        "visual_demo_interface": "yes",
+        "hardware": "not_established",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Firebase appears in Built With and a web.app deployment is linked. Learning aid for novice programmers. Animated charts with adjustable speed and bar count.",
+      "limitations": "Authentication, tutoring and chat are proposed future additions. Ordinary beginner education is not automatically disability/inclusion evidence.",
+      "source_file": "research_2022_2024.json",
+      "id": "P21"
+    },
+    {
+      "year": 2022,
+      "name": "Ping Path",
+      "url": "https://devpost.com/software/ping-path",
+      "cohort": "overall",
+      "division": "virtual",
+      "rank": 3,
+      "awards": [
+        "Third Place (Virtual)"
+      ],
+      "problem": "People with visual impairments need safer, more independent navigation around obstacles and destinations.",
+      "workflow": "LiDAR and ML interpret surroundings; spatial audio guides users, with shared maps and voice interactions.",
+      "technologies": [
+        "Swift",
+        "SwiftUI",
+        "RealityKit",
+        "RoomPlan",
+        "CoreML",
+        "Firebase Cloud Storage",
+        "LiDAR"
+      ],
+      "codes": {
+        "ai_ml": "yes",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "yes",
+        "social_benefit": "yes",
+        "visual_demo_interface": "yes",
+        "hardware": "yes",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "CoreML gesture recognition described. Firebase stores shared world data. Visually impaired target users, Siri shortcuts and VoiceOver testing. Independent navigation and hazard awareness. App interface, beta link and video. LiDAR-capable iPhone/iPad sensor.",
+      "limitations": "Authors report conversations with visually impaired users; efficacy not independently validated. Non-LiDAR support is inconsistently described as current versus after the hackathon.",
+      "source_file": "research_2022_2024.json",
+      "id": "P22"
+    },
+    {
+      "year": 2023,
+      "name": "Chess 10",
+      "url": "https://devpost.com/software/chess-10",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": 1,
+      "awards": [
+        "Best Overall"
+      ],
+      "problem": "Give chess players a new strategic experience through altered rules and multiple participants.",
+      "workflow": "Play a 3D chess variant extending en passant mechanics to most pieces.",
+      "technologies": [
+        "Three.js",
+        "Vanta.js",
+        "Blender",
+        "TypeScript",
+        "React"
+      ],
+      "codes": {
+        "ai_ml": "not_established",
+        "external_api_service": "not_established",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "not_established",
+        "visual_demo_interface": "yes",
+        "hardware": "not_established",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "3D board, models, animated background and React UI; demo and repository links.",
+      "limitations": "No AI, social-impact or API integration is reported. New mechanics and implementation are described; originality is not independently assessed.",
+      "source_file": "research_2022_2024.json",
+      "id": "P23"
+    },
+    {
+      "year": 2023,
+      "name": "IntelliSchedule",
+      "url": "https://devpost.com/software/intellischedule",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": 2,
+      "awards": [
+        "Google",
+        "Second Place Overall"
+      ],
+      "problem": "College students waste time switching between course selection and professor reviews.",
+      "workflow": "Chrome extension places ratings, difficulty, return-interest scores and review summaries alongside FIU course choices.",
+      "technologies": [
+        "Python",
+        "Beautiful Soup",
+        "JavaScript",
+        "HTML",
+        "CSS",
+        "GraphQL data retrieval"
+      ],
+      "codes": {
+        "ai_ml": "not_established",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "yes",
+        "visual_demo_interface": "yes",
+        "hardware": "not_established",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Sentiment analysis described without model details; chatbot is future work. Rate My Professors and FIU course data integrated. Helps students choose courses. Browser extension displays ratings beside class options.",
+      "limitations": "No sponsor rank stated on award label. AI classification remains ambiguous; do not count proposed chatbot as implemented.",
+      "source_file": "research_2022_2024.json",
+      "id": "P24"
+    },
+    {
+      "year": 2023,
+      "name": "MedVoyage",
+      "url": "https://devpost.com/software/medvoyage",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": 3,
+      "awards": [
+        "Third Place Overall"
+      ],
+      "problem": "Offer users a guided route from symptom questions to a preliminary diagnostic suggestion.",
+      "workflow": "A website walks users through a JavaScript binary decision tree.",
+      "technologies": [
+        "HTML5",
+        "CSS3",
+        "JavaScript",
+        "binary decision tree"
+      ],
+      "codes": {
+        "ai_ml": "not_established",
+        "external_api_service": "not_established",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "yes",
+        "visual_demo_interface": "yes",
+        "hardware": "not_established",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Health-information workflow. Website with parallax design and linked live page.",
+      "limitations": "A binary decision tree is not necessarily trained ML. Accuracy and safety claims are unvalidated; support for different screen sizes is explicitly future work.",
+      "source_file": "research_2022_2024.json",
+      "id": "P25"
+    },
+    {
+      "year": 2024,
+      "name": "Epileptic Seizure Prevention and Early Response (ESPER)",
+      "url": "https://devpost.com/software/esper-fy6xeh",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": 1,
+      "awards": [
+        "Best Overall",
+        "Assurant"
+      ],
+      "problem": "Reduce abrupt brightness changes in web video for people with epilepsy.",
+      "workflow": "A browser extension measures frame luminosity, applies CSS brightness adjustments, and uploads video characteristics to an analytical dashboard.",
+      "technologies": [
+        "JavaScript",
+        "Chrome Extension API",
+        "YouTube API",
+        "Java",
+        "Vert.x",
+        "Snowflake",
+        "Snowpark",
+        "Streamlit",
+        "DigitalOcean"
+      ],
+      "codes": {
+        "ai_ml": "not_established",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "yes",
+        "social_benefit": "yes",
+        "visual_demo_interface": "yes",
+        "hardware": "not_established",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Application of data to ML/AI is listed as next work. YouTube API, Snowflake database and cloud hosting. Explicit epilepsy accessibility goal. Intended reduction of exposure to seizure-triggering flashes. Extension plus interactive Streamlit dashboard.",
+      "limitations": "No clinical outcome is demonstrated. Sponsor label has no rank.",
+      "source_file": "research_2022_2024.json",
+      "id": "P26"
+    },
+    {
+      "year": 2024,
+      "name": "ARSL - Augmented Reality Sign Language",
+      "url": "https://devpost.com/software/arsl-vr-asl-learning",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": 2,
+      "awards": [
+        "Second Best Overall",
+        "Microsoft",
+        "Google"
+      ],
+      "problem": "Make ASL alphabet learning interactive and connected to surrounding objects.",
+      "workflow": "Quest passthrough identifies objects; hand tracking and a vibrating glove guide the learner through spelling.",
+      "technologies": [
+        "Unity",
+        "Meta XR",
+        "Python",
+        "PyTorch",
+        "OpenCV",
+        "TCP",
+        "ngrok",
+        "C",
+        "C#",
+        "haptic glove"
+      ],
+      "codes": {
+        "ai_ml": "yes",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "yes",
+        "social_benefit": "yes",
+        "visual_demo_interface": "yes",
+        "hardware": "yes",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Image/pose recognition models and PyTorch described. ngrok listed for server connectivity. ASL and hard-of-hearing communication goal. Sign-language education. AR teaching interface and video. Quest headset plus functional vibrating glove.",
+      "limitations": "Object/gesture recognition accuracy needs improvement; whole-word mode is future work. Sponsor ranks unspecified.",
+      "source_file": "research_2022_2024.json",
+      "id": "P27"
+    },
+    {
+      "year": 2024,
+      "name": "Diffusion Earth",
+      "url": "https://devpost.com/software/diffusion-earth",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": 3,
+      "awards": [
+        "Third Best Overall"
+      ],
+      "problem": "Let learners explore environments beyond static images.",
+      "workflow": "Start with an image, prompt or address; generate depth/point clouds and synthesize new views as the user moves.",
+      "technologies": [
+        "Python",
+        "Open3D",
+        "Stable Diffusion",
+        "Marigold",
+        "Moondream",
+        "Creative Upscaler",
+        "Next.js",
+        "Tailwind",
+        "Google Maps Street View API"
+      ],
+      "codes": {
+        "ai_ml": "yes",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "yes",
+        "visual_demo_interface": "yes",
+        "hardware": "not_established",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Diffusion generation, depth estimation and inpainting models. Google Maps Street View imagery and hosted GPUs. Educational exploration is the stated motivation. Navigable environment via WASD or onscreen buttons.",
+      "limitations": "Authors report reducing frame generation from about 120 seconds to 10\u201315 seconds; this is self-reported. Urban planning/conservation applications are future proposals.",
+      "source_file": "research_2022_2024.json",
+      "id": "P28"
+    },
+    {
+      "year": 2025,
+      "name": "EcoSort",
+      "url": "https://devpost.com/software/ecosort-ofyuie",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": null,
+      "awards": [
+        "1st, 2nd, & 3rd Best Overall",
+        "Wix.com & Base44"
+      ],
+      "problem": "Students and community members uncertain about correct recycling and donation.",
+      "workflow": "Photograph an item, receive disposal guidance, review scans and find donation or drop-off locations.",
+      "technologies": [
+        "Base44",
+        "JavaScript",
+        "CSS",
+        "GitHub"
+      ],
+      "codes": {
+        "ai_ml": "not_established",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "yes",
+        "visual_demo_interface": "yes",
+        "hardware": "not_established",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "AI-assisted development is described, but runtime classifier implementation is unspecified. Built and hosted on Base44; live application linked. No specific disability or inclusion mechanism documented. Purpose is improved recycling and reduced waste. Scanner, learning, history and map pages described. Team explicitly cut hardware implementation.",
+      "limitations": "Hardware and some mapping ambitions were deferred; effectiveness was not independently measured.",
+      "source_file": "research_2025.json",
+      "id": "P29"
+    },
+    {
+      "year": 2025,
+      "name": "FloodGuard",
+      "url": "https://devpost.com/software/floodguard-okgzty",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": null,
+      "awards": [
+        "1st, 2nd, & 3rd Best Overall"
+      ],
+      "problem": "Residents, emergency responders and city officials need earlier flood warnings.",
+      "workflow": "Parallel agents monitor weather, infrastructure and alerts, then coordinate risk notifications.",
+      "technologies": [
+        "Google ADK",
+        "A2A",
+        "Gemini",
+        "Google Cloud",
+        "Prisma",
+        "Neon",
+        "React",
+        "TypeScript"
+      ],
+      "codes": {
+        "ai_ml": "yes",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "yes",
+        "visual_demo_interface": "yes",
+        "hardware": "not_established",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Describes functioning multi-agent loop using ADK/A2A. Google Cloud deployment and API data flows specified. No specific inclusion mechanism documented. Flood preparedness for communities is the stated purpose. Frontend demo plus console and agent-status screenshots listed. No physical device described.",
+      "limitations": "Direct city-system connections, SMS/push delivery and wider model training are future work; forecast accuracy is unverified.",
+      "source_file": "research_2025.json",
+      "id": "P30"
+    },
+    {
+      "year": 2025,
+      "name": "Lumi Lens",
+      "url": "https://devpost.com/software/magical-girl-os",
+      "cohort": "overall",
+      "division": "overall",
+      "rank": null,
+      "awards": [
+        "1st, 2nd, & 3rd Best Overall"
+      ],
+      "problem": "Neurodivergent users navigating emotionally difficult social situations.",
+      "workflow": "An emotion input drives generated supportive dialogue and playful phone or glasses overlays.",
+      "technologies": [
+        "Gemini API",
+        "Swift",
+        "Python",
+        "Raspberry Pi",
+        "DeepFace",
+        "OLED display"
+      ],
+      "codes": {
+        "ai_ml": "yes",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "yes",
+        "social_benefit": "yes",
+        "visual_demo_interface": "yes",
+        "hardware": "yes",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Gemini generates adaptive dialogue. Gemini API integration explicitly described. Designed to support neurodivergent social interaction. Assistive support and reduced social stress are stated goals. Working camera overlay UI and simulation demo described. Prototype glasses, Raspberry Pi and display documented.",
+      "limitations": "Live emotion detection encountered blockers; the demo used simulation. User studies are future work, so benefit is an intended outcome.",
+      "source_file": "research_2025.json",
+      "id": "P31"
+    },
+    {
+      "year": 2025,
+      "name": "A11y Tools",
+      "url": "https://devpost.com/software/a11y-b8xg5i",
+      "cohort": "supplementary",
+      "division": "overall",
+      "rank": null,
+      "awards": [
+        "Google Cloud"
+      ],
+      "problem": "People with mobility, visual or cognitive impairments face barriers on ordinary web pages.",
+      "workflow": "Choose extension tools for voice interaction, image description, text simplification, search or font changes.",
+      "technologies": [
+        "Chrome extension",
+        "Google ADK",
+        "Gemini",
+        "FastAPI",
+        "Python",
+        "JavaScript",
+        "Web Audio API"
+      ],
+      "codes": {
+        "ai_ml": "yes",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "yes",
+        "social_benefit": "yes",
+        "visual_demo_interface": "yes",
+        "hardware": "not_established",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "LLM interprets input and fills forms through an ADK loop. Gemini API and streamed audio integration documented. Five accessibility functions address stated impairments. Broader access to web content is the purpose. Extension popup and main-UI screenshot described. No additional physical device documented.",
+      "limitations": "Quota failures affected testing; Chrome speech fallback exists; search navigation remained incomplete.",
+      "source_file": "research_2025.json",
+      "id": "P32"
+    },
+    {
+      "year": 2025,
+      "name": "Agent Zero",
+      "url": "https://devpost.com/software/agentzero-tnh9p3",
+      "cohort": "supplementary",
+      "division": "overall",
+      "rank": null,
+      "awards": [
+        "Capital One"
+      ],
+      "problem": "Individuals and small businesses need help identifying suspicious invoices.",
+      "workflow": "Route invoice checks to specialized agents and aggregate risk scores into a readable assessment.",
+      "technologies": [
+        "React",
+        "TypeScript",
+        "FastAPI",
+        "BigQuery",
+        "Gemini",
+        "TensorFlow",
+        "YOLOv11",
+        "PyArrow"
+      ],
+      "codes": {
+        "ai_ml": "yes",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "yes",
+        "social_benefit": "yes",
+        "visual_demo_interface": "yes",
+        "hardware": "not_established",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Specialized agents assess invoice risks with trained models. Gemini and BigQuery are listed backend technologies. Aims to assist people unable to afford financial professionals. Financial-scam prevention and access are stated motivations. React frontend and concise user-facing assessment described. No additional physical device documented.",
+      "limitations": "Accuracy and speed improvement claims lack public evaluation numbers on this page; financial protection is an intended benefit.",
+      "source_file": "research_2025.json",
+      "id": "P33"
+    },
+    {
+      "year": 2025,
+      "name": "GreenLight",
+      "url": "https://devpost.com/software/greenlight-idnv6o",
+      "cohort": "supplementary",
+      "division": "overall",
+      "rank": null,
+      "awards": [
+        "State Farm"
+      ],
+      "problem": "Drivers need actionable learning from unsafe driving incidents.",
+      "workflow": "Upload footage, analyze an incident, display a 3D reconstruction and answer tailored safety quizzes.",
+      "technologies": [
+        "Gemini",
+        "Google ADK",
+        "Three.js",
+        "React",
+        "Python",
+        "FastAPI",
+        "Firebase",
+        "Figma"
+      ],
+      "codes": {
+        "ai_ml": "yes",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "yes",
+        "visual_demo_interface": "yes",
+        "hardware": "not_established",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Gemini analyzes footage and generates educational simulations. Gemini and Firebase integrations specified. No specific inclusion mechanism documented. Safer driving education is the stated purpose. Dashboard, 3D simulations and quizzes shown in screenshots. Live phone-dashcam feature was cut; prototype uses uploaded files.",
+      "limitations": "Real-time dashcam analysis was deferred; generated output reliability required prompt refinement. Safety effectiveness is not independently demonstrated.",
+      "source_file": "research_2025.json",
+      "id": "P34"
+    },
+    {
+      "year": 2025,
+      "name": "Happy Head",
+      "url": "https://devpost.com/software/happy-head",
+      "cohort": "supplementary",
+      "division": "overall",
+      "rank": null,
+      "awards": [
+        "Best First-Time Hacker"
+      ],
+      "problem": "Coaches, athletes and medical staff may miss potentially harmful sporting impacts.",
+      "workflow": "Sense acceleration and rotation, trigger display/audio alerts and log events for web review.",
+      "technologies": [
+        "TI LaunchPad",
+        "BMI160 IMU",
+        "LCD",
+        "MediaPipe FaceMesh",
+        "OpenCV",
+        "Next.js",
+        "Supabase",
+        "Prisma"
+      ],
+      "codes": {
+        "ai_ml": "yes",
+        "external_api_service": "yes",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "yes",
+        "visual_demo_interface": "yes",
+        "hardware": "yes",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "Camera component uses MediaPipe FaceMesh detection. Supabase stores sensor-event records. No disability-specific mechanism documented. Athlete safety is the stated purpose. Website provides charts, tables and event filtering. Microcontroller, motion sensor, LCD and camera specified.",
+      "limitations": "A monitoring prototype, not a validated diagnostic device; wireless hardware and correlation with diagnosed concussions are future work.",
+      "source_file": "research_2025.json",
+      "id": "P35"
+    },
+    {
+      "year": 2025,
+      "name": "Quests and Conflicts VR",
+      "url": "https://devpost.com/software/quests-and-conflicts-vr",
+      "cohort": "supplementary",
+      "division": "overall",
+      "rank": null,
+      "awards": [
+        "Netflix"
+      ],
+      "problem": "Players seeking branching, immersive tabletop-inspired entertainment.",
+      "workflow": "Interact with a VR narrative whose paths respond to player choices.",
+      "technologies": [
+        "Unity",
+        "Blender",
+        "Mixamo",
+        "C#",
+        "Quest 3",
+        "VR"
+      ],
+      "codes": {
+        "ai_ml": "not_established",
+        "external_api_service": "not_established",
+        "accessibility_inclusion": "not_established",
+        "social_benefit": "not_established",
+        "visual_demo_interface": "yes",
+        "hardware": "yes",
+        "concrete_task": "yes",
+        "described_workflow": "yes"
+      },
+      "evidence": "No runtime AI documented. Creation tools named, but no runtime external service established. No specific inclusion mechanism documented. Entertainment is described; no public-benefit goal established. VR interaction MVP and game-scene screenshots documented. Quest 3 and Oculus VR device tags appear; not custom hardware.",
+      "limitations": "Team describes an MVP; store publication remained a future plan. This is a sponsor-winning entertainment workflow without documented runtime AI or a social-impact aim.",
+      "source_file": "research_2025.json",
+      "id": "P36"
+    }
+  ],
+  "coding_notes": [
+    "External service includes named hosting, database and tunnel services; excludes local SDKs and private local blockchain interfaces.",
+    "Hardware means specialized sensing, VR/AR equipment or a physical prototype, including built-in LiDAR and commodity dedicated cameras; it does not mean custom hardware.",
+    "Social benefit is a broad stated goal including education, health, inclusion, community economy, disaster preparedness and environment. Benefits are intended, not independently demonstrated.",
+    "Specific intended task may be a game or engineering challenge; a described workflow can still be incomplete in implementation.",
+    "Yes is documented presence; all other values are not established, not necessarily absent."
+  ]
+}
