@@ -1,6 +1,6 @@
 # ShellHacks winner case study
 
-Version 1.0.0. Research cutoff: 25 September 2026.
+Version 1.1.0. Research cutoff: 25 September 2026.
 
 ## Deliverables
 
@@ -8,6 +8,11 @@ Version 1.0.0. Research cutoff: 25 September 2026.
 - `ShellHacks_Winners_Case_Study.docx`: editable source report.
 - `ShellHacks_Winners_Dataset.xlsx`: editable four-sheet workbook with sources, evidence, coding definitions and recalculating summaries.
 - `dataset.json`: canonical normalized project data used for analysis.
+- `ShellHacks_2026_Project_Ideas.pdf`: 17-page companion report with ten evidence-linked concepts, confirmed 2026 constraints, a comparison matrix, demonstration scenarios and proposed validation plans.
+- `ShellHacks_2026_Project_Ideas.docx`: editable companion report using the same existing template.
+- `project_ideas_2026.json`: structured concept records with precedent IDs, implementation scope, dependency checks and conditional challenge fit.
+
+The original study and winner dataset remain version 1.0.0; version 1.1.0 adds the project-ideas companion. Concept order, effort estimates and team sizes are planning judgments, not statistical rankings. Validation counts are proposed acceptance tests, not collected results. Current public sources confirm the event format but do not establish a 2026 rubric, submission checklist or sponsor challenge eligibility.
 
 ## Coverage and interpretation
 
@@ -38,5 +43,6 @@ The report retains the landscape geometry and source cover illustration and adap
 - Preserved source template theme, font table, numbering, web settings and original image parts verified byte-for-byte.
 - Workbook: four sheets visually inspected, cohort formulas checked, recalculation tested, no formula errors, native chart, filters and frozen panes verified in exported XLSX.
 - JSON parse and Git whitespace checks passed. No app code changed; the unrelated Metal/GPU build was not rerun.
+- Ideas companion: all 17 rendered pages visually inspected; 25 PDF links and all 21 referenced project records checked. Independent evidence review found no award or capability mismatches. The finite 1,260-case proposed algorithm test domain was counted independently. Template geometry, theme, font table, numbering, web settings and original images were preserved.
 
 All sources are public. Participant names, contact details and private account data were excluded.

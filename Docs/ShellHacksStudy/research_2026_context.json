@@ -1,6 +1,15 @@
 {
   "edition": 2026,
   "accessed": "2026-09-25",
+  "followup_verification": {
+    "accessed": "2026-09-25",
+    "method": "Rechecked official public HTML and landing-page JavaScript after the user requested new project concepts.",
+    "landing_bundle": "https://shellhacks.net/_astro/Landing.Cy75ZMmf.js",
+    "navigation_bundle": "https://shellhacks.net/_astro/NavbarIsland.BoWwjfDs.js",
+    "result": "Dates, venue, building window, team size and eligibility remain consistent with the prior browser inspection. The public navigation marks the hacker guide as registered-only. No private guide or dashboard was accessed.",
+    "unverified_current_items": ["2026 scoring rubric and weights", "Submission checklist", "Prior-work and AI-tool rules", "Sponsor challenge briefs and prize eligibility"],
+    "interpretation": "Sponsor logos are not challenge briefs. Historical 2025 requirements must not be presented as 2026 requirements."
+  },
   "current_event_status": "The current edition is scheduled September 25-27, 2026. It has not completed at this study's cutoff and has no completed-winner cohort in this report.",
   "official_homepage": {
     "url": "https://shellhacks.net/",
