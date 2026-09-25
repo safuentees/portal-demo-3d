@@ -14,7 +14,9 @@ Click the scene to capture the mouse for looking around. **W/S** moves forward/b
 
 In `Sources/Scene/SceneConfiguration.swift`, `showsMappedPreview = false` makes the main view fill the window. Set it to `true` and rebuild/run to restore the side-by-side preview. The entrance texture still updates in both modes; the flag controls only the window layout and its matching render dimensions.
 
-`showsDiagnosticObjects = false` keeps the default composition quiet. Enable it separately to restore the mapped FOV outline and extra occlusion/clipping probes. Neither flag changes the controls or portal mapping.
+`showsMappedFOV = true` draws the second camera's teal FOV outline in the main scene. Set it to `false` and rebuild/run to hide it. The outline is depth-tested, so the floor and solid objects can hide parts of it; look toward the exit to inspect it. It is omitted from the second camera's own capture and right preview.
+
+`showsDiagnosticObjects = false` keeps the extra occlusion/clipping probes hidden. Enable it separately when inspecting those cases. These flags do not change the controls or portal mapping.
 
 The project uses SwiftUI, AppKit, MetalKit, Model I/O, and SIMD, with no external packages.
 
@@ -42,7 +44,8 @@ Editable scene values live in `SceneConfiguration.swift`:
 | `portalBoundaryWidth` | Width of the flat entrance boundary, currently `0.012` world units. |
 | `exitBlockPlacement`, `exitSpherePlacement`, `exitTorusPlacement` | The default landmarks on both sides of the exit. |
 | `torusMajorRadius`, `torusTubeRadius`, `torusRingSegments`, `torusTubeSegments` | Ring size, tube thickness, and mesh detail; currently `0.5`, `0.16`, `64`, and `24`. |
-| `showsDiagnosticObjects` | Restores extra probes and the mapped FOV outline; off by default. |
+| `showsMappedFOV` | Shows the mapped camera's FOV outline in the main scene; on by default. |
+| `showsDiagnosticObjects` | Restores extra occlusion/clipping probes; off by default. |
 
 Landmarks around the exit are specified in **exit-local coordinates**: X goes across the opening, Y goes up, and positive Z goes beyond it. During scene construction, `localPosition * exit.rigidFrame` converts each offset to a world position once. These are ordinary world objects, not mapped copies of the player. The rigid frame excludes the portal's visual scale, so changing the opening size does not stretch the landmark offsets.
 
@@ -125,7 +128,7 @@ These are row-vector transforms, so they apply from left to right. `sourceCamera
 
 The CPU computes complete world model matrices once per frame, before rendering either camera. The `scene_vertex` shader then applies only `model * view * projection`; it does not apply the portal mapping again. Lighting receives the resulting world position and a normal transformed by the final model's inverse transpose. `lit_fragment` and `floor_fragment` share the same surface-lighting helper; `fov_fragment` gives the optional outline a constant color.
 
-When diagnostics are enabled, the source view draws the mapped outline using the **source** viewport's aspect; the mapped capture omits it so it does not cover the portal image. Each camera render uses its own world-space eye for lighting. The mapped image uses the source viewport's dimensions and projection aspect; when enabled, the right viewport displays that complete image.
+When `showsMappedFOV` is enabled, the source view draws the mapped outline using the **source** viewport's aspect; the mapped capture omits it so it does not cover the portal image. Each camera render uses its own world-space eye for lighting. The mapped image uses the source viewport's dimensions and projection aspect; when enabled, the right viewport displays that complete image.
 
 ## How the entrance image and preview work
 

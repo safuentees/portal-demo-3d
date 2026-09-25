@@ -59,6 +59,7 @@ final class Renderer: NSObject, MTKViewDelegate {
         objects suppliedObjects: [RenderObject]? = nil,
         camera: Camera = Camera(),
         showsMappedPreview: Bool = SceneConfiguration.showsMappedPreview,
+        showsMappedFOV: Bool = SceneConfiguration.showsMappedFOV,
         showsDiagnosticObjects: Bool = SceneConfiguration.showsDiagnosticObjects
     ) throws {
         guard let device = view.device else { throw SetupError.missingDevice }
@@ -97,14 +98,16 @@ final class Renderer: NSObject, MTKViewDelegate {
             for (index, placement) in SceneConfiguration.portalBoundaryPlacements(for: SceneConfiguration.entrancePlacement).enumerated() {
                 scene.append(RenderObject(id: .entranceBoundary(index), mesh: quadMesh, placement: placement))
             }
-            if showsDiagnosticObjects {
+            if showsMappedFOV {
                 // Build once at aspect 1; resize by scaling camera-local X.
                 let coneMesh = try ConeMesh.make(
                     device: device, fieldOfView: SceneConfiguration.fieldOfViewRadians,
                     aspect: 1, near: SceneConfiguration.nearPlane, far: SceneConfiguration.farPlane
                 )
+                scene.append(RenderObject(id: .fov, mesh: coneMesh))
+            }
+            if showsDiagnosticObjects {
                 scene += [
-                    RenderObject(id: .fov, mesh: coneMesh),
                     RenderObject(id: .foregroundBlock, mesh: cubeMesh, placement: SceneConfiguration.foregroundBlockPlacement),
                     RenderObject(id: .cube, mesh: cubeMesh, placement: SceneConfiguration.rearBlockPlacement)
                 ]
