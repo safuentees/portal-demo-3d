@@ -27,7 +27,7 @@ enum TexturePassChecks {
         var previousTargets: [Renderer.PortalDirection: Renderer.RenderTargets] = [:]
         for (width, height) in [(512, 512), (800, 400), (400, 800), (801, 401), (512, 512)] {
             let frame = try SmokeTests.render(renderer, device: device, queue: queue, width: width, height: height)
-            guard let color = renderer.mappedColorTexture, let depth = renderer.mappedDepthTexture else {
+            guard let color = renderer.entranceToExitTextures?.color, let depth = renderer.entranceToExitTextures?.depth else {
                 throw SmokeTests.Failure(description: "The mapped scene did not allocate its render targets.")
             }
             let textureWidth = width / 2
@@ -59,8 +59,7 @@ enum TexturePassChecks {
                                   "Portal directions must not share color or depth textures.")
             try SmokeTests.expect(color === targets[.entranceToExit]?.color
                 && depth === targets[.entranceToExit]?.depth,
-                "The existing capture accessors must refer to the entrance-to-exit pair.")
-            // Only the forward capture is rendered; reverse targets are checked for lifecycle, not pixels.
+                "The entrance-to-exit accessor must refer to its direction's target pair.")
             let texturePixels = try read(color, device: device, queue: queue)
             try checkMarker(texturePixels, width: textureWidth, height: height,
                 position: [-0.38, 0.48, 3], material: SceneConfiguration.sceneObjectColor)
@@ -94,6 +93,7 @@ enum TexturePassChecks {
                                 // visibility can be checked independently of the capture.
                                 placement: ObjectPlacement(position: [0, 0.12, 0.5], scale: [0.08, 0.04, 1]))])
         try checkEntranceSurface(view: view, library: library, device: device, queue: queue, mesh: quad)
+        try checkReverseCapture(view: view, library: library, device: device, queue: queue)
         print("PASS: mapped color/depth pass, excluded preview surfaces, orientation, sampling, resize, and resource reuse")
     }
 
@@ -104,6 +104,88 @@ enum TexturePassChecks {
             guard let current = renderer.mappedTextures[direction] else { return false }
             return current.color === pair.color && current.depth === pair.depth
         }, reason)
+    }
+
+    @MainActor
+    static func checkReverseCapture(
+        view: MTKView, library: MTLLibrary, device: MTLDevice, queue: MTLCommandQueue
+    ) throws {
+        let slab = try CubeMesh.make(device: device)
+        let mesh = try SmokeTests.makeFixtureQuad(device: device)
+        let entrance = RenderObject(id: .entrance, mesh: slab,
+            placement: ObjectPlacement(position: [0.2, -0.1, 3], scale: [6, 6, 0.2], yaw: 0.15, pitch: -0.08))
+        let exit = RenderObject(id: .exit, mesh: slab,
+            placement: ObjectPlacement(position: [8, 0.7, 5], scale: [3, 4, 0.1], yaw: 0.9, pitch: 0.2))
+        let cameraLocal = Transforms.translation([0.4, -0.3, -3])
+        let sourceWorld = cameraLocal * exit.rigidFrame
+        // Construct the expected reverse eye directly in A's frame, independently of transferBA.
+        let reverseWorld = cameraLocal * entrance.rigidFrame
+        let landmarks = [
+            RenderObject(id: .sphere, mesh: mesh,
+                placement: ObjectPlacement(position: [-0.3, -0.3, 4.8], scale: [0.7, 0.65, 0.55], yaw: -0.35, pitch: 0.25)),
+            RenderObject(id: .cube, mesh: mesh,
+                placement: ObjectPlacement(position: [1.7, 0.6, 5.8], scale: [0.7, 0.65, 0.55], yaw: -0.35, pitch: 0.25))
+        ]
+        // The destination slab and coincident display surfaces would hide these landmarks.
+        let quad = try QuadMesh.make(device: device)
+        let renderer = try Renderer(view: view, library: library,
+            objects: [entrance, exit,
+                RenderObject(id: .quad, mesh: quad, placement: entrance.placement),
+                RenderObject(id: .entranceBoundary(0), mesh: quad, placement: entrance.placement)] + landmarks,
+            camera: Camera(viewMatrix: simd_inverse(sourceWorld)), showsMappedPreview: false)
+        let width = 512, height = 384
+        _ = try SmokeTests.render(renderer, device: device, queue: queue, width: width, height: height)
+        guard let forward = renderer.entranceToExitTextures, let reverse = renderer.exitToEntranceTextures else {
+            throw SmokeTests.Failure(description: "Both directed captures must exist after rendering.")
+        }
+        let pixels = try read(reverse.color, device: device, queue: queue)
+        let forwardPixels = try read(forward.color, device: device, queue: queue)
+        try SmokeTests.expect(pixels != forwardPixels, "Reverse capture must not duplicate the forward camera image.")
+        let projection = Transforms.perspective(aspect: Float(width) / Float(height),
+            fieldOfView: SceneConfiguration.fieldOfViewRadians,
+            near: SceneConfiguration.nearPlane, far: SceneConfiguration.farPlane)
+        let viewProjection = simd_inverse(reverseWorld) * projection
+        let inverseViewProjection = simd_inverse(viewProjection)
+        let eye = SmokeTests.xyz(SIMD4<Float>(0, 0, 0, 1) * reverseWorld)
+        let forwardWorld = sourceWorld * simd_inverse(entrance.rigidFrame) * exit.rigidFrame
+        let wrongEyes = [sourceWorld, forwardWorld].map { SmokeTests.xyz(SIMD4<Float>(0, 0, 0, 1) * $0) }
+        var wrongEyeDifferences = [0, 0]
+        for landmark in landmarks {
+            let model = landmark.modelMatrix
+            let plane = SmokeTests.xyz(SIMD4<Float>(0, 0, 0, 1) * model)
+            let tangentA = SmokeTests.xyz(SIMD4<Float>(1, 0, 0.3, 0) * model)
+            let tangentB = SmokeTests.xyz(SIMD4<Float>(0, 1, 0.2, 0) * model)
+            let normal = simd_normalize(simd_cross(tangentB, tangentA))
+            for localY: Float in [-0.4, 0, 0.4] {
+                for localX: Float in [-0.4, 0, 0.4] {
+                    let target = SIMD4<Float>(localX, localY, 0.3 * localX + 0.2 * localY, 1) * model
+                    let clip = target * viewProjection
+                    let x = Int(floor((clip.x / clip.w + 1) * 0.5 * Float(width)))
+                    let y = Int(floor((1 - clip.y / clip.w) * 0.5 * Float(height)))
+                    try SmokeTests.expect((0..<width).contains(x) && (0..<height).contains(y),
+                                          "The reverse landmark sample left the viewport.")
+                    let far = SIMD4<Float>((Float(x) + 0.5) / Float(width) * 2 - 1,
+                        1 - (Float(y) + 0.5) / Float(height) * 2, 1, 1) * inverseViewProjection
+                    let ray = SmokeTests.xyz(far / far.w) - eye
+                    let point = eye + ray * (simd_dot(plane - eye, normal) / simd_dot(ray, normal))
+                    let expected = SmokeTests.lightingBytes(pointWorld: point, normalWorld: normal,
+                        eyeWorld: eye, materialColor: SceneConfiguration.sceneObjectColor)
+                    let index = (y * width + x) * 4
+                    try SmokeTests.expect((0..<4).allSatisfy { abs(Int(pixels[index + $0]) - expected[$0]) <= 3 },
+                        "Reverse landmark placement/filtering/lighting failed at \(x),\(y): "
+                        + "got \(Array(pixels[index..<(index + 4)])), expected \(expected).")
+                    for (index, wrongEye) in wrongEyes.enumerated() {
+                        let wrong = SmokeTests.lightingBytes(pointWorld: point, normalWorld: normal,
+                            eyeWorld: wrongEye, materialColor: SceneConfiguration.sceneObjectColor)
+                        wrongEyeDifferences[index] = max(wrongEyeDifferences[index],
+                            zip(expected, wrong).map { abs($0.0 - $0.1) }.max() ?? 0)
+                    }
+                }
+            }
+        }
+        try SmokeTests.expect(wrongEyeDifferences.allSatisfy { $0 > 6 },
+                              "Reverse fixture must distinguish its lighting eye from both other cameras.")
+        print("PASS: reverse capture, independent rotated frames, destination omission, and reverse-camera lighting")
     }
 
     @MainActor
@@ -121,8 +203,8 @@ enum TexturePassChecks {
             // identical projection, FOV geometry, capture, and source rasterization.
             hidden.mtkView(view, drawableSizeWillChange: CGSize(width: width, height: height))
             enabled.mtkView(view, drawableSizeWillChange: CGSize(width: width * 2, height: height))
-            guard let hiddenColor = hidden.mappedColorTexture, let hiddenDepth = hidden.mappedDepthTexture,
-                  let enabledColor = enabled.mappedColorTexture, let enabledDepth = enabled.mappedDepthTexture else {
+            guard let hiddenColor = hidden.entranceToExitTextures?.color, let hiddenDepth = hidden.entranceToExitTextures?.depth,
+                  let enabledColor = enabled.entranceToExitTextures?.color, let enabledDepth = enabled.entranceToExitTextures?.depth else {
                 throw SmokeTests.Failure(description: "Resize callbacks did not prepare both preview modes.")
             }
             try SmokeTests.expect([hiddenColor, hiddenDepth, enabledColor, enabledDepth].allSatisfy {
@@ -134,15 +216,15 @@ enum TexturePassChecks {
             }
             let fullFrame = try SmokeTests.render(hidden, device: device, queue: queue, width: width, height: height)
             let splitFrame = try SmokeTests.render(enabled, device: device, queue: queue, width: width * 2, height: height)
-            try SmokeTests.expect(hidden.mappedColorTexture === hiddenColor && hidden.mappedDepthTexture === hiddenDepth
-                && enabled.mappedColorTexture === enabledColor && enabled.mappedDepthTexture === enabledDepth,
+            try SmokeTests.expect(hidden.entranceToExitTextures?.color === hiddenColor && hidden.entranceToExitTextures?.depth === hiddenDepth
+                && enabled.entranceToExitTextures?.color === enabledColor && enabled.entranceToExitTextures?.depth === enabledDepth,
                 "Encoding must reuse the dimensions prepared by each resize callback.")
             let fullCapture = try read(hiddenColor, device: device, queue: queue)
             let splitCapture = try read(enabledColor, device: device, queue: queue)
             try SmokeTests.expect(fullCapture == splitCapture,
                                   "Hiding the preview changed the mapped projection or captured scene.")
             _ = try SmokeTests.render(withoutFOV, device: device, queue: queue, width: width, height: height)
-            guard let cleanCapture = withoutFOV.mappedColorTexture else {
+            guard let cleanCapture = withoutFOV.entranceToExitTextures?.color else {
                 throw SmokeTests.Failure(description: "The capture comparison did not allocate a texture.")
             }
             let withoutFOVCapture = try read(cleanCapture, device: device, queue: queue)
@@ -180,14 +262,14 @@ enum TexturePassChecks {
                 }
             }
             let repeated = try SmokeTests.render(hidden, device: device, queue: queue, width: width, height: height)
-            try SmokeTests.expect(fullFrame == repeated && hidden.mappedColorTexture === hiddenColor
-                && hidden.mappedDepthTexture === hiddenDepth, "The full view must stay stable and reuse its targets.")
+            try SmokeTests.expect(fullFrame == repeated && hidden.entranceToExitTextures?.color === hiddenColor
+                && hidden.entranceToExitTextures?.depth === hiddenDepth, "The full view must stay stable and reuse its targets.")
             previousColor = hiddenColor
             previousDepth = hiddenDepth
         }
         hidden.mtkView(view, drawableSizeWillChange: CGSize(width: 1, height: 64))
         _ = try SmokeTests.render(hidden, device: device, queue: queue, width: 1, height: 64)
-        guard let narrowColor = hidden.mappedColorTexture, let narrowDepth = hidden.mappedDepthTexture,
+        guard let narrowColor = hidden.entranceToExitTextures?.color, let narrowDepth = hidden.entranceToExitTextures?.depth,
               let command = queue.makeCommandBuffer() else {
             throw SmokeTests.Failure(description: "The one-pixel full view did not allocate its targets.")
         }
@@ -234,7 +316,7 @@ enum TexturePassChecks {
             let width = fixture == 0 ? 800 : 801, height = 400
             let viewportWidth = width / 2
             let frame = try SmokeTests.render(renderer, device: device, queue: queue, width: width, height: height)
-            guard let texture = renderer.mappedColorTexture else {
+            guard let texture = renderer.entranceToExitTextures?.color else {
                 throw SmokeTests.Failure(description: "The entrance surface has no camera texture.")
             }
             let texturePixels = try read(texture, device: device, queue: queue)

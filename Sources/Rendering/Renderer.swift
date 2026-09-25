@@ -49,6 +49,13 @@ final class Renderer: NSObject, MTKViewDelegate {
 
     enum PortalDirection: CaseIterable {
         case entranceToExit, exitToEntrance
+
+        var destination: ObjectID {
+            switch self {
+            case .entranceToExit: return .exit
+            case .exitToEntrance: return .entrance
+            }
+        }
     }
 
     // A capture needs both textures; never store a partially allocated pair.
@@ -60,11 +67,7 @@ final class Renderer: NSObject, MTKViewDelegate {
     // GPU images are reused until the source viewport's pixel dimensions change.
     private(set) var mappedTextures: [PortalDirection: RenderTargets] = [:]
 
-    // The current capture still renders entrance -> exit. These read the same
-    // storage while the reverse capture is being added, rather than owning copies.
-//    var mappedColorTexture: MTLTexture? { mappedTextures[.entranceToExit]?.color }
-//    var mappedDepthTexture: MTLTexture? { mappedTextures[.entranceToExit]?.depth }
-
+    // Named accessors read the same storage; they do not allocate new textures.
     var entranceToExitTextures: RenderTargets? {
         mappedTextures[.entranceToExit]
     }
@@ -312,8 +315,8 @@ final class Renderer: NSObject, MTKViewDelegate {
     }
 
     /// drawableSize is the FULL attachment size in pixels, not one viewport's size.
-    /// Pass 1 records the mapped camera for the entrance surface. Pass 2 draws the
-    /// source scene and optional preview. Neither pass changes the camera or input.
+    /// Capture both directed camera images, then draw the source scene and its
+    /// optional forward preview. No render pass changes the camera or input.
     @discardableResult
     func encodeFrame(
         commandBuffer: MTLCommandBuffer,
@@ -340,9 +343,11 @@ final class Renderer: NSObject, MTKViewDelegate {
             near: SceneConfiguration.nearPlane, far: SceneConfiguration.farPlane
         )
         let sourceCameraWorld = camera.inverseViewMatrix
-        let mappedCameraWorld = sourceCameraWorld * portalMapping.transferAB
+        let cameraABWorld = sourceCameraWorld * portalMapping.transferAB
+        let cameraBAWorld = sourceCameraWorld * portalMapping.transferBA
 
-        // Place each object once. Both scene passes receive these same world poses.
+        // Build world models once; ordinary geometry stays fixed across views.
+        // The existing debug player/FOV poses still represent only A -> B.
         let worldModels = objects.map { object -> simd_float4x4 in
             switch object.id {
             case .fov:
@@ -356,50 +361,21 @@ final class Renderer: NSObject, MTKViewDelegate {
         }
         let normalMatrices = worldModels.map { Transforms.normalMatrix(for: $0) }
 
-        // First pass: the mapped camera draws into its own color/depth attachments.
-        let cameraPass = MTLRenderPassDescriptor()
-        cameraPass.colorAttachments[0].texture = ab.color
-        cameraPass.colorAttachments[0].loadAction = .clear
-        cameraPass.colorAttachments[0].clearColor = SceneConfiguration.backgroundColor
-        cameraPass.colorAttachments[0].storeAction = .store
+        // Each capture owns its attachments and finishes before another begins.
+        guard encodeCapture(commandBuffer: commandBuffer, textures: ab, direction: .entranceToExit,
+            viewport: sourceViewport, cameraWorld: cameraABWorld, projection: projection,
+            worldModels: worldModels, normalMatrices: normalMatrices),
+              encodeCapture(commandBuffer: commandBuffer, textures: ba, direction: .exitToEntrance,
+            viewport: sourceViewport, cameraWorld: cameraBAWorld, projection: projection,
+            worldModels: worldModels, normalMatrices: normalMatrices) else { return false }
 
-        cameraPass.depthAttachment.texture = ab.depth
-        cameraPass.depthAttachment.loadAction = .clear
-        cameraPass.depthAttachment.clearDepth = 1
-        cameraPass.depthAttachment.storeAction = .dontCare
-        do {
-            guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: cameraPass) else { return false }
-            encoder.label = "Record mapped camera"
-            // This scope ends the first encoder BEFORE the window encoder is created.
-            defer { encoder.endEncoding() }
-            encodeScene(encoder: encoder, viewport: sourceViewport,
-                viewMatrix: simd_inverse(mappedCameraWorld), cameraWorld: mappedCameraWorld,
-                projection: projection, worldModels: worldModels, normalMatrices: normalMatrices,
-                intoCameraTexture: true)
-        }
-
-        cameraPass.colorAttachments[0].texture = ba.color
-        cameraPass.depthAttachment.texture = ba.depth
-        
-        do {
-            guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: cameraPass) else { return false }
-            encoder.label = "Record mapped camera"
-            // This scope ends the first encoder BEFORE the window encoder is created.
-            defer { encoder.endEncoding() }
-            encodeScene(encoder: encoder, viewport: sourceViewport,
-                viewMatrix: simd_inverse(mappedCameraWorld), cameraWorld: mappedCameraWorld,
-                projection: projection, worldModels: worldModels, normalMatrices: normalMatrices,
-                intoCameraTexture: true)
-        }
-
-        // Second pass: the source fills the window unless a right preview is enabled.
+        // Main pass: the source fills the window unless a right preview is enabled.
         guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPass) else { return false }
         encoder.label = "Source scene and optional camera preview"
         defer { encoder.endEncoding() }
         encodeScene(encoder: encoder, viewport: sourceViewport,
             viewMatrix: camera.viewMatrix, cameraWorld: sourceCameraWorld,
-            projection: projection, worldModels: worldModels, normalMatrices: normalMatrices,
-            intoCameraTexture: false)
+            projection: projection, worldModels: worldModels, normalMatrices: normalMatrices)
 
         if showsMappedPreview {
             let previewWidth = target.width - sourceWidth
@@ -408,12 +384,38 @@ final class Renderer: NSObject, MTKViewDelegate {
             setViewport(previewViewport, on: encoder)
             encoder.setRenderPipelineState(texturePreviewPipelineState)
             encoder.setDepthStencilState(previewDepthState)
-            encoder.setFragmentTexture(mappedColorTexture, index: 0)
+            encoder.setFragmentTexture(ab.color, index: 0)
             // Buffer 2 is a separate 16-byte preview contract; scene uniforms stay at 1.
             var viewportRect = SIMD4<Float>(Float(sourceWidth), 0, Float(previewWidth), Float(height))
             encoder.setFragmentBytes(&viewportRect, length: MemoryLayout<SIMD4<Float>>.stride, index: 2)
             encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 3)
         }
+        return true
+    }
+
+    /// Attachments must be chosen before making the encoder. A capture always
+    /// needs a complete color/depth pair, so textures is nonoptional here.
+    private func encodeCapture(
+        commandBuffer: MTLCommandBuffer, textures: RenderTargets, direction: PortalDirection,
+        viewport: MTLViewport, cameraWorld: simd_float4x4, projection: simd_float4x4,
+        worldModels: [simd_float4x4], normalMatrices: [simd_float3x3]
+    ) -> Bool {
+        let pass = MTLRenderPassDescriptor()
+        pass.colorAttachments[0].texture = textures.color
+        pass.colorAttachments[0].loadAction = .clear
+        pass.colorAttachments[0].clearColor = SceneConfiguration.backgroundColor
+        pass.colorAttachments[0].storeAction = .store
+        pass.depthAttachment.texture = textures.depth
+        pass.depthAttachment.loadAction = .clear
+        pass.depthAttachment.clearDepth = 1
+        pass.depthAttachment.storeAction = .dontCare
+        guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: pass) else { return false }
+        encoder.label = "Record mapped camera \(direction)"
+        defer { encoder.endEncoding() }
+        encodeScene(encoder: encoder, viewport: viewport,
+            viewMatrix: simd_inverse(cameraWorld), cameraWorld: cameraWorld,
+            projection: projection, worldModels: worldModels, normalMatrices: normalMatrices,
+            captureDirection: direction)
         return true
     }
 
@@ -429,22 +431,22 @@ final class Renderer: NSObject, MTKViewDelegate {
     private func encodeScene(
         encoder: MTLRenderCommandEncoder, viewport: MTLViewport,
         viewMatrix: simd_float4x4, cameraWorld: simd_float4x4, projection: simd_float4x4,
-        worldModels: [simd_float4x4], normalMatrices: [simd_float3x3], textures: RenderTargets = 
+        worldModels: [simd_float4x4], normalMatrices: [simd_float3x3],
+        captureDirection: PortalDirection? = nil
     ) {
-        var intoCameraTexture = false
-        if let textures {
-            intoCameraTexture = true
-        }
+        let intoCameraTexture = captureDirection != nil
         setViewport(viewport, on: encoder)
         encoder.setDepthStencilState(depthState)
         let cameraPoint = SIMD4<Float>(0, 0, 0, 1) * cameraWorld
         let eyeWorld = cameraPoint / cameraPoint.w
 
         for (objectIndex, object) in objects.enumerated() {
-            // Keep the exit out of the capture, and never sample the image while
-            // writing it. The entrance stays an ordinary solid in that capture.
-            if intoCameraTexture && (object.id == .exit || object.id == .quad || object.id == .fov) { continue }
-            if intoCameraTexture, case .entranceBoundary = object.id { continue }
+            // Hide this direction's destination slab. Portal images and FOV
+            // outlines are excluded from both captures to avoid recursive views.
+            if let captureDirection {
+                if object.id == captureDirection.destination || object.id == .quad || object.id == .fov { continue }
+                if case .entranceBoundary = object.id { continue }
+            }
             // In the source view the quad replaces the filled entrance. Drawing
             // the cube too would hide the quad at its local Z = 0 opening plane.
             if !intoCameraTexture && hasEntranceSurface && object.id == .entrance { continue }
@@ -452,7 +454,7 @@ final class Renderer: NSObject, MTKViewDelegate {
             switch object.id {
             case .quad:
                 style = (textureSurfacePipelineState, SIMD4<Float>(repeating: 1))
-                encoder.setFragmentTexture(mappedColorTexture, index: 0)
+                encoder.setFragmentTexture(entranceToExitTextures?.color, index: 0)
             case .fov:
                 style = (intoCameraTexture ? textureFOVPipelineState : fovPipelineState,
                          SceneConfiguration.mappedFOVColor)
