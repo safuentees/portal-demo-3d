@@ -47,12 +47,23 @@ final class Renderer: NSObject, MTKViewDelegate {
 
     private var lastFrameTime: CFTimeInterval?
 
-    // GPU images, reused between frames and replaced together when the size changes.
-    // Read-only outside Renderer so offscreen checks can inspect the actual result.
-    private(set) var mappedColorTexture: MTLTexture?
-    private(set) var mappedDepthTexture: MTLTexture?
+    enum PortalDirection: CaseIterable {
+        case entranceToExit, exitToEntrance
+    }
 
-    private(set) var mappedTextures: [(MTLTexture?, MTLTexture?)]
+    // A capture needs both textures; never store a partially allocated pair.
+    struct RenderTargets {
+        let color: MTLTexture
+        let depth: MTLTexture
+    }
+
+    // GPU images are reused until the source viewport's pixel dimensions change.
+    private(set) var mappedTextures: [PortalDirection: RenderTargets] = [:]
+
+    // The current capture still renders entrance -> exit. These read the same
+    // storage while the reverse capture is being added, rather than owning copies.
+    var mappedColorTexture: MTLTexture? { mappedTextures[.entranceToExit]?.color }
+    var mappedDepthTexture: MTLTexture? { mappedTextures[.entranceToExit]?.depth }
 
     // Supplied resources/scene/camera let smoke checks use deterministic fixtures.
     init(
@@ -266,28 +277,29 @@ final class Renderer: NSObject, MTKViewDelegate {
     /// Allocate only on first use or resize, never once per ordinary frame.
     /// encodeFrame also calls this so onscreen and headless paths use the same sizing.
     private func updateMappedTargets(width: Int, height: Int) -> Bool {
-        for (color, depth) in mappedTextures {
-            guard width > 0, height > 0 else { return false }
-            if let color, let depth,
-               color.width == width, color.height == height,
-               depth.width == width, depth.height == height {
-                return true
+        guard width > 0, height > 0 else { return false }
+        // Keep all existing targets if any allocation fails during this update.
+        var updatedTextures = mappedTextures
+        for direction in PortalDirection.allCases {
+            if let targets = mappedTextures[direction],
+               targets.color.width == width, targets.color.height == height,
+               targets.depth.width == width, targets.depth.height == height {
+                continue
             }
             let descriptor = MTLTextureDescriptor.texture2DDescriptor(
                 pixelFormat: colorPixelFormat, width: width, height: height, mipmapped: false
             )
             descriptor.storageMode = .private
             descriptor.usage = [.renderTarget, .shaderRead]
-            guard let color_texture = device.makeTexture(descriptor: descriptor) else { return false }
+            guard let color = device.makeTexture(descriptor: descriptor) else { return false }
             descriptor.pixelFormat = depthPixelFormat
             descriptor.usage = .renderTarget
-            guard let depth_texture = device.makeTexture(descriptor: descriptor) else { return false }
-            color_texture.label = "Mapped camera color"
-            depth_texture.label = "Mapped camera depth"
-            color = color_texture
-            depth = depth_texture
+            guard let depth = device.makeTexture(descriptor: descriptor) else { return false }
+            color.label = "Mapped camera \(direction) color"
+            depth.label = "Mapped camera \(direction) depth"
+            updatedTextures[direction] = RenderTargets(color: color, depth: depth)
         }
-
+        mappedTextures = updatedTextures
         return true
     }
 
@@ -342,7 +354,7 @@ final class Renderer: NSObject, MTKViewDelegate {
         cameraPass.colorAttachments[0].loadAction = .clear
         cameraPass.colorAttachments[0].clearColor = SceneConfiguration.backgroundColor
         cameraPass.colorAttachments[0].storeAction = .store
-        
+
         cameraPass.depthAttachment.texture = mappedDepthTexture
         cameraPass.depthAttachment.loadAction = .clear
         cameraPass.depthAttachment.clearDepth = 1
@@ -357,7 +369,7 @@ final class Renderer: NSObject, MTKViewDelegate {
                 projection: projection, worldModels: worldModels, normalMatrices: normalMatrices,
                 intoCameraTexture: true)
         }
-        
+
         cameraPass.colorAttachments[0].texture = mappedColorTexture
         cameraPass.depthAttachment.texture = mappedDepthTexture
 
@@ -371,7 +383,7 @@ final class Renderer: NSObject, MTKViewDelegate {
                 projection: projection, worldModels: worldModels, normalMatrices: normalMatrices,
                 intoCameraTexture: true)
         }
-        
+
         // Second pass: the source fills the window unless a right preview is enabled.
         guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPass) else { return false }
         encoder.label = "Source scene and optional camera preview"

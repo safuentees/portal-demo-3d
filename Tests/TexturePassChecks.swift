@@ -24,26 +24,43 @@ enum TexturePassChecks {
                 placement: ObjectPlacement(position: [0, 0, 5], scale: [20, 20, 1], yaw: .pi))
         ]
         let renderer = try Renderer(view: view, library: library, objects: objects, showsMappedPreview: true)
-        var previousColor: MTLTexture?
-        var previousDepth: MTLTexture?
+        var previousTargets: [Renderer.PortalDirection: Renderer.RenderTargets] = [:]
         for (width, height) in [(512, 512), (800, 400), (400, 800), (801, 401), (512, 512)] {
             let frame = try SmokeTests.render(renderer, device: device, queue: queue, width: width, height: height)
             guard let color = renderer.mappedColorTexture, let depth = renderer.mappedDepthTexture else {
                 throw SmokeTests.Failure(description: "The mapped scene did not allocate its render targets.")
             }
             let textureWidth = width / 2
-            try SmokeTests.expect(color.width == textureWidth && color.height == height
-                && depth.width == textureWidth && depth.height == height,
-                "Mapped targets must match the source viewport's pixel dimensions.")
-            try SmokeTests.expect(color.pixelFormat == .bgra8Unorm && depth.pixelFormat == .depth32Float
-                && color.sampleCount == 1 && depth.sampleCount == 1,
-                "Mapped targets must use matching single-sample color/depth formats.")
-            try SmokeTests.expect(color.usage.contains(.renderTarget) && color.usage.contains(.shaderRead)
-                && depth.usage.contains(.renderTarget), "Mapped target usage must permit rendering and sampling.")
-            if let previousColor, let previousDepth {
-                try SmokeTests.expect(color !== previousColor && depth !== previousDepth,
-                    "A viewport size change must replace both mapped targets.")
+            let targets = renderer.mappedTextures
+            try SmokeTests.expect(targets.count == Renderer.PortalDirection.allCases.count,
+                                  "Each portal direction must have a complete target pair.")
+            var allTextures: [MTLTexture] = []
+            for direction in Renderer.PortalDirection.allCases {
+                guard let pair = targets[direction] else {
+                    throw SmokeTests.Failure(description: "Missing targets for \(direction).")
+                }
+                try SmokeTests.expect(pair.color.width == textureWidth && pair.color.height == height
+                    && pair.depth.width == textureWidth && pair.depth.height == height,
+                    "Both directions' targets must match the source viewport's pixel dimensions.")
+                try SmokeTests.expect(pair.color.pixelFormat == .bgra8Unorm && pair.depth.pixelFormat == .depth32Float
+                    && pair.color.sampleCount == 1 && pair.depth.sampleCount == 1
+                    && pair.color.storageMode == .private && pair.depth.storageMode == .private,
+                    "Both directions must use private, single-sample color/depth targets.")
+                try SmokeTests.expect(pair.color.usage == [.renderTarget, .shaderRead]
+                    && pair.depth.usage == .renderTarget,
+                    "Both directions' color targets must support sampling and depth targets rendering.")
+                if let previous = previousTargets[direction] {
+                    try SmokeTests.expect(pair.color !== previous.color && pair.depth !== previous.depth,
+                        "A viewport size change must replace both directions' color and depth targets.")
+                }
+                allTextures += [pair.color, pair.depth]
             }
+            try SmokeTests.expect(Set(allTextures.map { ObjectIdentifier($0) }).count == allTextures.count,
+                                  "Portal directions must not share color or depth textures.")
+            try SmokeTests.expect(color === targets[.entranceToExit]?.color
+                && depth === targets[.entranceToExit]?.depth,
+                "The existing capture accessors must refer to the entrance-to-exit pair.")
+            // Only the forward capture is rendered; reverse targets are checked for lifecycle, not pixels.
             let texturePixels = try read(color, device: device, queue: queue)
             try checkMarker(texturePixels, width: textureWidth, height: height,
                 position: [-0.38, 0.48, 3], material: SceneConfiguration.sceneObjectColor)
@@ -60,13 +77,17 @@ enum TexturePassChecks {
             try SmokeTests.expect((0..<4).allSatisfy { abs(Float(frame[sourceCenter + $0]) - sourceExpected[$0]) <= 2 },
                                   "The source quad must display the captured image without lighting it again.")
 
+            renderer.mtkView(view, drawableSizeWillChange: CGSize(width: width, height: height))
             let second = try SmokeTests.render(renderer, device: device, queue: queue, width: width, height: height)
-            try SmokeTests.expect(renderer.mappedColorTexture === color && renderer.mappedDepthTexture === depth,
-                                  "Stable dimensions must reuse the color and depth textures.")
+            try checkTargetReuse(renderer, expected: targets,
+                                 reason: "Unchanged callbacks and frames must reuse all four textures.")
             try SmokeTests.expect(frame == second, "The mapped texture preview changed at rest.")
-            previousColor = color
-            previousDepth = depth
+            previousTargets = targets
         }
+        // A one-pixel split target produces an invalid zero-width source viewport.
+        renderer.mtkView(view, drawableSizeWillChange: CGSize(width: 1, height: 64))
+        try checkTargetReuse(renderer, expected: previousTargets,
+                             reason: "An invalid resize must preserve every existing target.")
         try checkPreviewModes(view: view, library: library, device: device, queue: queue,
                               objects: objects + [RenderObject(id: .fov, mesh: quad,
                                 // In front of the source quad, so its debug-only
@@ -74,6 +95,15 @@ enum TexturePassChecks {
                                 placement: ObjectPlacement(position: [0, 0.12, 0.5], scale: [0.08, 0.04, 1]))])
         try checkEntranceSurface(view: view, library: library, device: device, queue: queue, mesh: quad)
         print("PASS: mapped color/depth pass, excluded preview surfaces, orientation, sampling, resize, and resource reuse")
+    }
+
+    static func checkTargetReuse(
+        _ renderer: Renderer, expected: [Renderer.PortalDirection: Renderer.RenderTargets], reason: String
+    ) throws {
+        try SmokeTests.expect(renderer.mappedTextures.count == expected.count && expected.allSatisfy { direction, pair in
+            guard let current = renderer.mappedTextures[direction] else { return false }
+            return current.color === pair.color && current.depth === pair.depth
+        }, reason)
     }
 
     @MainActor
