@@ -52,6 +52,8 @@ final class Renderer: NSObject, MTKViewDelegate {
     private(set) var mappedColorTexture: MTLTexture?
     private(set) var mappedDepthTexture: MTLTexture?
 
+    private(set) var mappedTextures: [(MTLTexture?, MTLTexture?)]
+
     // Supplied resources/scene/camera let smoke checks use deterministic fixtures.
     init(
         view: MTKView,
@@ -264,25 +266,28 @@ final class Renderer: NSObject, MTKViewDelegate {
     /// Allocate only on first use or resize, never once per ordinary frame.
     /// encodeFrame also calls this so onscreen and headless paths use the same sizing.
     private func updateMappedTargets(width: Int, height: Int) -> Bool {
-        guard width > 0, height > 0 else { return false }
-        if let color = mappedColorTexture, let depth = mappedDepthTexture,
-           color.width == width, color.height == height,
-           depth.width == width, depth.height == height {
-            return true
+        for (color, depth) in mappedTextures {
+            guard width > 0, height > 0 else { return false }
+            if let color, let depth,
+               color.width == width, color.height == height,
+               depth.width == width, depth.height == height {
+                return true
+            }
+            let descriptor = MTLTextureDescriptor.texture2DDescriptor(
+                pixelFormat: colorPixelFormat, width: width, height: height, mipmapped: false
+            )
+            descriptor.storageMode = .private
+            descriptor.usage = [.renderTarget, .shaderRead]
+            guard let color_texture = device.makeTexture(descriptor: descriptor) else { return false }
+            descriptor.pixelFormat = depthPixelFormat
+            descriptor.usage = .renderTarget
+            guard let depth_texture = device.makeTexture(descriptor: descriptor) else { return false }
+            color_texture.label = "Mapped camera color"
+            depth_texture.label = "Mapped camera depth"
+            color = color_texture
+            depth = depth_texture
         }
-        let descriptor = MTLTextureDescriptor.texture2DDescriptor(
-            pixelFormat: colorPixelFormat, width: width, height: height, mipmapped: false
-        )
-        descriptor.storageMode = .private
-        descriptor.usage = [.renderTarget, .shaderRead]
-        guard let color = device.makeTexture(descriptor: descriptor) else { return false }
-        descriptor.pixelFormat = depthPixelFormat
-        descriptor.usage = .renderTarget
-        guard let depth = device.makeTexture(descriptor: descriptor) else { return false }
-        color.label = "Mapped camera color"
-        depth.label = "Mapped camera depth"
-        mappedColorTexture = color
-        mappedDepthTexture = depth
+
         return true
     }
 
@@ -337,6 +342,7 @@ final class Renderer: NSObject, MTKViewDelegate {
         cameraPass.colorAttachments[0].loadAction = .clear
         cameraPass.colorAttachments[0].clearColor = SceneConfiguration.backgroundColor
         cameraPass.colorAttachments[0].storeAction = .store
+        
         cameraPass.depthAttachment.texture = mappedDepthTexture
         cameraPass.depthAttachment.loadAction = .clear
         cameraPass.depthAttachment.clearDepth = 1
@@ -351,7 +357,21 @@ final class Renderer: NSObject, MTKViewDelegate {
                 projection: projection, worldModels: worldModels, normalMatrices: normalMatrices,
                 intoCameraTexture: true)
         }
+        
+        cameraPass.colorAttachments[0].texture = mappedColorTexture
+        cameraPass.depthAttachment.texture = mappedDepthTexture
 
+        do {
+            guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: cameraPass) else { return false }
+            encoder.label = "Record mapped camera"
+            // This scope ends the first encoder BEFORE the window encoder is created.
+            defer { encoder.endEncoding() }
+            encodeScene(encoder: encoder, viewport: sourceViewport,
+                viewMatrix: simd_inverse(mappedCameraWorld), cameraWorld: mappedCameraWorld,
+                projection: projection, worldModels: worldModels, normalMatrices: normalMatrices,
+                intoCameraTexture: true)
+        }
+        
         // Second pass: the source fills the window unless a right preview is enabled.
         guard let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPass) else { return false }
         encoder.label = "Source scene and optional camera preview"

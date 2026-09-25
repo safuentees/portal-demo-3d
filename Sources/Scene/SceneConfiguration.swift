@@ -5,11 +5,11 @@ import simd
 enum SceneConfiguration {
     // False fills the window with the main view. True restores the right preview.
     // The mapped camera still renders the entrance texture in either mode.
-    static let showsMappedPreview = false
+    static let showsMappedPreview = true
     // Draw the mapped camera's frustum in the main scene, outside its own capture.
     static let showsMappedFOV = true
     // Extra occlusion/clipping probes are opt-in, separately from the FOV.
-    static let showsDiagnosticObjects = false
+    static let showsDiagnosticObjects = true
 
     // Opaque role palette, authored for direct .bgra8Unorm output (no sRGB transfer).
     // The FOV is unlit and deliberately dimmer than the solid objects.
