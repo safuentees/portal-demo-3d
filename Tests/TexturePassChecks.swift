@@ -51,12 +51,12 @@ enum TexturePassChecks {
                 position: [0.36, -0.38, 3], material: SceneConfiguration.mappedPlayerColor)
             try checkPreview(frame, width: width, height: height, texture: texturePixels, textureWidth: textureWidth)
 
-            // The source quad now samples the same image through its mesh UVs.
+            // The source quad samples the corresponding screen pixel, not the
+            // whole camera image squeezed into the quad's mesh UV rectangle.
             let sourceCenter = ((height / 2) * width + textureWidth / 2) * 4
-            let sourcePoint = worldPoint(pixelX: textureWidth / 2, pixelY: height / 2,
-                                         width: textureWidth, height: height, depth: 1)
             let sourceExpected = sample(texturePixels, width: textureWidth, height: height,
-                uv: [0.5 + sourcePoint.x / 20, 0.5 - sourcePoint.y / 20])
+                uv: [(Float(textureWidth / 2) + 0.5) / Float(textureWidth),
+                     (Float(height / 2) + 0.5) / Float(height)])
             try SmokeTests.expect((0..<4).allSatisfy { abs(Float(frame[sourceCenter + $0]) - sourceExpected[$0]) <= 2 },
                                   "The source quad must display the captured image without lighting it again.")
 
@@ -69,7 +69,9 @@ enum TexturePassChecks {
         }
         try checkPreviewModes(view: view, library: library, device: device, queue: queue,
                               objects: objects + [RenderObject(id: .fov, mesh: quad,
-                                placement: ObjectPlacement(position: [-0.42, -0.52, 2.5], scale: [0.3, 0.2, 1]))])
+                                // In front of the source quad, so its debug-only
+                                // visibility can be checked independently of the capture.
+                                placement: ObjectPlacement(position: [0, 0.12, 0.5], scale: [0.08, 0.04, 1]))])
         try checkEntranceSurface(view: view, library: library, device: device, queue: queue, mesh: quad)
         print("PASS: mapped color/depth pass, excluded preview surfaces, orientation, sampling, resize, and resource reuse")
     }
@@ -80,6 +82,8 @@ enum TexturePassChecks {
     ) throws {
         let hidden = try Renderer(view: view, library: library, objects: objects, showsMappedPreview: false)
         let enabled = try Renderer(view: view, library: library, objects: objects, showsMappedPreview: true)
+        let withoutFOV = try Renderer(view: view, library: library,
+            objects: objects.filter { $0.id != .fov }, showsMappedPreview: false)
         var previousColor: MTLTexture?
         var previousDepth: MTLTexture?
         for (width, height) in [(512, 512), (800, 400), (400, 800), (801, 401)] {
@@ -106,7 +110,14 @@ enum TexturePassChecks {
             let fullCapture = try read(hiddenColor, device: device, queue: queue)
             let splitCapture = try read(enabledColor, device: device, queue: queue)
             try SmokeTests.expect(fullCapture == splitCapture,
-                                  "Hiding the preview changed the mapped projection or FOV aspect.")
+                                  "Hiding the preview changed the mapped projection or captured scene.")
+            _ = try SmokeTests.render(withoutFOV, device: device, queue: queue, width: width, height: height)
+            guard let cleanCapture = withoutFOV.mappedColorTexture else {
+                throw SmokeTests.Failure(description: "The capture comparison did not allocate a texture.")
+            }
+            let withoutFOVCapture = try read(cleanCapture, device: device, queue: queue)
+            try SmokeTests.expect(fullCapture == withoutFOVCapture,
+                                  "The debug FOV must not alter the captured scene at any pixel.")
             for y in 0..<height {
                 let fullStart = y * width * 4
                 let splitStart = y * width * 8
@@ -117,18 +128,22 @@ enum TexturePassChecks {
             try checkPreview(splitFrame, width: width * 2, height: height, texture: fullCapture, textureWidth: width)
             let fov = SceneConfiguration.mappedFOVColor
             let fovBytes = [fov.z, fov.y, fov.x, fov.w].map { Int(($0 * 255).rounded()) }
-            let fovPixels = stride(from: 0, to: fullCapture.count, by: 4).filter { index in
-                (0..<4).allSatisfy { abs(Int(fullCapture[index + $0]) - fovBytes[$0]) <= 1 }
-            }.count
-            try SmokeTests.expect(fovPixels > 20, "The mode-comparison fixture must visibly exercise mapped FOV geometry.")
+            func countFOVPixels(_ pixels: [UInt8]) -> Int {
+                stride(from: 0, to: pixels.count, by: 4).filter { index in
+                    (0..<4).allSatisfy { abs(Int(pixels[index + $0]) - fovBytes[$0]) <= 1 }
+                }.count
+            }
+            try SmokeTests.expect(countFOVPixels(fullFrame) > 20,
+                "The mode-comparison fixture must visibly exercise the unlit mapped FOV in the source view.")
+            try SmokeTests.expect(countFOVPixels(fullCapture) == 0,
+                                  "The debug FOV must remain absent from the mapped texture.")
 
             // Test the far right independently: it must remain scene geometry with
             // the entrance texture, rather than an empty strip or a preview panel.
             for y in [height / 4, height / 2, height * 3 / 4] {
                 for x in [width / 2, width - 3, width - 1] {
-                    let point = worldPoint(pixelX: x, pixelY: y, width: width, height: height, depth: 1)
                     let expected = sample(fullCapture, width: width, height: height,
-                                          uv: [0.5 + point.x / 20, 0.5 - point.y / 20])
+                        uv: [(Float(x) + 0.5) / Float(width), (Float(y) + 0.5) / Float(height)])
                     let pixel = (y * width + x) * 4
                     try SmokeTests.expect((0..<4).allSatisfy { abs(Float(fullFrame[pixel + $0]) - expected[$0]) <= 2 },
                         "The hidden-preview source did not render its textured quad at \(x),\(y).")
@@ -153,7 +168,7 @@ enum TexturePassChecks {
         pass.depthAttachment.texture = narrowDepth
         try SmokeTests.expect(!enabled.encodeFrame(commandBuffer: command, renderPass: pass,
             drawableSize: CGSize(width: 1, height: 64)), "A one-pixel attachment cannot fit two preview viewports.")
-        print("PASS: hidden/enabled preview modes, full-width texture/FOV, callback sizing, resizing, reuse, and minimum width")
+        print("PASS: preview modes, screen-aligned sampling, source-only FOV, callback sizing, resizing, reuse, and minimum width")
     }
 
     @MainActor
@@ -177,7 +192,7 @@ enum TexturePassChecks {
                 RenderObject(id: .entrance, mesh: portalMesh, placement: placement),
                 RenderObject(id: .exit, mesh: portalMesh,
                     placement: ObjectPlacement(position: [8, 0, 3], scale: [2, 2.4, 0.15])),
-                // Asymmetric, differently colored camera-relative marks in the capture.
+                // An asymmetric camera-relative mark makes incorrect UV mapping visible.
                 RenderObject(id: .player, mesh: mesh,
                     placement: ObjectPlacement(position: [-0.6, 0.5, 4], scale: [0.7, 0.5, 1], yaw: .pi)),
                 RenderObject(id: .fov, mesh: mesh,
@@ -201,6 +216,7 @@ enum TexturePassChecks {
             let clear = SceneConfiguration.backgroundColor
             let clearBytes = SIMD4<Float>(Float(clear.blue), Float(clear.green), Float(clear.red), Float(clear.alpha)) * 255
             var checked = [0, 0, 0, 0]
+            var meshUVDifferences = 0
             for y in stride(from: 1, to: height - 1, by: 2) {
                 for x in stride(from: 1, to: viewportWidth - 1, by: 2) {
                     let ndcX = (Float(x) + 0.5) / Float(viewportWidth) * 2 - 1
@@ -232,7 +248,12 @@ enum TexturePassChecks {
                         checked[nearest.surface] += 1
                         if nearest.surface == 0 {
                             expected = sample(texturePixels, width: viewportWidth, height: height,
+                                uv: [(Float(x) + 0.5) / Float(viewportWidth), (Float(y) + 0.5) / Float(height)])
+                            let meshUVColor = sample(texturePixels, width: viewportWidth, height: height,
                                 uv: [nearest.local.x + 0.5, 0.5 - nearest.local.y])
+                            if (0..<3).contains(where: { abs(expected[$0] - meshUVColor[$0]) > 8 }) {
+                                meshUVDifferences += 1
+                            }
                         } else {
                             let point = SmokeTests.xyz(eyeWorld + nearest.distance * rayWorld)
                             let bytes = SmokeTests.lightingBytes(pointWorld: point, normalWorld: [0, 0, -1],
@@ -251,8 +272,10 @@ enum TexturePassChecks {
             }
             try SmokeTests.expect(checked[0] > 1000 && checked[1] > 100 && checked[2] > 1000,
                 "The entrance fixture must exercise textured area, foreground occlusion, and outside/background depth.")
+            try SmokeTests.expect(meshUVDifferences > 100,
+                "The entrance fixture must distinguish screen-space sampling from squeezing the image into mesh UVs.")
         }
-        print("PASS: entrance quad UV orientation, perspective placement, unlit sampling, bounds, and foreground/background depth")
+        print("PASS: entrance screen-space alignment, perspective placement, unlit sampling, bounds, and foreground/background depth")
     }
 
     /// Expected linear clamp-to-edge texture sampling, expressed in byte values.

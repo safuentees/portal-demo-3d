@@ -32,6 +32,7 @@ struct SmokeTests {
         view.depthStencilPixelFormat = .depth32Float
         let renderer = try Renderer(view: view, library: library, showsMappedPreview: true)
         try checkRendererFixtures(view: view, library: library, device: device, queue: queue)
+        try checkFloorFixture(view: view, library: library, device: device, queue: queue)
         try TexturePassChecks.run(view: view, library: library, device: device, queue: queue)
 
         for (width, height) in [(512, 512), (800, 400), (400, 800), (801, 401)] {
@@ -240,8 +241,9 @@ struct SmokeTests {
             fieldOfView: SceneConfiguration.fieldOfViewRadians,
             near: SceneConfiguration.nearPlane, far: SceneConfiguration.farPlane)
         let cameraWorlds = [cameraWorld, cameraWorld * expectedTransfer]
-        // This clipped draw still selects the unlit pipeline. The following
-        // sphere/player must explicitly restore the lit pipeline.
+        // In the source view this clipped draw still selects the unlit pipeline.
+        // The following sphere/player must explicitly restore the lit pipeline.
+        // The mapped capture deliberately excludes the debug FOV.
         let outline = RenderObject(id: .fov, mesh: mesh,
             placement: ObjectPlacement(position: [0, 0, -100]))
         for id: ObjectID in [.sphere, .player] {
@@ -303,6 +305,64 @@ struct SmokeTests {
             }
         }
         print("PASS: actual renderer placement, mapped player, active camera lighting, and transformed normals")
+    }
+
+    @MainActor
+    static func checkFloorFixture(
+        view: MTKView, library: MTLLibrary, device: MTLDevice, queue: MTLCommandQueue
+    ) throws {
+        // Fixed unit geometry keeps this check independent of editable scene dimensions.
+        let model = MDLMesh(boxWithExtent: SIMD3<Float>(repeating: 1),
+            segments: SIMD3<UInt32>(repeating: 1), inwardNormals: false,
+            geometryType: .triangles, allocator: MTKMeshBufferAllocator(device: device))
+        model.vertexDescriptor = MeshVertexLayout.makeDescriptor()
+        let mesh = try MTKMesh(mesh: model, device: device)
+        let objects = [
+            RenderObject(id: .entrance, mesh: mesh,
+                placement: ObjectPlacement(position: [0, 0, -20])),
+            RenderObject(id: .exit, mesh: mesh,
+                placement: ObjectPlacement(position: [2.5, 0, -20])),
+            // This cube rests on Y = -1. Draw it first so the floor must respect depth.
+            RenderObject(id: .cube, mesh: mesh,
+                placement: ObjectPlacement(position: [0.7, -0.4, 3], scale: [1.2, 1.2, 1.2])),
+            RenderObject(id: .floor, mesh: mesh,
+                placement: ObjectPlacement(position: [0, -1.1, 7], scale: [20, 0.2, 20]))
+        ]
+        let renderer = try Renderer(view: view, library: library, objects: objects, showsMappedPreview: true)
+        let width = 1280, height = 320, viewportWidth = width / 2
+        let pixels = try render(renderer, device: device, queue: queue, width: width, height: height)
+        let projection = Transforms.perspective(aspect: Float(viewportWidth) / Float(height),
+            fieldOfView: SceneConfiguration.fieldOfViewRadians,
+            near: SceneConfiguration.nearPlane, far: SceneConfiguration.farPlane)
+        let samples: [(target: SIMD3<Float>, normal: SIMD3<Float>, plane: SIMD3<Float>, color: SIMD4<Float>)] = [
+            ([-2, -1, 4], [0, 1, 0], [0, -1, 0], SceneConfiguration.floorColor),
+            ([4, -1, 6], [0, 1, 0], [0, -1, 0], SceneConfiguration.floorColor),
+            ([0.7, -0.4, 3], [0, 0, -1], [0, 0, 2.4], SceneConfiguration.sceneObjectColor)
+        ]
+        for (viewport, eyeWorld) in [SIMD3<Float>.zero, SIMD3<Float>(2.5, 0, 0)].enumerated() {
+            let viewMatrix = Transforms.translation(-eyeWorld)
+            let inverseViewProjection = simd_inverse(viewMatrix * projection)
+            for (sampleIndex, sample) in samples.enumerated() {
+                let clip = SIMD4<Float>(sample.target, 1) * viewMatrix * projection
+                let ndc = clip / clip.w
+                let x = Int(floor((ndc.x + 1) * 0.5 * Float(viewportWidth)))
+                let y = Int(floor((1 - ndc.y) * 0.5 * Float(height)))
+                try expect((0..<viewportWidth).contains(x) && (0..<height).contains(y),
+                           "The floor fixture sample left its viewport.")
+                let farPoint = SIMD4<Float>((Float(x) + 0.5) / Float(viewportWidth) * 2 - 1,
+                    1 - (Float(y) + 0.5) / Float(height) * 2, 1, 1) * inverseViewProjection
+                let ray = xyz(farPoint / farPoint.w) - eyeWorld
+                let distance = simd_dot(sample.plane - eyeWorld, sample.normal) / simd_dot(ray, sample.normal)
+                let hitWorld = eyeWorld + distance * ray
+                let expected = lightingBytes(pointWorld: hitWorld, normalWorld: sample.normal,
+                    eyeWorld: eyeWorld, materialColor: sample.color)
+                let pixel = (y * width + viewport * viewportWidth + x) * 4
+                try expect((0..<4).allSatisfy { abs(Int(pixels[pixel + $0]) - expected[$0]) <= 3 },
+                    "Floor fixture viewport \(viewport), sample \(sampleIndex): "
+                    + "got \(Array(pixels[pixel..<(pixel + 4)])), expected \(expected).")
+            }
+        }
+        print("PASS: horizontal floor shading, raised-object depth, and floor visibility in both camera views")
     }
 
     static func makeFixtureQuad(device: MTLDevice) throws -> MTKMesh {

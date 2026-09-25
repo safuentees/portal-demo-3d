@@ -2,6 +2,9 @@ import MetalKit
 
 enum ObjectID: Hashable {
     case sphere, cube, player, entrance, exit, fov, quad
+    case floor, floorLineX(Int), floorLineZ(Int)
+    case entranceRim(Int), exitRim(Int)
+    case foregroundBlock, nearBlock, farPillar, edgePillar, nearSideProbe
 }
 
 /// Editable placement is the source of truth; every matrix is derived from it.

@@ -78,14 +78,45 @@ final class Renderer: NSObject, MTKViewDelegate {
 
             let quadMesh = try QuadMesh.make(device: device)
 
-            objects = [
+            var scene = [
                 RenderObject(id: .entrance, mesh: cubeMesh, placement: SceneConfiguration.entrancePlacement),
                 RenderObject(id: .exit, mesh: cubeMesh, placement: SceneConfiguration.exitPlacement),
                 RenderObject(id: .player, mesh: cubeMesh, placement: SceneConfiguration.playerPlacement),
                 RenderObject(id: .fov, mesh: coneMesh),
                 // Unit XY quad: the same scale/frame puts it in the entrance opening.
-                RenderObject(id: .quad, mesh: quadMesh, placement: SceneConfiguration.entrancePlacement)
+                RenderObject(id: .quad, mesh: quadMesh, placement: SceneConfiguration.entrancePlacement),
+                RenderObject(id: .floor, mesh: cubeMesh, placement: SceneConfiguration.floorPlacement),
+                RenderObject(id: .foregroundBlock, mesh: cubeMesh, placement: SceneConfiguration.foregroundBlockPlacement),
+                RenderObject(id: .cube, mesh: cubeMesh, placement: SceneConfiguration.rearBlockPlacement),
+                RenderObject(id: .sphere, mesh: try SphereMesh.make(device: device),
+                             placement: SceneConfiguration.exitSpherePlacement)
             ]
+            scene += SceneConfiguration.exitBoxPlacements.map {
+                RenderObject(id: $0.id, mesh: cubeMesh, placement: $0.placement)
+            }
+            for (index, placement) in SceneConfiguration.portalRimPlacements(for: SceneConfiguration.entrancePlacement).enumerated() {
+                scene.append(RenderObject(id: .entranceRim(index), mesh: cubeMesh, placement: placement))
+            }
+            for (index, placement) in SceneConfiguration.portalRimPlacements(for: SceneConfiguration.exitPlacement).enumerated() {
+                scene.append(RenderObject(id: .exitRim(index), mesh: cubeMesh, placement: placement))
+            }
+            // Thin solid strips sit just above the floor, avoiding coplanar flicker.
+            // All boxes, rims and grid strips share one immutable unit-cube mesh.
+            let size = SceneConfiguration.floorSize
+            let center = SceneConfiguration.floorCenterXZ
+            let lineHeight = SceneConfiguration.floorGridHeight
+            let y = SceneConfiguration.floorHeight + lineHeight / 2
+            let lineCount = Int(size / SceneConfiguration.floorGridSpacing)
+            for index in 0...lineCount {
+                let offset = -size / 2 + Float(index) * SceneConfiguration.floorGridSpacing
+                scene.append(RenderObject(id: .floorLineX(index), mesh: cubeMesh,
+                    placement: ObjectPlacement(position: [center.x + offset, y, center.y],
+                        scale: [SceneConfiguration.floorGridWidth, lineHeight, size])))
+                scene.append(RenderObject(id: .floorLineZ(index), mesh: cubeMesh,
+                    placement: ObjectPlacement(position: [center.x, y, center.y + offset],
+                        scale: [size, lineHeight, SceneConfiguration.floorGridWidth])))
+            }
+            objects = scene
         }
         hasEntranceSurface = objects.contains { $0.id == .quad }
         guard Set(objects.map(\.id)).count == objects.count else { throw SetupError.duplicateObjectID }
@@ -372,12 +403,18 @@ final class Renderer: NSObject, MTKViewDelegate {
             case .fov:
                 style = (intoCameraTexture ? textureFOVPipelineState : fovPipelineState,
                          SceneConfiguration.mappedFOVColor)
-            case .entrance, .exit:
+            case .entrance, .exit, .entranceRim, .exitRim:
                 style = (intoCameraTexture ? textureScenePipelineState : pipelineState,
                          SceneConfiguration.portalColor)
             case .player:
                 style = (intoCameraTexture ? textureScenePipelineState : pipelineState,
                          SceneConfiguration.mappedPlayerColor)
+            case .floor:
+                style = (intoCameraTexture ? textureScenePipelineState : pipelineState,
+                         SceneConfiguration.floorColor)
+            case .floorLineX, .floorLineZ:
+                style = (intoCameraTexture ? textureScenePipelineState : pipelineState,
+                         SceneConfiguration.floorGridColor)
             default:
                 style = (intoCameraTexture ? textureScenePipelineState : pipelineState,
                          SceneConfiguration.sceneObjectColor)

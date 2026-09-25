@@ -2,7 +2,7 @@
 
 A macOS Swift/Metal experiment with entrance and exit objects, a mapped player and camera field-of-view outline, and an optional mapped-camera preview. The main viewport draws the scene from the source camera. Its entrance quad displays the image rendered from the camera's pose mapped from the entrance to the exit.
 
-The entrance currently behaves like a live monitor. The optional right preview and FOV outline are debugging views. Screen-space projection for a seamless portal view, exit-plane clipping, player traversal, collision, and recursive portals are not implemented.
+The entrance samples the corresponding screen position in the mapped image, so it shows the matching section through its opening instead of squeezing the whole image onto the quad. The optional right preview and FOV outline are debugging views. Exit-plane clipping, player traversal, collision, and recursive portals are not implemented.
 
 ## Run and controls
 
@@ -15,6 +15,27 @@ Click the scene to capture the mouse for looking around. **W/S** moves forward/b
 In `Sources/Scene/SceneConfiguration.swift`, `showsMappedPreview = false` makes the main view fill the window. Set it to `true` and rebuild/run to restore the side-by-side preview. The entrance texture still updates in both modes; the flag controls only the window layout and its matching render dimensions.
 
 The project uses SwiftUI, AppKit, MetalKit, Model I/O, and SIMD, with no external packages.
+
+## A scene for inspecting the connection
+
+The entrance is centered at `[0, 0, 3]`. The exit is at `[4, 0, 6]`, turned 60 degrees around Y. Both openings are 2 units wide and 3 units tall. They stand on a shared floor at `Y = -1.5`. This spacing leaves room to move around each opening, and the angled exit makes the change in viewing direction easy to see.
+
+Blue rims identify the portals; neutral objects give the view recognizable shapes at different distances. Teal remains reserved for the mapped player and FOV. The landmarks have specific jobs:
+
+| Landmark | What to look for |
+| --- | --- |
+| Near block and farther tall pillar beyond the exit | Move sideways: the near block should shift more across the opening than the distant pillar. This relative movement is parallax. |
+| Sphere beyond the exit | Recognize the destination from its curved shape and compare its appearance through the entrance with a direct view. |
+| Thin pillar beside the exit opening | Check how a narrow object enters and leaves the image at the aperture's edge, especially from oblique angles. |
+| Foreground block beside the entrance | Move until it overlaps the entrance; normal depth testing should let it hide that part of the quad. |
+| Rear block behind the entrance | Where the quad overlaps it, the quad's depth should hide it. Outside the quad, the ordinary source scene remains visible. |
+| Low block on the near side of the exit | This deliberately sits between the virtual eye and the exit plane. It is a probe for future exit-plane clipping: it can currently appear in the captured image when it should be excluded from a completed portal view. |
+
+The floor is a unit cube scaled to `18 × 0.2 × 18`. Its center is placed half its thickness below `floorHeight`, so its **top**, rather than its middle, meets the portals' lower edges. Thin boxes form a one-unit grid just above that top surface; their height separates their visible faces from the floor and avoids coplanar flicker. The floor, grid strips, rims, and box landmarks all reuse one immutable cube mesh. Each instance has its own placement, so no geometry is rebuilt each frame.
+
+All dimensions and placements live in `SceneConfiguration.swift`. Landmarks around the exit are specified in **exit-local coordinates**: X goes across the opening, Y goes up, and positive Z goes beyond it. During scene construction, `localPosition * exit.rigidFrame` converts each offset to a world position once. These are ordinary world objects, not mapped copies of the player. The rigid frame excludes the portal's visual scale, so changing the opening size does not stretch the landmark offsets.
+
+To explore the scene, first strafe left and right while facing the entrance, then approach one edge and look through it at an angle. Walk around to compare the exit landmarks directly, and look down at the grid to judge distance and orientation. Enable `showsMappedPreview` to compare the complete captured image with the section shown by the entrance. Resize to a tall or wide window and repeat. These are manual inspection routes; walking through a portal does not teleport the camera, and the floor and objects do not provide collision.
 
 ## Custom field of view and length
 
@@ -61,9 +82,9 @@ For the running scene, edit `fieldOfViewRadians`, `nearPlane`, and `farPlane` in
 
 ```swift
 static let exitPlacement = ObjectPlacement(
-    position: [1, 0, 3],
-    scale: [1, 1.5, 0.1],
-    yaw: .pi / 2,
+    position: [4, 0, 6],
+    scale: [2, 3, 0.1],
+    yaw: .pi / 3,
     pitch: 0
 )
 ```
@@ -83,7 +104,7 @@ These are row-vector transforms, so they apply from left to right. `sourceCamera
 
 The CPU computes complete world model matrices once per frame, before rendering either camera. The `scene_vertex` shader then applies only `model * view * projection`; it does not apply the portal mapping again. Lighting receives the resulting world position and a normal transformed by the final model's inverse transpose. `lit_fragment` shades solid objects and `fov_fragment` gives the outline a constant color.
 
-Both camera renders observe the same mapped outline using the **source** viewport's aspect. Each uses its own world-space eye for lighting. The mapped image uses the source viewport's dimensions and projection aspect; when enabled, the right viewport displays that complete image.
+The source view draws the mapped outline using the **source** viewport's aspect; the mapped capture omits it so it does not cover the portal image. Each camera render uses its own world-space eye for lighting. The mapped image uses the source viewport's dimensions and projection aspect; when enabled, the right viewport displays that complete image.
 
 ## How the entrance image and preview work
 
@@ -92,15 +113,15 @@ A texture is a GPU image. Each frame now has two render passes:
 1. Render the scene from the mapped camera into a color texture, with a separate depth texture so nearer surfaces hide farther ones.
 2. Draw the main scene with the captured color texture on the entrance quad. If `showsMappedPreview` is enabled, draw the same image in a separate right viewport.
 
-The depth texture is used while making the image. The capture retains the filled entrance object and omits the exit object and textured quad. In the source view, the quad replaces the filled entrance object whenever a quad is present, so the cube does not cover the image. These object filters do not clip geometry against the exit plane or implement recursive portal views.
+The depth texture is used while making the image. The capture retains the filled entrance object and omits the filled exit object, textured quad, and FOV outline. The portal rims and ordinary landmarks remain visible. In the source view, the quad replaces the filled entrance object whenever a quad is present, so the cube does not cover the image. These object filters do not clip geometry against the exit plane or implement recursive portal views.
 
-The quad uses `entrancePlacement` and lies in its local XY plane at `z = 0`. Its mesh UV coordinates fit the full camera image onto the rectangle, with V flipped so the image stays upright. The image is opaque and unlit because it already contains the captured scene's lighting. Normal depth testing and depth writes let foreground objects cover it and hide objects behind it.
+The quad uses `entrancePlacement` and lies in its local XY plane at `z = 0`. Its triangles determine **where** the portal image can be drawn. For every fragment within those triangles, the surface shader divides the fragment's pixel position by the mapped texture dimensions to choose **which pixel of the image** to read. For example, a fragment halfway across and halfway down the main viewport samples the center of the mapped image.
 
-This is ordinary UV image placement: the whole picture fits the quad even if their proportions differ, so it can look squeezed or stretched. Looking at it from an angle behaves like looking at a live monitor. A seamless portal view would need a later screen-space projection step. Apple's [Creating and sampling textures](https://developer.apple.com/documentation/metal/creating-and-sampling-textures) sample explains texture coordinates and sampling an image onto a quad.
+This screen-space sampling works because the main viewport starts at pixel `(0, 0)`, the mapped texture has exactly that viewport's dimensions, and both cameras use the same projection. It uses the fragment's pixel coordinates, not the quad's mesh UVs or clip-space coordinates. The image is opaque and unlit because it already contains the captured scene's lighting. Normal depth testing and depth writes let foreground objects cover it and hide objects behind it. This supplies the entrance's image, but the missing exit-plane clipping can still let geometry on the wrong side of the exit appear in that image.
 
 `Renderer.encodeFrame` receives the full render-target size in pixels. With the preview hidden, the source viewport and cached textures use the full width and height. With it enabled, their width is `floor(fullWidth / 2)` and the right preview receives the remaining width, including an extra pixel for odd target widths. The textures always match the source viewport and are reused until their required size changes. Resizing updates the textures, projection, and FOV aspect together.
 
-`Renderer.swift` owns the textures and encodes the passes. Separate quad and preview shaders in `Shaders.metal` read the same image from texture slot 0. The quad uses its mesh UVs; the right preview uses a `viewportRect` in fragment buffer 2 to convert fragment pixel positions into image coordinates from 0 to 1. The existing 352-byte scene uniforms in buffer 1 are unchanged.
+`Renderer.swift` owns the textures and encodes the passes. Separate quad and preview shaders in `Shaders.metal` read the same image from texture slot 0. The quad normalizes pixel positions using the matching texture size; the right preview uses a `viewportRect` in fragment buffer 2 to subtract its nonzero origin and normalize by its own size. The existing 352-byte scene uniforms in buffer 1 are unchanged.
 
 ## Adjusting the lighting
 
@@ -120,7 +141,7 @@ The diffuse lighting stays attached to the world; the highlight depends on the a
 
 | Change | File |
 | --- | --- |
-| Preview flag, FOV, near/far distances, placements, colors, lights, camera speed/sensitivity | `Sources/Scene/SceneConfiguration.swift` |
+| Preview flag, FOV, near/far distances, portal/landmark placements, floor/grid/rim dimensions, colors, lights, camera speed/sensitivity | `Sources/Scene/SceneConfiguration.swift` |
 | FOV corners, line edges, mesh parameters | `Sources/Rendering/ConeMesh.swift` |
 | Entrance quad geometry and UV coordinates | `Sources/Rendering/QuadMesh.swift` |
 | Shared packed vertex descriptor for all meshes | `Sources/Rendering/MeshVertexLayout.swift` |
@@ -150,11 +171,11 @@ The script builds the Debug app, compiles the files in `Tests/`, and attempts of
 
 Checks cover custom frustum corners and edges, invalid parameters, near/far projection depth, aspect scaling, placement pivots and order, forward/reverse portal transforms, inverse-transpose normals, and uniform offsets. Deterministic renderer fixtures check transformed solid and mapped objects against independent geometry and lighting calculations, including each viewport's world-space eye. Scene and outline rendering also run at square, wide, tall, and odd-width sizes. Invalid scenes test missing portals, duplicate IDs, and singular scales.
 
-Texture-preview checks compare the right view's pixels with the captured image, including orientation and resampling at odd widths. They verify depth occlusion in the capture, omission of the exit and textured quad from that capture, texture dimensions and usage, resource reuse, resize reallocation, and stable repeated frames. These GPU fixtures use single-sample targets; they do not verify MSAA.
+Texture-preview checks compare the right view's pixels with the captured image, including orientation and resampling at odd widths. They verify depth occlusion in the capture, omission of the exit, textured quad, and FOV from that capture, texture dimensions and usage, resource reuse, resize reallocation, and stable repeated frames. These GPU fixtures use single-sample targets; they do not verify MSAA.
 
-Entrance-surface checks verify unlit image sampling and upright UVs on frontal and tilted quads with moved/rotated cameras. They also check replacement of the filled entrance, foreground occlusion, and depth rejection of geometry behind the quad.
+Entrance-surface checks verify unlit, screen-aligned image sampling on frontal and tilted quads with moved/rotated cameras. Their expected samples distinguish this behavior from squeezing the full image into mesh UVs. They also check replacement of the filled entrance, foreground occlusion, and depth rejection of geometry behind the quad. An independent floor fixture verifies a horizontal surface's lighting, raised-object depth occlusion, and floor visibility from both camera views.
 
-Both preview flag settings are tested at square, wide, tall, and odd-width sizes. Full-window output is compared pixel for pixel with an equivalent split source view, including its mapped capture and FOV aspect. Checks cover the rightmost scene pixels, resize callbacks, target reuse, and minimum widths. The app build and full Metal API validation suite passed after the preview flag update.
+Both preview flag settings are tested at square, wide, tall, and odd-width sizes. Full-window output is compared pixel for pixel with an equivalent split source view, including its mapped capture and FOV aspect. Checks cover the rightmost scene pixels, resize callbacks, target reuse, and minimum widths. The app build and full Metal API validation suite passed after the diagnostic scene and floor update. These automated checks do not establish exit-plane clipping, traversal, collision, or recursion, and do not replace manual inspection of the running app.
 
 The lighting checks verify each control independently, diffuse/fill lighting that stays fixed as the camera moves, highlights that respond to the active eye, and finite output for coincident or opposing light/eye directions. They also verify the synchronized 352-byte uniform layout and the outline's exact unlit color.
 
