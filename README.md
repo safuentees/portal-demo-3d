@@ -1,8 +1,8 @@
 # MetslStarter 3D
 
-A macOS Swift/Metal experiment with entrance and exit objects, a mapped player, and optional camera previews and diagnostic objects. The main viewport draws the scene from the source camera. Its entrance quad displays the image rendered from the camera's pose mapped from the entrance to the exit.
+A macOS Swift/Metal experiment with entrance and exit objects, a mapped player, and optional camera previews and diagnostic objects. The main viewport draws the scene from the source camera. Its entrance quad displays the A → B camera image, and its exit quad displays the B → A image.
 
-The entrance samples the corresponding screen position in the mapped image, so it shows the matching section through its opening instead of squeezing the whole image onto the quad. The optional right preview and FOV outline are debugging views. Exit-plane clipping, player traversal, collision, and recursive portals are not implemented.
+The entrance samples the corresponding screen position in the mapped image, so it shows the matching section through its opening instead of squeezing the whole image onto the quad. The optional right preview and two FOV outlines are debugging views. Exit-plane clipping, player traversal, collision, and recursive portals are not implemented.
 
 ## Run and controls
 
@@ -14,7 +14,7 @@ Click the scene to capture the mouse for looking around. **W/S** moves forward/b
 
 In `Sources/Scene/SceneConfiguration.swift`, `showsMappedPreview = false` makes the main view fill the window. Set it to `true` and rebuild/run to restore the side-by-side preview. The entrance texture still updates in both modes; the flag controls only the window layout and its matching render dimensions.
 
-`showsMappedFOV = true` draws the second camera's teal FOV outline in the main scene. Set it to `false` and rebuild/run to hide it. The outline is depth-tested, so the floor and solid objects can hide parts of it; look toward the exit to inspect it. It is omitted from the second camera's own capture and right preview.
+`showsMappedFOV = true` draws both mapped camera outlines in the main scene: teal for A → B and amber for B → A. Set it to `false` and rebuild/run to hide both. The outlines are depth-tested, so the floor and solid objects can hide parts of them. They are omitted from both captures and the right preview.
 
 `showsDiagnosticObjects = false` keeps the extra occlusion/clipping probes hidden. Enable it separately when inspecting those cases. These flags do not change the controls or portal mapping.
 
@@ -24,11 +24,11 @@ The project uses SwiftUI, AppKit, MetalKit, Model I/O, and SIMD, with no externa
 
 The entrance is centered at `[0, 0, 3]`. The exit is at `[4.8, 0, 6]`, turned 60 degrees around Y. Both openings are 2 units wide and 3 units tall. They stand on a shared floor at `Y = -1.5`. This spacing leaves room to move around each opening, and the angled exit makes the change in viewing direction easy to see.
 
-A thin blue boundary marks the entrance aperture; four flat strips sit just outside its edges at the same plane. It has no thick rim, bevel, or glow, and is omitted from the mapped capture. The exit retains its simple blue rectangle. Neutral cube, sphere, and torus silhouettes identify the surroundings, while teal remains reserved for the mapped player and optional FOV outline.
+A thin blue boundary marks the entrance aperture; four flat strips sit just outside its edges at the same plane. It has no thick rim, bevel, or glow, and is omitted from the mapped capture. The exit displays its reverse image on a flat quad. Neutral cube, sphere, and torus silhouettes identify the surroundings; the mapped player and A → B outline are teal, and the B → A outline is amber.
 
-Beyond the exit, a nearer cube and a farther sphere make the destination recognizable. Their different distances reveal parallax: when you move sideways, the nearer cube moves farther across the image. Their starting silhouettes are separated, leaving empty space around the portal image. An upright torus sits on the opposite side of the exit plane, at exit-local `[2.2, -0.84, -1.5]`. It rests on the floor, offset sideways to keep the initial opening clear. Its hole helps distinguish it from the sphere when inspecting that side or looking back toward the exit. This is another world object; displaying the reverse image on the exit and exit-plane clipping remain unimplemented.
+Beyond the exit, a nearer cube and a farther sphere make the destination recognizable. Their different distances reveal parallax: when you move sideways, the nearer cube moves farther across the image. Their starting silhouettes are separated, leaving empty space around the portal image. An upright torus sits on the opposite side of the exit plane, at exit-local `[2.2, -0.84, -1.5]`. It rests on the floor, offset sideways to keep the initial opening clear. Its hole helps distinguish it from the sphere when inspecting that side or looking back toward the exit. This is another world object; exit-plane clipping remains unimplemented.
 
-The ground is one `QuadMesh`, scaled to `200 × 200` and rotated from its local XY plane into world XZ. Its surface sits at `floorHeight = -1.5`; it has no thickness or raised grid strips. The wide extent keeps a slab edge out of the usual views. The floor, entrance surface, and boundary strips reuse the same immutable quad mesh; box objects share a cube mesh. Placement changes each instance without rebuilding geometry every frame.
+The ground is one `QuadMesh`, scaled to `200 × 200` and rotated from its local XY plane into world XZ. Its surface sits at `floorHeight = -1.5`; it has no thickness or raised grid strips. The wide extent keeps a slab edge out of the usual views. The floor, both portal surfaces, and boundary strips reuse the same immutable quad mesh; box objects share a cube mesh. Placement changes each instance without rebuilding geometry every frame.
 
 The floor shader reads **world-space X and Z**, divided by `floorCheckerSize`, to choose between two nearby material tones. A square therefore stays in the same world location when either camera moves, regardless of the ground mesh's scale. The pattern passes through the same neutral lighting calculation as the other solid objects; the material values are not final display colors.
 
@@ -44,7 +44,8 @@ Editable scene values live in `SceneConfiguration.swift`:
 | `portalBoundaryWidth` | Width of the flat entrance boundary, currently `0.012` world units. |
 | `exitBlockPlacement`, `exitSpherePlacement`, `exitTorusPlacement` | The default landmarks on both sides of the exit. |
 | `torusMajorRadius`, `torusTubeRadius`, `torusRingSegments`, `torusTubeSegments` | Ring size, tube thickness, and mesh detail; currently `0.5`, `0.16`, `64`, and `24`. |
-| `showsMappedFOV` | Shows the mapped camera's FOV outline in the main scene; on by default. |
+| `showsMappedFOV` | Shows both mapped camera FOV outlines in the main scene; on by default. |
+| `entranceToExitFOVColor`, `exitToEntranceFOVColor` | Unlit RGBA colors for the teal A → B and amber B → A outlines. |
 | `showsDiagnosticObjects` | Restores extra occlusion/clipping probes; off by default. |
 
 Landmarks around the exit are specified in **exit-local coordinates**: X goes across the opening, Y goes up, and positive Z goes beyond it. During scene construction, `localPosition * exit.rigidFrame` converts each offset to a world position once. These are ordinary world objects, not mapped copies of the player. The rigid frame excludes the portal's visual scale, so changing the opening size does not stretch the landmark offsets.
@@ -96,7 +97,7 @@ corners    = (±halfWidth, ±halfHeight, z)
 
 This makes the edges match the camera's projection angles exactly. An extra rotation, translation, or arbitrary scale would offset or distort that match.
 
-The observing camera can still clip or occlude parts of this outline. With `far: 100`, the outline extends the full 100 units from the source eye; it is not shortened for display.
+The observing camera can still clip or occlude parts of this outline. With `far: 100`, each outline extends the full 100 units from its mapped camera's eye; it is not shortened for display.
 
 For the running scene, edit `fieldOfViewRadians`, `nearPlane`, and `farPlane` in `Sources/Scene/SceneConfiguration.swift`. Both the camera projection and the outline read those values. The renderer builds the mesh once with `aspect: 1`, then scales its local X coordinates by the source viewport's current aspect before placement. Resizing changes that scale and the projection without rebuilding or modifying the GPU mesh.
 
@@ -124,11 +125,11 @@ pointMapped = pointWorld * transferAB
 transferBA = inverse(transferAB)
 ```
 
-These are row-vector transforms, so they apply from left to right. `sourceCameraWorld` is the inverse of the source camera's view matrix. `Transforms.portalMapping` creates both directed transfers from the portal frames. This scene aligns those frames directly, with no additional half-turn. `sourceCameraWorld * transferAB` and `sourceCameraWorld * transferBA` derive the two capture poses directly from the main camera. Each capture's view matrix is the inverse of its world pose. The existing player and FOV still use `transferAB` only. The reverse camera image is captured into `exitToEntranceTextures.color`, but it is not yet displayed on the exit surface or in the right preview.
+These are row-vector transforms, so they apply from left to right. `sourceCameraWorld` is the inverse of the source camera's view matrix. `Transforms.portalMapping` creates both directed transfers from the portal frames. This scene aligns those frames directly, with no additional half-turn. `sourceCameraWorld * transferAB` and `sourceCameraWorld * transferBA` derive the two capture poses directly from the main camera. Each capture's view matrix is the inverse of its world pose. The player still uses `transferAB` only. Each FOV is identified by `.fov(direction)` and follows that direction's camera world pose. Both objects share one immutable `ConeMesh`. Their final model order is `aspectScale * placement.modelMatrix * mappedCameraWorld`, so the source-camera-local geometry is resized first, then placed in its mapped world frame once. The exit displays `exitToEntranceTextures.color`; the right preview continues to show A → B.
 
 The CPU computes complete world model matrices once per frame, before rendering any camera. The `scene_vertex` shader then applies only `model * view * projection`; it does not apply the portal mapping again. Lighting receives the resulting world position and a normal transformed by the final model's inverse transpose. `lit_fragment` and `floor_fragment` share the same surface-lighting helper; `fov_fragment` gives the optional outline a constant color.
 
-When `showsMappedFOV` is enabled, the source view draws the mapped outline using the **source** viewport's aspect; the mapped capture omits it so it does not cover the portal image. Each camera render uses its own world-space eye for lighting. The mapped image uses the source viewport's dimensions and projection aspect; when enabled, the right viewport displays that complete image.
+When `showsMappedFOV` is enabled, the source view draws both mapped outlines using the **source** viewport's aspect; both captures omit them so they do not cover either portal image. Each camera render uses its own world-space eye for lighting. The mapped image uses the source viewport's dimensions and projection aspect; when enabled, the right viewport displays that complete image.
 
 ## How the entrance image and preview work
 
@@ -136,19 +137,19 @@ A texture is a GPU image. Each frame has three render passes:
 
 1. Render the A → B camera into `entranceToExitTextures`, a color/depth pair.
 2. Render the B → A camera into its own pair, `exitToEntranceTextures`.
-3. Draw the main scene with the A → B color texture on the entrance quad. If `showsMappedPreview` is enabled, draw that same image in the right viewport. The B → A image is available for inspection but has no surface or preview yet.
+3. Draw the main scene with the A → B color texture on the entrance quad and the B → A texture on the exit quad. If `showsMappedPreview` is enabled, draw the A → B image in the right viewport.
 
-The depth texture is used while making each image. A → B omits the filled exit object; B → A omits the filled entrance object. Both captures omit the textured quad, entrance boundary, and FOV outline. The ground and ordinary landmarks remain visible. In the main view, the quad replaces the filled entrance object whenever a quad is present, so the cube does not cover the image. These object filters do not clip geometry against the destination plane or implement recursive portal views.
+The depth texture is used while making each image. A → B omits the filled exit object; B → A omits the filled entrance object. Both captures omit both textured quads, the entrance boundary, and both FOV outlines. The ground and ordinary landmarks remain visible. In the main view, each textured quad replaces its corresponding filled portal slab so the slab does not cover the image. This replacement is restricted to the main pass; the source portal remains ordinary solid geometry in each capture. These object filters do not clip geometry against the destination plane or implement recursive portal views.
 
 `encodeCapture` takes a required texture pair and chooses the color/depth attachments before creating its encoder. The shared `encodeScene` takes `captureDirection: PortalDirection? = nil`: omit it for the main view, or pass a direction for a capture. Direction selects the capture pipelines and which destination slab to omit. Each capture ends its encoder before the next pass begins. The direction-keyed texture storage reuses both pairs until the source viewport's pixel dimensions change.
 
-The quad uses `entrancePlacement` and lies in its local XY plane at `z = 0`. Its triangles determine **where** the portal image can be drawn. For every fragment within those triangles, the surface shader divides the fragment's pixel position by the mapped texture dimensions to choose **which pixel of the image** to read. For example, a fragment halfway across and halfway down the main viewport samples the center of the mapped image.
+Each portal quad uses its corresponding placement and lies in its local XY plane at `z = 0`. Its triangles determine **where** the portal image can be drawn. For every fragment within those triangles, the surface shader divides the fragment's pixel position by the mapped texture dimensions to choose **which pixel of the image** to read. For example, a fragment halfway across and halfway down the main viewport samples the center of the mapped image.
 
-This screen-space sampling works because the main viewport starts at pixel `(0, 0)`, the mapped texture has exactly that viewport's dimensions, and both cameras use the same projection. It uses the fragment's pixel coordinates, not the quad's mesh UVs or clip-space coordinates. The image is opaque and unlit because it already contains the captured scene's lighting. Normal depth testing and depth writes let foreground objects cover it and hide objects behind it. This supplies the entrance's image, but the missing exit-plane clipping can still let geometry on the wrong side of the exit appear in that image.
+This screen-space sampling works because the main viewport starts at pixel `(0, 0)`, the mapped texture has exactly that viewport's dimensions, and both cameras use the same projection. It uses the fragment's pixel coordinates, not the quad's mesh UVs or clip-space coordinates. The image is opaque and unlit because it already contains the captured scene's lighting. Normal depth testing and depth writes let foreground objects cover it and hide objects behind it. This supplies both portal images, but missing destination-plane clipping can still let geometry on the wrong side of the destination appear.
 
 `Renderer.encodeFrame` receives the full render-target size in pixels. With the preview hidden, the source viewport and cached textures use the full width and height. With it enabled, their width is `floor(fullWidth / 2)` and the right preview receives the remaining width, including an extra pixel for odd target widths. The textures always match the source viewport and are reused until their required size changes. Resizing updates the textures, projection, and FOV aspect together.
 
-`Renderer.swift` owns the textures and encodes the passes. Separate quad and preview shaders in `Shaders.metal` read the same image from texture slot 0. The quad normalizes pixel positions using the matching texture size; the right preview uses a `viewportRect` in fragment buffer 2 to subtract its nonzero origin and normalize by its own size. The existing 352-byte scene uniforms in buffer 1 are unchanged.
+`Renderer.swift` owns the textures and encodes the passes. The quad shader reads the relevant direction's image from texture slot 0; the preview shader reads the A → B image. The quad normalizes pixel positions using the matching texture size; the right preview uses a `viewportRect` in fragment buffer 2 to subtract its nonzero origin and normalize by its own size. The existing 352-byte scene uniforms in buffer 1 are unchanged.
 
 ## Adjusting the lighting
 
@@ -162,7 +163,7 @@ The lighting controls live in `SceneConfiguration.swift`. The main light is a wh
 | `fillLightDirectionWorld` (`[2, 3, 5, 0]`), `fillIntensity` (`0.22`) | A weaker light that reveals faces turned away from the main light. This is a world-space direction **toward** the fill light, rather than a position; it adds diffuse light only. |
 | `specularIntensity` (`0.045`), `specularShininess` (`20`) | The strength and concentration of the highlight. Higher shininess makes the highlight smaller and sharper. |
 
-The diffuse lighting stays attached to the world; the highlight depends on the active viewport's eye. The FOV outline remains unlit. There are no shadow maps, so objects do not cast shadows onto one another. Colors and lighting strengths are artistic display values written directly to `.bgra8Unorm`, with no explicit sRGB transfer or calibrated linear-light workflow.
+The diffuse lighting stays attached to the world; the highlight depends on the active viewport's eye. Both FOV outlines remain unlit. There are no shadow maps, so objects do not cast shadows onto one another. Colors and lighting strengths are artistic display values written directly to `.bgra8Unorm`, with no explicit sRGB transfer or calibrated linear-light workflow.
 
 ## Start editing here
 
@@ -201,7 +202,9 @@ The script builds the Debug app, compiles the files in `Tests/`, and attempts of
 
 Checks cover custom frustum corners and edges, invalid parameters, near/far projection depth, aspect scaling, placement pivots and order, forward/reverse portal transforms, inverse-transpose normals, and uniform offsets. Deterministic renderer fixtures check transformed solid and mapped objects against independent geometry and lighting calculations, including each viewport's world-space eye. Scene and outline rendering also run at square, wide, tall, and odd-width sizes. Invalid scenes test missing portals, duplicate IDs, and singular scales.
 
-Texture-preview checks compare the right view's pixels with the forward image, including orientation and resampling at odd widths. They verify depth occlusion in that capture, omission of the exit, textured quad, and FOV, and both directions' texture dimensions, usage, separation, reuse, and resize reallocation. A separate reverse-capture fixture uses translated, yawed, and pitched portal frames, checks known landmarks and lighting from the reverse eye, and requires omission of the entrance slab and display surfaces. These GPU fixtures use single-sample targets; they do not verify MSAA.
+Texture-preview checks compare the right view's pixels with the forward image, including orientation and resampling at odd widths. They verify depth occlusion in that capture, omission of the exit and both display surfaces, and both directions' texture dimensions, usage, separation, reuse, and resize reallocation. Both captures are compared against frames without FOV objects to verify that neither outline leaks into either image. A separate reverse-capture fixture uses translated, yawed, and pitched portal frames, checks known landmarks and lighting from the reverse eye, and requires omission of the entrance slab and display surfaces. The source exit slab must remain in the reverse capture even when its display surface exists. These GPU fixtures use single-sample targets; they do not verify MSAA.
+
+Directional FOV checks draw both objects using the actual shared frustum mesh. Independently projected edge samples verify each direction's camera mapping, color, and aspect scaling with translated/yawed/pitched portal frames, square/wide/tall targets, and full/split layouts. The isolated app build and full Metal API validation suite passed for both outlines on 2026-09-25.
 
 Entrance-surface checks verify unlit, screen-aligned image sampling on frontal and tilted quads with moved/rotated cameras. Their expected samples distinguish this behavior from squeezing the full image into mesh UVs. They also check replacement of the filled entrance, foreground occlusion, and depth rejection of geometry behind the quad. An independent floor fixture checks a horizontal surface's lighting, raised-object depth occlusion, and floor visibility from both camera views.
 

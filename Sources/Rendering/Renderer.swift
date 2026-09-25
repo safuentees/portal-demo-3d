@@ -30,6 +30,7 @@ final class Renderer: NSObject, MTKViewDelegate {
     private let commandQueue: MTLCommandQueue
     private let objects: [RenderObject]
     private let hasEntranceSurface: Bool
+    private let hasExitSurface: Bool
     private let pipelineState: MTLRenderPipelineState
     private let fovPipelineState: MTLRenderPipelineState
     private let floorPipelineState: MTLRenderPipelineState
@@ -46,17 +47,6 @@ final class Renderer: NSObject, MTKViewDelegate {
     private var camera: Camera
 
     private var lastFrameTime: CFTimeInterval?
-
-    enum PortalDirection: CaseIterable {
-        case entranceToExit, exitToEntrance
-
-        var destination: ObjectID {
-            switch self {
-            case .entranceToExit: return .exit
-            case .exitToEntrance: return .entrance
-            }
-        }
-    }
 
     // A capture needs both textures; never store a partially allocated pair.
     struct RenderTargets {
@@ -129,7 +119,10 @@ final class Renderer: NSObject, MTKViewDelegate {
                     device: device, fieldOfView: SceneConfiguration.fieldOfViewRadians,
                     aspect: 1, near: SceneConfiguration.nearPlane, far: SceneConfiguration.farPlane
                 )
-                scene.append(RenderObject(id: .fov, mesh: coneMesh))
+                // Share immutable geometry; each direction has its own world pose.
+                for direction in PortalDirection.allCases {
+                    scene.append(RenderObject(id: .fov(direction), mesh: coneMesh))
+                }
             }
             if showsDiagnosticObjects {
                 scene += [
@@ -143,6 +136,7 @@ final class Renderer: NSObject, MTKViewDelegate {
             objects = scene
         }
         hasEntranceSurface = objects.contains { $0.id == .entrance_quad }
+        hasExitSurface = objects.contains { $0.id == .exit_quad }
         guard Set(objects.map(\.id)).count == objects.count else { throw SetupError.duplicateObjectID }
         guard objects.allSatisfy({
             $0.placement.isValid && simd_determinant($0.modelMatrix).isFinite
@@ -348,12 +342,13 @@ final class Renderer: NSObject, MTKViewDelegate {
         let cameraBAWorld = sourceCameraWorld * portalMapping.transferBA
 
         // Build world models once; ordinary geometry stays fixed across views.
-        // The existing debug player/FOV poses still represent only A -> B.
+        // Each FOV follows its capture's world pose. The player remains A -> B.
         let worldModels = objects.map { object -> simd_float4x4 in
             switch object.id {
-            case .fov:
+            case .fov(let direction):
+                let cameraWorld = direction == .entranceToExit ? cameraABWorld : cameraBAWorld
                 return Transforms.scaling([sourceAspect, 1, 1]) * object.modelMatrix
-                    * sourceCameraWorld * portalMapping.transferAB
+                    * cameraWorld
             case .player:
                 return object.modelMatrix * sourceCameraWorld * portalMapping.transferAB
             default:
@@ -445,12 +440,16 @@ final class Renderer: NSObject, MTKViewDelegate {
             // Hide this direction's destination slab. Portal images and FOV
             // outlines are excluded from both captures to avoid recursive views.
             if let captureDirection {
-                if object.id == captureDirection.destination || object.id == .entrance_quad || object.id == .exit_quad || object.id == .fov { continue }
+                if object.id == captureDirection.destination || object.id == .entrance_quad || object.id == .exit_quad { continue }
+                if case .fov = object.id { continue }
                 if case .entranceBoundary = object.id { continue }
             }
-            // In the source view the quad replaces the filled entrance. Drawing
-            // the cube too would hide the quad at its local Z = 0 opening plane.
-            if !intoCameraTexture && hasEntranceSurface && object.id == .entrance || object.id == .exit { continue }
+            // Only the main view replaces a slab with its corresponding surface.
+            // The other portal stays an ordinary solid within each capture.
+            if !intoCameraTexture {
+                if hasEntranceSurface && object.id == .entrance { continue }
+                if hasExitSurface && object.id == .exit { continue }
+            }
             let style: (pipeline: MTLRenderPipelineState, color: SIMD4<Float>)
             switch object.id {
             case .entrance_quad:
@@ -459,9 +458,11 @@ final class Renderer: NSObject, MTKViewDelegate {
             case .exit_quad:
                 style = (textureSurfacePipelineState, SIMD4<Float>(repeating: 1))
                 encoder.setFragmentTexture(exitToEntranceTextures?.color, index: 0)
-            case .fov:
+            case .fov(let direction):
                 style = (intoCameraTexture ? textureFOVPipelineState : fovPipelineState,
-                         SceneConfiguration.mappedFOVColor)
+                         direction == .entranceToExit
+                            ? SceneConfiguration.entranceToExitFOVColor
+                            : SceneConfiguration.exitToEntranceFOVColor)
             case .entrance, .exit, .entranceBoundary:
                 style = (intoCameraTexture ? textureScenePipelineState : pipelineState,
                          SceneConfiguration.portalColor)

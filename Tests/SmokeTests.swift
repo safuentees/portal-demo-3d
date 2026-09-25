@@ -34,6 +34,7 @@ struct SmokeTests {
         view.depthStencilPixelFormat = .depth32Float
         let renderer = try Renderer(view: view, library: library, showsMappedPreview: true)
         try checkRendererFixtures(view: view, library: library, device: device, queue: queue)
+        try checkDirectionalFOV(view: view, library: library, device: device, queue: queue)
         try checkFloorFixture(view: view, library: library, device: device, queue: queue)
         try TexturePassChecks.run(view: view, library: library, device: device, queue: queue)
 
@@ -251,7 +252,7 @@ struct SmokeTests {
         // In the source view this clipped draw still selects the unlit pipeline.
         // The following sphere/player must explicitly restore the lit pipeline.
         // The mapped capture deliberately excludes the debug FOV.
-        let outline = RenderObject(id: .fov, mesh: mesh,
+        let outline = RenderObject(id: .fov(.entranceToExit), mesh: mesh,
             placement: ObjectPlacement(position: [0, 0, -100]))
         for id: ObjectID in [.sphere, .player] {
             let materialColor = id == .player ? SceneConfiguration.mappedPlayerColor : SceneConfiguration.sceneObjectColor
@@ -312,6 +313,72 @@ struct SmokeTests {
             }
         }
         print("PASS: actual renderer placement, mapped player, active camera lighting, and transformed normals")
+    }
+
+    @MainActor
+    static func checkDirectionalFOV(
+        view: MTKView, library: MTLLibrary, device: MTLDevice, queue: MTLCommandQueue
+    ) throws {
+        let quad = try QuadMesh.make(device: device)
+        let a = ObjectPlacement(position: [-0.2, -0.12, 1.1], scale: [0.001, 0.001, 1], yaw: 0.1, pitch: -0.08)
+        let b = ObjectPlacement(position: [0.2, 0.12, 1.2], scale: [0.001, 0.001, 1], yaw: -0.14, pitch: 0.1)
+        let near: Float = 0.35, far: Float = 1.4, fieldOfView: Float = .pi / 3
+        let mesh = try ConeMesh.make(device: device, fieldOfView: fieldOfView, aspect: 1, near: near, far: far)
+        let placement = ObjectPlacement(position: [0, 0, 4], scale: [0.55, 0.55, 0.55])
+        let cameraWorld = Transforms.rotateY(0.04) * Transforms.rotateX(-0.03)
+            * Transforms.translation([0.1, -0.1, -0.2])
+        let objects = [RenderObject(id: .entrance, mesh: quad, placement: a),
+            RenderObject(id: .exit, mesh: quad, placement: b),
+            RenderObject(id: .fov(.entranceToExit), mesh: mesh, placement: placement),
+            RenderObject(id: .fov(.exitToEntrance), mesh: mesh, placement: placement)]
+        let directions: [(simd_float4x4, simd_float4x4, SIMD4<Float>)] = [
+            (a.rigidFrame, b.rigidFrame, SceneConfiguration.entranceToExitFOVColor),
+            (b.rigidFrame, a.rigidFrame, SceneConfiguration.exitToEntranceFOVColor)]
+        let edges = [(0, 1), (1, 2), (2, 3), (3, 0), (4, 5), (5, 6), (6, 7), (7, 4),
+                     (0, 4), (1, 5), (2, 6), (3, 7)]
+        for preview in [false, true] {
+            let renderer = try Renderer(view: view, library: library, objects: objects,
+                camera: Camera(viewMatrix: simd_inverse(cameraWorld)), showsMappedPreview: preview)
+            for (width, height) in [(400, 400), (600, 300), (400, 600)] {
+                let frameWidth = preview ? width * 2 : width
+                let pixels = try render(renderer, device: device, queue: queue, width: frameWidth, height: height)
+                let aspect = Float(width) / Float(height)
+                let projection = Transforms.perspective(aspect: aspect,
+                    fieldOfView: SceneConfiguration.fieldOfViewRadians,
+                    near: SceneConfiguration.nearPlane, far: SceneConfiguration.farPlane)
+                for (source, destination, color) in directions {
+                    let expected = [color.z, color.y, color.x, color.w].map { Int(($0 * 255).rounded()) }
+                    var corners: [SIMD4<Float>] = []
+                    for z in [near, far] {
+                        for xy: SIMD2<Float> in [[-1, -1], [1, -1], [1, 1], [-1, 1]] {
+                            let local = SIMD4<Float>(xy.x * z * tan(fieldOfView / 2) * aspect,
+                                                     xy.y * z * tan(fieldOfView / 2), z, 1)
+                            let world = local * placement.modelMatrix * cameraWorld
+                            let inSource = world * simd_inverse(source)
+                            corners.append(inSource * destination)
+                        }
+                    }
+                    for (start, end) in edges {
+                        for t: Float in [0.25, 0.5, 0.75] {
+                            let world = corners[start] * (1 - t) + corners[end] * t
+                            let clip = world * simd_inverse(cameraWorld) * projection
+                            let x = Int(floor((clip.x / clip.w + 1) * 0.5 * Float(width)))
+                            let y = Int(floor((1 - clip.y / clip.w) * 0.5 * Float(height)))
+                            try expect((2..<(width - 2)).contains(x) && (2..<(height - 2)).contains(y),
+                                       "The directional FOV fixture must keep every sample inside its source viewport.")
+                            let found = (-2...2).contains { dy in
+                                (-2...2).contains { dx in
+                                    let index = ((y + dy) * frameWidth + x + dx) * 4
+                                    return (0..<4).allSatisfy { abs(Int(pixels[index + $0]) - expected[$0]) <= 1 }
+                                }
+                            }
+                            try expect(found, "Directional FOV color/transform/aspect mismatch near \(x),\(y).")
+                        }
+                    }
+                }
+            }
+        }
+        print("PASS: both directional FOV meshes, colors, rotated frames, aspect resizing, and preview modes")
     }
 
     @MainActor

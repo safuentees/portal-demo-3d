@@ -1,7 +1,20 @@
 import MetalKit
 
+/// Shared identity for a capture and the debug objects that represent its camera.
+enum PortalDirection: CaseIterable, Hashable {
+    case entranceToExit, exitToEntrance
+
+    var destination: ObjectID {
+        switch self {
+        case .entranceToExit: return .exit
+        case .exitToEntrance: return .entrance
+        }
+    }
+}
+
 enum ObjectID: Hashable {
-    case sphere, cube, torus, player, entrance, exit, fov, entrance_quad, exit_quad
+    case sphere, cube, torus, player, entrance, exit, entrance_quad, exit_quad
+    case fov(PortalDirection)
     case floor, entranceBoundary(Int)
     case foregroundBlock, nearBlock, farPillar, edgePillar, nearSideProbe
 }

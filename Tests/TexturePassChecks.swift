@@ -13,8 +13,10 @@ enum TexturePassChecks {
                 placement: ObjectPlacement(position: [0, 0, 2], scale: [0.01, 0.01, 1])),
             RenderObject(id: .exit, mesh: quad,
                 placement: ObjectPlacement(position: [0, 0, 2], scale: [20, 20, 1])),
-            RenderObject(id: .quad, mesh: quad,
+            RenderObject(id: .entrance_quad, mesh: quad,
                 placement: ObjectPlacement(position: [0, 0, 1], scale: [20, 20, 1])),
+            RenderObject(id: .exit_quad, mesh: quad,
+                placement: ObjectPlacement(position: [0, 0, 2], scale: [20, 20, 1])),
             RenderObject(id: .sphere, mesh: quad,
                 placement: ObjectPlacement(position: [-0.38, 0.48, 3], scale: [0.35, 0.28, 1], yaw: .pi)),
             RenderObject(id: .player, mesh: quad,
@@ -24,7 +26,7 @@ enum TexturePassChecks {
                 placement: ObjectPlacement(position: [0, 0, 5], scale: [20, 20, 1], yaw: .pi))
         ]
         let renderer = try Renderer(view: view, library: library, objects: objects, showsMappedPreview: true)
-        var previousTargets: [Renderer.PortalDirection: Renderer.RenderTargets] = [:]
+        var previousTargets: [PortalDirection: Renderer.RenderTargets] = [:]
         for (width, height) in [(512, 512), (800, 400), (400, 800), (801, 401), (512, 512)] {
             let frame = try SmokeTests.render(renderer, device: device, queue: queue, width: width, height: height)
             guard let color = renderer.entranceToExitTextures?.color, let depth = renderer.entranceToExitTextures?.depth else {
@@ -32,10 +34,10 @@ enum TexturePassChecks {
             }
             let textureWidth = width / 2
             let targets = renderer.mappedTextures
-            try SmokeTests.expect(targets.count == Renderer.PortalDirection.allCases.count,
+            try SmokeTests.expect(targets.count == PortalDirection.allCases.count,
                                   "Each portal direction must have a complete target pair.")
             var allTextures: [MTLTexture] = []
-            for direction in Renderer.PortalDirection.allCases {
+            for direction in PortalDirection.allCases {
                 guard let pair = targets[direction] else {
                     throw SmokeTests.Failure(description: "Missing targets for \(direction).")
                 }
@@ -61,6 +63,16 @@ enum TexturePassChecks {
                 && depth === targets[.entranceToExit]?.depth,
                 "The entrance-to-exit accessor must refer to its direction's target pair.")
             let texturePixels = try read(color, device: device, queue: queue)
+            guard let reverse = renderer.exitToEntranceTextures else {
+                throw SmokeTests.Failure(description: "The reverse targets are missing.")
+            }
+            let reversePixels = try read(reverse.color, device: device, queue: queue)
+            let reverseCenter = ((height / 2) * textureWidth + textureWidth / 2) * 4
+            let slabColor = SmokeTests.lightingBytes(pointWorld: worldPoint(pixelX: textureWidth / 2,
+                pixelY: height / 2, width: textureWidth, height: height, depth: 2), normalWorld: [0, 0, 1],
+                eyeWorld: .zero, materialColor: SceneConfiguration.portalColor)
+            try SmokeTests.expect((0..<4).allSatisfy { abs(Int(reversePixels[reverseCenter + $0]) - slabColor[$0]) <= 3 },
+                                  "The reverse capture must retain its source exit slab even when an exit surface exists.")
             try checkMarker(texturePixels, width: textureWidth, height: height,
                 position: [-0.38, 0.48, 3], material: SceneConfiguration.sceneObjectColor)
             try checkMarker(texturePixels, width: textureWidth, height: height,
@@ -88,17 +100,19 @@ enum TexturePassChecks {
         try checkTargetReuse(renderer, expected: previousTargets,
                              reason: "An invalid resize must preserve every existing target.")
         try checkPreviewModes(view: view, library: library, device: device, queue: queue,
-                              objects: objects + [RenderObject(id: .fov, mesh: quad,
+                              objects: objects + [RenderObject(id: .fov(.entranceToExit), mesh: quad,
                                 // In front of the source quad, so its debug-only
                                 // visibility can be checked independently of the capture.
-                                placement: ObjectPlacement(position: [0, 0.12, 0.5], scale: [0.08, 0.04, 1]))])
+                                placement: ObjectPlacement(position: [0, 0.12, 0.5], scale: [0.08, 0.04, 1])),
+                                RenderObject(id: .fov(.exitToEntrance), mesh: quad,
+                                    placement: ObjectPlacement(position: [0, -0.12, 0.5], scale: [0.08, 0.04, 1]))])
         try checkEntranceSurface(view: view, library: library, device: device, queue: queue, mesh: quad)
         try checkReverseCapture(view: view, library: library, device: device, queue: queue)
         print("PASS: mapped color/depth pass, excluded preview surfaces, orientation, sampling, resize, and resource reuse")
     }
 
     static func checkTargetReuse(
-        _ renderer: Renderer, expected: [Renderer.PortalDirection: Renderer.RenderTargets], reason: String
+        _ renderer: Renderer, expected: [PortalDirection: Renderer.RenderTargets], reason: String
     ) throws {
         try SmokeTests.expect(renderer.mappedTextures.count == expected.count && expected.allSatisfy { direction, pair in
             guard let current = renderer.mappedTextures[direction] else { return false }
@@ -130,7 +144,7 @@ enum TexturePassChecks {
         let quad = try QuadMesh.make(device: device)
         let renderer = try Renderer(view: view, library: library,
             objects: [entrance, exit,
-                RenderObject(id: .quad, mesh: quad, placement: entrance.placement),
+                RenderObject(id: .entrance_quad, mesh: quad, placement: entrance.placement),
                 RenderObject(id: .entranceBoundary(0), mesh: quad, placement: entrance.placement)] + landmarks,
             camera: Camera(viewMatrix: simd_inverse(sourceWorld)), showsMappedPreview: false)
         let width = 512, height = 384
@@ -195,7 +209,7 @@ enum TexturePassChecks {
         let hidden = try Renderer(view: view, library: library, objects: objects, showsMappedPreview: false)
         let enabled = try Renderer(view: view, library: library, objects: objects, showsMappedPreview: true)
         let withoutFOV = try Renderer(view: view, library: library,
-            objects: objects.filter { $0.id != .fov }, showsMappedPreview: false)
+            objects: objects.filter { if case .fov = $0.id { return false }; return true }, showsMappedPreview: false)
         var previousColor: MTLTexture?
         var previousDepth: MTLTexture?
         for (width, height) in [(512, 512), (800, 400), (400, 800), (801, 401)] {
@@ -224,12 +238,17 @@ enum TexturePassChecks {
             try SmokeTests.expect(fullCapture == splitCapture,
                                   "Hiding the preview changed the mapped projection or captured scene.")
             _ = try SmokeTests.render(withoutFOV, device: device, queue: queue, width: width, height: height)
-            guard let cleanCapture = withoutFOV.entranceToExitTextures?.color else {
-                throw SmokeTests.Failure(description: "The capture comparison did not allocate a texture.")
+            for direction in PortalDirection.allCases {
+                guard let full = hidden.mappedTextures[direction], let split = enabled.mappedTextures[direction],
+                      let clean = withoutFOV.mappedTextures[direction] else {
+                    throw SmokeTests.Failure(description: "The capture comparison did not allocate both directions.")
+                }
+                let capture = try read(full.color, device: device, queue: queue)
+                let splitCapture = try read(split.color, device: device, queue: queue)
+                let cleanCapture = try read(clean.color, device: device, queue: queue)
+                try SmokeTests.expect(capture == splitCapture && capture == cleanCapture,
+                    "Both FOVs must remain absent from both captures in either preview mode.")
             }
-            let withoutFOVCapture = try read(cleanCapture, device: device, queue: queue)
-            try SmokeTests.expect(fullCapture == withoutFOVCapture,
-                                  "The debug FOV must not alter the captured scene at any pixel.")
             for y in 0..<height {
                 let fullStart = y * width * 4
                 let splitStart = y * width * 8
@@ -238,17 +257,14 @@ enum TexturePassChecks {
                     "The full-width scene differs from an equivalent split source view at row \(y).")
             }
             try checkPreview(splitFrame, width: width * 2, height: height, texture: fullCapture, textureWidth: width)
-            let fov = SceneConfiguration.mappedFOVColor
-            let fovBytes = [fov.z, fov.y, fov.x, fov.w].map { Int(($0 * 255).rounded()) }
-            func countFOVPixels(_ pixels: [UInt8]) -> Int {
-                stride(from: 0, to: pixels.count, by: 4).filter { index in
-                    (0..<4).allSatisfy { abs(Int(pixels[index + $0]) - fovBytes[$0]) <= 1 }
+            for fov in [SceneConfiguration.entranceToExitFOVColor, SceneConfiguration.exitToEntranceFOVColor] {
+                let fovBytes = [fov.z, fov.y, fov.x, fov.w].map { Int(($0 * 255).rounded()) }
+                let count = stride(from: 0, to: fullFrame.count, by: 4).filter { index in
+                    (0..<4).allSatisfy { abs(Int(fullFrame[index + $0]) - fovBytes[$0]) <= 1 }
                 }.count
+                try SmokeTests.expect(count > 20,
+                    "Each directional FOV color must be visible in the source view.")
             }
-            try SmokeTests.expect(countFOVPixels(fullFrame) > 20,
-                "The mode-comparison fixture must visibly exercise the unlit mapped FOV in the source view.")
-            try SmokeTests.expect(countFOVPixels(fullCapture) == 0,
-                                  "The debug FOV must remain absent from the mapped texture.")
 
             // Test the far right independently: it must remain scene geometry with
             // the entrance texture, rather than an empty strip or a preview panel.
@@ -293,7 +309,7 @@ enum TexturePassChecks {
         for (fixture, cameraWorld) in cameras.enumerated() {
             let placement = ObjectPlacement(position: [0, 0, 3], scale: [2, 2.4, 0.15],
                 yaw: fixture == 0 ? 0 : 0.3, pitch: fixture == 0 ? 0 : -0.18)
-            let surface = RenderObject(id: .quad, mesh: mesh, placement: placement)
+            let surface = RenderObject(id: .entrance_quad, mesh: mesh, placement: placement)
             let foreground = RenderObject(id: .cube, mesh: mesh,
                 placement: ObjectPlacement(position: [0.3, -0.25, 2], scale: [0.5, 0.6, 1], yaw: .pi))
             let background = RenderObject(id: .sphere, mesh: mesh,
@@ -307,7 +323,7 @@ enum TexturePassChecks {
                 // An asymmetric camera-relative mark makes incorrect UV mapping visible.
                 RenderObject(id: .player, mesh: mesh,
                     placement: ObjectPlacement(position: [-0.6, 0.5, 4], scale: [0.7, 0.5, 1], yaw: .pi)),
-                RenderObject(id: .fov, mesh: mesh,
+                RenderObject(id: .fov(.entranceToExit), mesh: mesh,
                     placement: ObjectPlacement(position: [0.5, -0.4, 4.5], scale: [0.4, 0.8, 1])),
                 foreground, surface, background
             ]

@@ -6,19 +6,20 @@ enum SceneConfiguration {
     // False fills the window with the main view. True restores the right preview.
     // The mapped camera still renders the entrance texture in either mode.
     static let showsMappedPreview = false
-    // Draw the mapped camera's frustum in the main scene, outside its own capture.
+    // Draw both mapped camera frustums in the main scene, outside the captures.
     static let showsMappedFOV = true
     // Extra occlusion/clipping probes are opt-in, separately from the FOV.
     static let showsDiagnosticObjects = false
 
     // Opaque role palette, authored for direct .bgra8Unorm output (no sRGB transfer).
-    // The FOV is unlit and deliberately dimmer than the solid objects.
+    // FOV outlines are unlit, with separate colors for the two portal directions.
     static let backgroundColor = MTLClearColor(red: 24.0 / 255, green: 24.0 / 255, blue: 27.0 / 255, alpha: 1)
-    // Pale cool solids, blue portals, and teal mapped representations.
+    // Pale cool solids, blue portals, teal A -> B and amber B -> A outlines.
     static let sceneObjectColor = SIMD4<Float>(0.54, 0.59, 0.64, 1.0)
     static let portalColor = SIMD4<Float>(0.38, 0.49, 0.64, 1.0)
     static let mappedPlayerColor = SIMD4<Float>(0.38, 0.65, 0.58, 1.0)
-    static let mappedFOVColor = SIMD4<Float>(0.14, 0.27, 0.25, 1.0)
+    static let entranceToExitFOVColor = SIMD4<Float>(0.14, 0.27, 0.25, 1.0)
+    static let exitToEntranceFOVColor = SIMD4<Float>(0.55, 0.34, 0.16, 1.0)
     // Two nearby material tones, shaded by the same neutral scene lighting.
     static let floorColorA = SIMD4<Float>(0.125, 0.14, 0.165, 1)
     static let floorColorB = SIMD4<Float>(0.14, 0.155, 0.18, 1)
@@ -128,7 +129,7 @@ enum SceneConfiguration {
                                yaw: frame.yaw, pitch: frame.pitch)
     }
 
-    // Shared by the camera projection and its FOV outline. FOV is vertical;
+    // Shared by both camera projections and FOV outlines. FOV is vertical;
     // near/far are distances from the eye along camera-local +Z, in world units.
     static let fieldOfViewRadians: Float = 70 * .pi / 180
     static let nearPlane: Float = 0.1
