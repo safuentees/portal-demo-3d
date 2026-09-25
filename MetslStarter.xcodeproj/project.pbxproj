@@ -22,6 +22,7 @@
 		72CCC6F0305CE3E10050CCA2 /* CubeMesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72CCC6EF305CE3E10050CCA2 /* CubeMesh.swift */; };
 		72CCC6F2305CE92D0050CCA2 /* RenderObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72CCC6F1305CE9260050CCA2 /* RenderObject.swift */; };
 		A10000000000000000000101 /* MeshVertexLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000102 /* MeshVertexLayout.swift */; };
+		A10000000000000000000201 /* TorusMesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000202 /* TorusMesh.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 		72CCC6EF305CE3E10050CCA2 /* CubeMesh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CubeMesh.swift; sourceTree = "<group>"; };
 		72CCC6F1305CE9260050CCA2 /* RenderObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderObject.swift; sourceTree = "<group>"; };
 		A10000000000000000000102 /* MeshVertexLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeshVertexLayout.swift; sourceTree = "<group>"; };
+		A10000000000000000000202 /* TorusMesh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorusMesh.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +132,7 @@
 				000000000000000000000206 /* Renderer.swift */,
 				72CCC6F1305CE9260050CCA2 /* RenderObject.swift */,
 				000000000000000000000207 /* SphereMesh.swift */,
+				A10000000000000000000202 /* TorusMesh.swift */,
 				72CCC6EF305CE3E10050CCA2 /* CubeMesh.swift */,
 				7201D8043062C1E5001C52DE /* ConeMesh.swift */,
 				720C64DA30637D6C007B0DD2 /* QuadMesh.swift */,
@@ -243,6 +246,7 @@
 				000000000000000000000106 /* Renderer.swift in Sources */,
 				72CCC6F2305CE92D0050CCA2 /* RenderObject.swift in Sources */,
 				000000000000000000000107 /* SphereMesh.swift in Sources */,
+				A10000000000000000000201 /* TorusMesh.swift in Sources */,
 				000000000000000000000108 /* ShaderUniforms.swift in Sources */,
 				000000000000000000000109 /* Shaders.metal in Sources */,
 				7201D8053062C1E5001C52DE /* ConeMesh.swift in Sources */,

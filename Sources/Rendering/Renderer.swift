@@ -88,7 +88,11 @@ final class Renderer: NSObject, MTKViewDelegate {
                 RenderObject(id: .floor, mesh: quadMesh, placement: SceneConfiguration.floorPlacement),
                 RenderObject(id: .nearBlock, mesh: cubeMesh, placement: SceneConfiguration.exitBlockPlacement),
                 RenderObject(id: .sphere, mesh: try SphereMesh.make(device: device),
-                             placement: SceneConfiguration.exitSpherePlacement)
+                             placement: SceneConfiguration.exitSpherePlacement),
+                RenderObject(id: .torus, mesh: try TorusMesh.make(device: device,
+                    majorRadius: SceneConfiguration.torusMajorRadius, tubeRadius: SceneConfiguration.torusTubeRadius,
+                    ringSegments: SceneConfiguration.torusRingSegments, tubeSegments: SceneConfiguration.torusTubeSegments),
+                    placement: SceneConfiguration.exitTorusPlacement)
             ]
             for (index, placement) in SceneConfiguration.portalBoundaryPlacements(for: SceneConfiguration.entrancePlacement).enumerated() {
                 scene.append(RenderObject(id: .entranceBoundary(index), mesh: quadMesh, placement: placement))

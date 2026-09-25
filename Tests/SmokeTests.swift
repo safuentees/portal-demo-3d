@@ -27,6 +27,7 @@ struct SmokeTests {
         let library = try device.makeLibrary(URL: URL(fileURLWithPath: CommandLine.arguments[1]))
         try LightingChecks.run(device: device, queue: queue, library: library)
         try FloorChecks.run(device: device, queue: queue, library: library)
+        try TorusChecks.run(device: device, queue: queue, library: library)
         try checkFrustumMesh(device: device)
         let view = MTKView(frame: .zero, device: device)
         view.colorPixelFormat = .bgra8Unorm

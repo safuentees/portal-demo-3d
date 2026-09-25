@@ -22,9 +22,9 @@ The project uses SwiftUI, AppKit, MetalKit, Model I/O, and SIMD, with no externa
 
 The entrance is centered at `[0, 0, 3]`. The exit is at `[4.8, 0, 6]`, turned 60 degrees around Y. Both openings are 2 units wide and 3 units tall. They stand on a shared floor at `Y = -1.5`. This spacing leaves room to move around each opening, and the angled exit makes the change in viewing direction easy to see.
 
-A thin blue boundary marks the entrance aperture; four flat strips sit just outside its edges at the same plane. It has no thick rim, bevel, or glow, and is omitted from the mapped capture. The exit retains its simple blue rectangle. Neutral cube and sphere silhouettes identify the destination, while teal remains reserved for the mapped player and optional FOV outline.
+A thin blue boundary marks the entrance aperture; four flat strips sit just outside its edges at the same plane. It has no thick rim, bevel, or glow, and is omitted from the mapped capture. The exit retains its simple blue rectangle. Neutral cube, sphere, and torus silhouettes identify the surroundings, while teal remains reserved for the mapped player and optional FOV outline.
 
-The default destination contains just a nearer cube and a farther sphere. Their different shapes make the destination recognizable, and their different distances reveal parallax: when you move sideways, the nearer cube moves farther across the image. Their starting silhouettes are separated, leaving empty space around the portal image. No new primitive type is needed.
+Beyond the exit, a nearer cube and a farther sphere make the destination recognizable. Their different distances reveal parallax: when you move sideways, the nearer cube moves farther across the image. Their starting silhouettes are separated, leaving empty space around the portal image. An upright torus sits on the opposite side of the exit plane, at exit-local `[2.2, -0.84, -1.5]`. It rests on the floor, offset sideways to keep the initial opening clear. Its hole helps distinguish it from the sphere when inspecting that side or looking back toward the exit. This is another world object; a reverse portal view and exit-plane clipping remain unimplemented.
 
 The ground is one `QuadMesh`, scaled to `200 × 200` and rotated from its local XY plane into world XZ. Its surface sits at `floorHeight = -1.5`; it has no thickness or raised grid strips. The wide extent keeps a slab edge out of the usual views. The floor, entrance surface, and boundary strips reuse the same immutable quad mesh; box objects share a cube mesh. Placement changes each instance without rebuilding geometry every frame.
 
@@ -40,7 +40,8 @@ Editable scene values live in `SceneConfiguration.swift`:
 | `floorCheckerSize` | Positive, finite world units per square; larger values make larger squares. |
 | `floorHeight`, `floorCenterXZ`, `floorSize` | Position and extent of the flat ground. |
 | `portalBoundaryWidth` | Width of the flat entrance boundary, currently `0.012` world units. |
-| `exitBlockPlacement`, `exitSpherePlacement` | The two default destination silhouettes. |
+| `exitBlockPlacement`, `exitSpherePlacement`, `exitTorusPlacement` | The default landmarks on both sides of the exit. |
+| `torusMajorRadius`, `torusTubeRadius`, `torusRingSegments`, `torusTubeSegments` | Ring size, tube thickness, and mesh detail; currently `0.5`, `0.16`, `64`, and `24`. |
 | `showsDiagnosticObjects` | Restores extra probes and the mapped FOV outline; off by default. |
 
 Landmarks around the exit are specified in **exit-local coordinates**: X goes across the opening, Y goes up, and positive Z goes beyond it. During scene construction, `localPosition * exit.rigidFrame` converts each offset to a world position once. These are ordinary world objects, not mapped copies of the player. The rigid frame excludes the portal's visual scale, so changing the opening size does not stretch the landmark offsets.
@@ -48,6 +49,14 @@ Landmarks around the exit are specified in **exit-local coordinates**: X goes ac
 With diagnostics enabled, foreground and rear blocks test depth around the entrance, a distant pillar makes depth differences stronger, and a thin edge pillar makes partial visibility easy to inspect. A low block at negative exit-local Z intentionally sits between the virtual eye and the exit plane. It can still appear in the capture: it is a probe for future exit-plane clipping, not evidence that clipping is implemented.
 
 For a visual comparison, use the same starting camera in the before and after scene, then strafe left to view the opening obliquely and approach one edge. Repeat with `showsMappedPreview` hidden and enabled. Compare the cube and sphere's separation, the entrance boundary, and the floor at close range and near the horizon. Resize to tall, wide, and odd-width windows and repeat; move slowly at a shallow viewing angle to look for unstable checker detail. Enable diagnostics only when investigating their specific cases. These are manual inspection routes, not automated test results. Walking through a portal does not teleport the camera, and the ground and objects do not provide collision.
+
+## How the torus mesh works
+
+`TorusMesh.swift` builds a ring in local XY with its hole along local Z. Imagine moving a small circle around a larger circle: the large circle's radius is `majorRadius`, and the small circle's radius is `tubeRadius`. The outer radius is their sum (`0.66` by default), and the hole radius is their difference (`0.34`). Both radii must be finite and distinguishable, with `0 < tubeRadius < majorRadius`; each segment count must be between 3 and 512.
+
+The builder samples those two circles into a grid, connects each cell with two indexed triangles, and gives each vertex a smooth outward normal. The duplicated UV edges have exactly matching positions and normals, so the ring closes cleanly. The default mesh has 1,625 vertices and 3,072 triangles. Its position, normal, and UV data use the existing packed 32-byte layout and existing lighting pipeline.
+
+This follows Apple's [custom interleaved `MDLMesh` construction](https://developer.apple.com/documentation/modelio/mdlmesh/init(vertexbuffer:vertexcount:descriptor:submeshes:)) and [conversion to `MTKMesh`](https://developer.apple.com/documentation/metalkit/mtkmesh/init(mesh:device:)): both vertex and index buffers come from `MTKMeshBufferAllocator`. The renderer builds the mesh once and reuses it for every frame and camera. Placement rotates the completed local mesh to match the exit, then translates it into the world; it does not change the portal mapping or require another shader.
 
 ## Custom field of view and length
 
@@ -156,6 +165,7 @@ The diffuse lighting stays attached to the world; the highlight depends on the a
 | Preview/diagnostic flags, FOV, near/far distances, portal/landmark placements, floor tones/checker size, boundary width, colors, lights, camera speed/sensitivity | `Sources/Scene/SceneConfiguration.swift` |
 | FOV corners, line edges, mesh parameters | `Sources/Rendering/ConeMesh.swift` |
 | Shared flat geometry for the entrance, ground, and boundary strips | `Sources/Rendering/QuadMesh.swift` |
+| Indexed ring geometry, smooth normals, UV seams, and parameter validation | `Sources/Rendering/TorusMesh.swift` |
 | Shared packed vertex descriptor for all meshes | `Sources/Rendering/MeshVertexLayout.swift` |
 | Scene objects, mapping, offscreen textures, render passes, viewport setup | `Sources/Rendering/Renderer.swift` |
 | Object identity, placement, model matrix, rigid frame | `Sources/Rendering/RenderObject.swift` |
@@ -190,6 +200,10 @@ Texture-preview checks compare the right view's pixels with the captured image, 
 Entrance-surface checks verify unlit, screen-aligned image sampling on frontal and tilted quads with moved/rotated cameras. Their expected samples distinguish this behavior from squeezing the full image into mesh UVs. They also check replacement of the filled entrance, foreground occlusion, and depth rejection of geometry behind the quad. An independent floor fixture checks a horizontal surface's lighting, raised-object depth occlusion, and floor visibility from both camera views.
 
 `FloorChecks` exercises the real floor shader with independent material values and ambient-only lighting. Its checks target both editable tones, square size, negative world coordinates, world anchoring as the mesh or camera moves, mixed coverage at a square boundary, and convergence toward the average at distant or oblique views across several target sizes. Uniform-layout checks also cover the 48-byte floor material.
+
+`TorusChecks` checks several independent radius/segment fixtures, the packed vertex layout, unit outward normals, triangle winding and index bounds, exact seam closure, and rejected invalid parameters. Actual GPU draws from both sides verify that the tube is visible while the hole and exterior remain clear.
+
+The torus addition was verified on 2026-09-24 with a fresh isolated `Scripts/check.sh` build and the full Metal API validation suite. Actual offscreen GPU captures were inspected at the starting, oblique, and near-opening views and from both sides of the exit, with the preview hidden and enabled. This verifies the added mesh and its current composition; it does not establish reverse portal rendering or exit-plane clipping.
 
 Verified on 2026-09-24: the isolated app build, full Metal API validation suite, and `git diff --check` passed after this refinement. Actual offscreen GPU renders were compared before/after at the starting, oblique, and near-opening views with the preview hidden and enabled. Additional captures inspected distant and grazing-angle ground, a small camera movement, tall/wide/odd window sizes, and enabled diagnostics. These sampled views do not establish flicker-free output through every possible motion; native interactive cursor behavior was not manually retested.
 

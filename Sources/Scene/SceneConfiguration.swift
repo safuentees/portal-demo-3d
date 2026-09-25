@@ -39,6 +39,11 @@ enum SceneConfiguration {
     static let sphereExtent = SIMD3<Float>(repeating: 0.75)
     static let sphereSegments = SIMD2<UInt32>(30, 30)
 
+    static let torusMajorRadius: Float = 0.5
+    static let torusTubeRadius: Float = 0.16
+    static let torusRingSegments = 64
+    static let torusTubeSegments = 24
+
     static let cubeSegments = SIMD3<UInt32>(1, 1, 1)
     static let cubeExtent = SIMD3<Float>(repeating: 1.0)
 
@@ -90,6 +95,13 @@ enum SceneConfiguration {
         // Model I/O's sphere extent is its radius; this makes a 1.2-unit ball.
         placement(in: exitPlacement, at: [0.7, -0.9, 3.6],
                   scale: SIMD3<Float>(repeating: 0.6) / sphereExtent)
+    }
+
+    static var exitTorusPlacement: ObjectPlacement {
+        // Negative exit-local Z is opposite the cube and sphere. Keep the whole
+        // tube on that side, with its bottom resting on the same ground plane.
+        let centerY = floorHeight - exitPlacement.position.y + torusMajorRadius + torusTubeRadius
+        return placement(in: exitPlacement, at: [2.2, centerY, -1.5], scale: [1, 1, 1])
     }
 
     static func portalBoundaryPlacements(for portal: ObjectPlacement) -> [ObjectPlacement] {
