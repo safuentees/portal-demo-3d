@@ -1,0 +1,395 @@
+{
+  "version": "1.2.0",
+  "as_of": "2026-09-26",
+  "evidence_classes": {
+    "observed": "Historical dataset and public source statements",
+    "user_confirmed": "Eight named challenges apply to 2026; reply 4 interpreted as four teammates",
+    "judgment": "Ratings, weights, differentiation hypotheses and recommended scope",
+    "proposed": "All new features, benchmark workloads, tests and build milestones",
+    "unresolved": "Skills, hardware, remaining time, current event-specific rules and secondary eligibility"
+  },
+  "team_assumptions": {
+    "size": 4,
+    "size_basis": "User answered 4 to the team question; treated as team size.",
+    "skills": "Unspecified; baseline assumes web/API skills and at least one person comfortable with SQL.",
+    "hardware": "No specialized hardware assumed; ordinary laptops and a microphone for the voice alternative.",
+    "time": "Full 36-hour window is a planning baseline, not a claim about remaining hours. Shorter-time plans are conditional.",
+    "hacking_window": "Friday 25 September 2026 23:00 to Sunday 27 September 2026 11:00 America/New_York. Exact submission cutoff remains unverified."
+  },
+  "eligibility_prerequisite": "Confirm participant eligibility and attendance, actual accepted sponsor product use, event build/reuse rules and current submission/opt-in. Every ranking is conditional until these pass; no score overrides an eligibility failure. Holds are additional resource/use-case gates.",
+  "secondary_categories": "Technical compatibility is evaluated. No second category is represented as eligible because maximum entries, exclusivity and simultaneous awards remain unverified.",
+  "weights": {
+    "challenge_fit": 20,
+    "useful_integration": 20,
+    "feasibility": 20,
+    "differentiation": 15,
+    "demonstrability": 15,
+    "dependency_safety": 10
+  },
+  "weight_reason": "Challenge fit and useful integration receive 40% together because the objective is a coherent sponsor-dependent project. Feasibility receives 20%; distinction and demo receive 15% each; dependency safety 10%. These are planning judgments, not MLH weights or findings from winners.",
+  "scale": {
+    "challenge_fit": "1 tangential; 3 meets broad usage language; 5 direct match to the brief and its stated emphasis.",
+    "useful_integration": "1 decorative; 3 useful supporting role; 5 removing the sponsor breaks a core capability.",
+    "feasibility": "1 implausible without missing expertise; 3 requires material scope cuts; 5 bounded with familiar tools and few moving parts.",
+    "differentiation": "1 commodity use case; 3 focused testable distinction; 5 unusually strong demonstrated distinction would be needed. No concept is asserted globally novel.",
+    "demonstrability": "1 result hard to inspect; 3 meaningful but explanation-dependent; 5 clear user action and visible verified consequence.",
+    "dependency_safety": "1 unresolved specialist/access blockers; 3 manageable external risks; 5 few dependencies and practical fallback."
+  },
+  "formula": "Total = sum(weight × rating / 5). The result is a decision score out of 100, not a win probability, observed outcome or official judging score.",
+  "ranking": [
+    {
+      "id": "F01",
+      "name": "ReplayBench",
+      "origin": "fresh",
+      "primary_target": "Tiger Data",
+      "scores": {
+        "challenge_fit": 5,
+        "useful_integration": 5,
+        "feasibility": 4,
+        "differentiation": 4,
+        "demonstrability": 5,
+        "dependency_safety": 4
+      },
+      "weighted_total": 91.0,
+      "selection_gate": "Conditional",
+      "rationale": "The sponsor performs the central time-series work; correctness and measured latency are visible. SQL skill and account access remain assumptions.",
+      "rank": 1
+    },
+    {
+      "id": "F02",
+      "name": "Handoff Lab",
+      "origin": "fresh",
+      "primary_target": "ElevenLabs",
+      "scores": {
+        "challenge_fit": 5,
+        "useful_integration": 5,
+        "feasibility": 4,
+        "differentiation": 3,
+        "demonstrability": 5,
+        "dependency_safety": 3
+      },
+      "weighted_total": 86.0,
+      "selection_gate": "Conditional",
+      "rationale": "Voice is intrinsic and the repair loop is demonstrable. Existing roleplay products and live audio risk limit differentiation and safety scores.",
+      "rank": 2
+    },
+    {
+      "id": "I07",
+      "name": "LineCheck",
+      "origin": "adapted",
+      "primary_target": "Gemini API",
+      "scores": {
+        "challenge_fit": 5,
+        "useful_integration": 5,
+        "feasibility": 4,
+        "differentiation": 2,
+        "demonstrability": 5,
+        "dependency_safety": 3
+      },
+      "weighted_total": 83.0,
+      "selection_gate": "Conditional",
+      "rationale": "Useful document extraction supports deterministic reconciliation. Mature competitors constrain differentiation; evidence locations need validation.",
+      "rank": 3
+    },
+    {
+      "id": "I05",
+      "name": "PantryRelay",
+      "origin": "adapted",
+      "primary_target": "MongoDB Atlas",
+      "scores": {
+        "challenge_fit": 5,
+        "useful_integration": 4,
+        "feasibility": 4,
+        "differentiation": 2,
+        "demonstrability": 5,
+        "dependency_safety": 4
+      },
+      "weighted_total": 81.0,
+      "selection_gate": "Conditional",
+      "rationale": "Atlas owns real reservation state; a race/duplicate scan demo is clear. Domain differentiation and actual operator validation are limited.",
+      "rank": 4
+    },
+    {
+      "id": "I06",
+      "name": "LostLink",
+      "origin": "adapted",
+      "primary_target": "Gemini API",
+      "scores": {
+        "challenge_fit": 5,
+        "useful_integration": 5,
+        "feasibility": 3,
+        "differentiation": 2,
+        "demonstrability": 5,
+        "dependency_safety": 3
+      },
+      "weighted_total": 79.0,
+      "selection_gate": "Conditional",
+      "rationale": "Multimodal retrieval is central. A fair image set and no-match calibration take time; NotLost already covers the broad use case.",
+      "rank": 5
+    },
+    {
+      "id": "I10",
+      "name": "BranchBridge",
+      "origin": "adapted",
+      "primary_target": "ElevenLabs",
+      "scores": {
+        "challenge_fit": 5,
+        "useful_integration": 4,
+        "feasibility": 4,
+        "differentiation": 3,
+        "demonstrability": 4,
+        "dependency_safety": 3
+      },
+      "weighted_total": 79.0,
+      "selection_gate": "Conditional",
+      "rationale": "Responsive character voices support a coherent game; authored branching contains scope. Synchronization and autonomous-audio interpretation need checking.",
+      "rank": 5
+    },
+    {
+      "id": "I03",
+      "name": "Counterexample Arcade",
+      "origin": "adapted",
+      "primary_target": "DigitalOcean",
+      "scores": {
+        "challenge_fit": 3,
+        "useful_integration": 3,
+        "feasibility": 5,
+        "differentiation": 3,
+        "demonstrability": 5,
+        "dependency_safety": 5
+      },
+      "weighted_total": 78.0,
+      "selection_gate": "Conditional",
+      "rationale": "The core is easy to verify with few dependencies, but cloud hosting has a supporting role and is a weaker sponsor centerpiece.",
+      "rank": 7
+    },
+    {
+      "id": "F03",
+      "name": "EvidenceDelta",
+      "origin": "fresh",
+      "primary_target": "Snowflake API",
+      "scores": {
+        "challenge_fit": 5,
+        "useful_integration": 5,
+        "feasibility": 3,
+        "differentiation": 3,
+        "demonstrability": 4,
+        "dependency_safety": 2
+      },
+      "weighted_total": 77.0,
+      "selection_gate": "Conditional",
+      "rationale": "Version-specific retrieval and inference fit the sponsor, but account, indexing and evidence alignment create several coupled dependencies.",
+      "rank": 8
+    },
+    {
+      "id": "I02",
+      "name": "Contract Canary",
+      "origin": "adapted",
+      "primary_target": "DigitalOcean",
+      "scores": {
+        "challenge_fit": 3,
+        "useful_integration": 3,
+        "feasibility": 4,
+        "differentiation": 3,
+        "demonstrability": 5,
+        "dependency_safety": 4
+      },
+      "weighted_total": 72.0,
+      "selection_gate": "Conditional",
+      "rationale": "A hosted replay service is useful and demonstrable; the sponsor role is less distinctive than the contract diagnosis itself.",
+      "rank": 9
+    },
+    {
+      "id": "I09",
+      "name": "StormTable",
+      "origin": "adapted",
+      "primary_target": "Tiger Data",
+      "scores": {
+        "challenge_fit": 4,
+        "useful_integration": 4,
+        "feasibility": 3,
+        "differentiation": 3,
+        "demonstrability": 4,
+        "dependency_safety": 3
+      },
+      "weighted_total": 71.0,
+      "selection_gate": "Conditional",
+      "rationale": "Only a substantive event-history/replay redesign justifies time-series tooling; a tiny scripted map does not.",
+      "rank": 10
+    },
+    {
+      "id": "I01",
+      "name": "FormTrail",
+      "origin": "adapted",
+      "primary_target": "Gemini API",
+      "scores": {
+        "challenge_fit": 4,
+        "useful_integration": 3,
+        "feasibility": 4,
+        "differentiation": 2,
+        "demonstrability": 4,
+        "dependency_safety": 4
+      },
+      "weighted_total": 70.0,
+      "selection_gate": "Conditional",
+      "rationale": "Source-grounded simplification can help, but deterministic completeness remains the core. Do not let AI invent form requirements.",
+      "rank": 11
+    },
+    {
+      "id": "I04",
+      "name": "WindowWise",
+      "origin": "adapted",
+      "primary_target": "MongoDB Atlas",
+      "scores": {
+        "challenge_fit": 3,
+        "useful_integration": 3,
+        "feasibility": 4,
+        "differentiation": 2,
+        "demonstrability": 4,
+        "dependency_safety": 4
+      },
+      "weighted_total": 66.0,
+      "selection_gate": "Conditional",
+      "rationale": "Atlas can retain schedules and service records; the small feasibility engine alone gives the sponsor limited distinctive work.",
+      "rank": 12
+    },
+    {
+      "id": "F04",
+      "name": "ReceiptRelay",
+      "origin": "fresh",
+      "primary_target": "Solana",
+      "scores": {
+        "challenge_fit": 5,
+        "useful_integration": 5,
+        "feasibility": 2,
+        "differentiation": 3,
+        "demonstrability": 4,
+        "dependency_safety": 1
+      },
+      "weighted_total": 71.0,
+      "selection_gate": "Hold",
+      "rationale": "Unconfirmed cross-organization trust need, test-network acceptance and specialist skill. Do not select on score until those gates clear.",
+      "rank": null
+    },
+    {
+      "id": "I08",
+      "name": "Pulse Path",
+      "origin": "adapted",
+      "primary_target": "Tiger Data",
+      "scores": {
+        "challenge_fit": 3,
+        "useful_integration": 3,
+        "feasibility": 2,
+        "differentiation": 3,
+        "demonstrability": 4,
+        "dependency_safety": 1
+      },
+      "weighted_total": 55.0,
+      "selection_gate": "Hold",
+      "rationale": "Hardware is not confirmed, and sparse cue logs are weak justification for time-series machinery. A simulator would be a different scoped product.",
+      "rank": null
+    }
+  ],
+  "fresh_concepts": [
+    {
+      "id": "F01",
+      "name": "ReplayBench",
+      "primary": "Tiger Data",
+      "tagline": "Prove whether delayed telemetry changes a dashboard correctly.",
+      "problem": "A developer sees yesterday’s count change after buffered events arrive, or sees an apparently current chart omit late history. The task is to reproduce, explain and repair one bounded case.",
+      "integration": "Use Tiger Data as the only database: relational device metadata, a time-partitioned event table and one continuous aggregate. Compare event time with arrival time; explicitly refresh affected historical buckets. No AI, blockchain or second database.",
+      "mvp": "Three simulated devices, one integer-valued event schema, a 100,000-row seed stream, late arrivals, unchanged duplicates and a disconnected stream. Controls inject faults; a timeline shows the affected bucket, correction and independent count/sum result. Scale toward one million only after the core works.",
+      "demo": "Show a stable total; inject late events; reveal a stale historical aggregate; refresh the complete affected bucket; show agreement with an independent reference calculation. Replay an unchanged duplicate and demonstrate no inflation. Then show measured raw-query versus aggregate-query timings.",
+      "validation": "Twelve seeded scenarios covering timely, late, duplicate, missing and combined cases; exact integer count/sum agreement after completed refresh. Run at least thirty comparable queries per path on the same dataset, query semantics and service; report median/p95, environment, warm/cold status and refresh cost separately. These are future tests, not results.",
+      "difference": "A guided fault-injection and repair exercise with an independently checked result, aimed at a developer’s first time-series prototype. Existing monitoring products already diagnose metrics and data quality; the proposed distinction is the compact reproducible teaching/test workflow, not a new database algorithm.",
+      "history": [
+        "P08",
+        "P11",
+        "P18",
+        "P14"
+      ],
+      "history_reason": "Freetear and Pegasus made development friction concrete; Farsense connected telemetry to a visible dashboard; Tango used replay and feedback. These support an inspectable technical workflow, not a causal win claim.",
+      "scope_cut": "No production ingestion, arbitrary schemas, anomaly ML, compression promises or exactly-once delivery claim. A stable (event_time, event_id) key handles only unchanged duplicates with unchanged timestamps; account for every partition dimension.",
+      "risk": "Tiger account access and correct refresh semantics are the first gates. Real-time aggregation does not automatically repair old buckets outside its refresh policy. One teammate must be comfortable with SQL.",
+      "secondary": "DigitalOcean can host the actual API/UI; a qualifying GoDaddy domain can support the demo. Entry and simultaneous-award permission are unverified, so neither is claimed eligible.",
+      "go_no_go": "By hour 2, connect to the accepted Tiger service and create/query one continuous aggregate; by hour 4, repair one deliberately late bucket and match the independent oracle. If either fails, switch to a finalist whose service works."
+    },
+    {
+      "id": "F02",
+      "name": "Handoff Lab",
+      "primary": "ElevenLabs",
+      "tagline": "Practice a support call and repair the exact missing facts in the resulting ticket.",
+      "problem": "A novice helpdesk volunteer can sound fluent yet omit the device, location or attempted checks needed for a useful handoff.",
+      "integration": "ElevenLabs provides the live caller voice and conversational interaction. The app owns a hidden case fact card, five ticket fields, evidence links and retry state. The human is the trainee. Avoid a second model/provider unless it performs a demonstrably separate necessary task.",
+      "mvp": "Three fictional support scenarios, a live spoken session, editable ticket, transcript evidence and retry of one missed question. The caller can reveal only authored case facts; uncertain transcript extraction needs review.",
+      "demo": "Let a judge conduct a short call but miss the location. Show the ticket gap against the case card, retry the relevant moment, and show the corrected handoff. Display captions and a clear live-versus-recorded status.",
+      "validation": "Fifteen scripted turns including interruptions and ambiguous answers; compare five ticket fields against human-authored truth. Report field precision/recall, unsupported facts, tool-state consistency and median/p95 turn latency. Five volunteers provide exploratory usability feedback, not efficacy proof.",
+      "difference": "Human trainee practice with an evidence-linked operational artifact and a targeted repair loop. Yoodli and VirtualSpeech already offer custom roleplay and feedback; ElevenLabs already tests agents. Roleplay or scoring alone is not the distinction.",
+      "history": [
+        "P05",
+        "P14",
+        "P27"
+      ],
+      "history_reason": "Speak Free practiced speaking; Tango connected practice and feedback; ARSL made learning interactive. The proposed voice workflow transfers those patterns without requiring VR.",
+      "scope_cut": "One support domain and five fields; no emotion diagnosis, real customers, outbound calls, voice cloning, enterprise integration or broad training curriculum.",
+      "risk": "Voice account/quota, venue microphone/noise and reliable fact grounding. A recording is an honest backup but does not establish a working live loop.",
+      "secondary": "DigitalOcean hosting is technically compatible. GoDaddy is a conditional naming addition. Category-entry and award-stacking eligibility remain unverified.",
+      "go_no_go": "By hour 2, one real conversation must update a visible field and preserve the case truth. If audio or quota fails, prefer LineCheck with working Gemini access rather than relabel a text-only app as the voice build."
+    },
+    {
+      "id": "F03",
+      "name": "EvidenceDelta",
+      "primary": "Snowflake API",
+      "tagline": "Show which source change altered an answer and when the evidence is insufficient.",
+      "problem": "A student comparing two versions of a campus notice needs to know what changed in the requirements, not just receive a plausible summary.",
+      "integration": "Use version-filtered Cortex Search retrieval plus actual Cortex REST inference. Stable document/chunk IDs and explicit version metadata separate the two evidence sets; use Snowflake as the sole data/AI stack.",
+      "mvp": "Twenty authored or permission-compatible notices in two preloaded versions; one question, side-by-side cited answers, a changed-fact view and missing/conflicting-evidence state. A text-only corpus avoids OCR.",
+      "demo": "Ask the same question against two versions where one deadline changed. Highlight its source passage, then show an unchanged case and a question neither version answers.",
+      "validation": "Twenty labeled question/version pairs, including changed, unchanged, absent and contradictory facts; reserve a test subset. Count unsupported claims, missed changes and correct abstentions; validate returned source/version IDs.",
+      "difference": "A bounded source-version comparison and evidence audit rather than a generic RAG chat page. Preload indexes so index-refresh timing cannot masquerade as a policy change.",
+      "history": [
+        "P24",
+        "P18",
+        "P32"
+      ],
+      "history_reason": "IntelliSchedule brought relevant information into a task; Pegasus made data queries inspectable; supplementary A11y Tools adapted web information to user needs.",
+      "scope_cut": "No institution-wide crawling, auto-updating policies, legal interpretation or automatic eligibility decisions. One available model; no parallel Gemini stack.",
+      "risk": "Snowflake account/role/model access, Cortex Search index readiness and retrieval variability. Confirm API acceptance and costs.",
+      "secondary": "DigitalOcean may host the client/API; GoDaddy may supply a qualifying name. Both are technical possibilities, not verified secondary entries.",
+      "go_no_go": "By hour 3, a Snowflake API call must return a cited answer from the correct version. If indexing is blocked, use a smaller explicit-text Cortex REST flow and restate the narrower scope."
+    },
+    {
+      "id": "F04",
+      "name": "ReceiptRelay",
+      "primary": "Solana",
+      "tagline": "Record an equipment handoff that two independent organizations can verify.",
+      "problem": "Two independent organizations may need a shared custody record without accepting either party as the sole database administrator. If they already trust one operator, a conventional database is preferable.",
+      "integration": "A Solana program validates asset ID, expected version, current custodian and both authorized signers. One accepted transfer advances state; a conflicting transfer fails. Use a test network only if the challenge permits it.",
+      "mvp": "One fictional asset, two wallets, propose/accept handoff, explorer-linked receipt and a deliberate conflicting-transfer attempt. No token economy or real funds.",
+      "demo": "Co-sign a handoff; show the record; attempt a second transfer from the prior state and show rejection. Explain that the record does not prove physical possession.",
+      "validation": "Ten valid and invalid state transitions covering missing signatures, wrong custodian, stale version, duplicate request and expired transaction. Verify both UI and on-chain state agree.",
+      "difference": "An explicit no-shared-administrator workflow, not blockchain added to ordinary campus inventory. Its value depends on validating that trust assumption.",
+      "history": [
+        "P01",
+        "P02"
+      ],
+      "history_reason": "Rent-A-Plug connected a ledger event to a concrete action; Pocket Park connected a resource to a transaction. Historical blockchain use does not establish a present need.",
+      "scope_cut": "No real asset transfers, payments, speculative tokens, identity verification or universal custody platform.",
+      "risk": "Unconfirmed trust need, no known Solana specialist, signing/expiry logic and unverified Devnet eligibility. These are selection gates, not minor stretch features.",
+      "secondary": "DigitalOcean can host the interface, but multiple-category eligibility is unverified. Do not add Atlas as a competing custody authority.",
+      "go_no_go": "Hold unless the trust need, test-network eligibility and a Solana-capable teammate are confirmed. If not, choose PantryRelay using Atlas."
+    }
+  ],
+  "top_three": [
+    "F01",
+    "F02",
+    "I07"
+  ],
+  "preferred": "F01",
+  "sensitivity": [
+    "A one-point rating change moves the total by 2–4 points; close scores are not meaningful precision. LostLink and BranchBridge tie at 79.",
+    "Without a SQL-capable teammate, lower ReplayBench feasibility 4→2 and dependency safety 4→2: score 79; Handoff Lab becomes preferred if its voice gate passes.",
+    "With no live voice access, hold Handoff Lab. With working Gemini and document skills, LineCheck is the practical fallback.",
+    "For 18 hours or less, choose the first scoped finalist with a proven account and core interaction; do not begin a multi-service integration from scratch merely to preserve the original ranking."
+  ]
+}

@@ -7,8 +7,14 @@
     "landing_bundle": "https://shellhacks.net/_astro/Landing.Cy75ZMmf.js",
     "navigation_bundle": "https://shellhacks.net/_astro/NavbarIsland.BoWwjfDs.js",
     "result": "Dates, venue, building window, team size and eligibility remain consistent with the prior browser inspection. The public navigation marks the hacker guide as registered-only. No private guide or dashboard was accessed.",
-    "unverified_current_items": ["2026 scoring rubric and weights", "Submission checklist", "Prior-work and AI-tool rules", "Sponsor challenge briefs and prize eligibility"],
-    "interpretation": "Sponsor logos are not challenge briefs. Historical 2025 requirements must not be presented as 2026 requirements."
+    "unverified_current_items": [
+      "2026 scoring rubric and weights",
+      "Submission checklist",
+      "Prior-work and AI-tool rules",
+      "Sponsor challenge briefs and prize eligibility"
+    ],
+    "interpretation": "Sponsor logos are not challenge briefs. Historical 2025 requirements must not be presented as 2026 requirements.",
+    "status": "Historical snapshot from the first concept report; sponsor-brief gap superseded by confirmed_challenge_followup below. Other event-specific gaps remain subject to the new rules review."
   },
   "current_event_status": "The current edition is scheduled September 25-27, 2026. It has not completed at this study's cutoff and has no completed-winner cohort in this report.",
   "official_homepage": {
@@ -27,19 +33,38 @@
     "evidence": "The rendered hero identifies 2026 dates. Event Details gives the building window, in-person format and solo-to-four-person team limit. General FAQ states participant eligibility."
   },
   "supporting_date_sources": [
-    {"url": "https://calendar.fiu.edu/event/shellhacks-2026", "evidence": "FIU lists the tenth annual ShellHacks beginning September 25, 2026."},
-    {"url": "https://www.mlh.com/seasons/2027/events", "evidence": "Under calendar year 2026, MLH lists ShellHacks in Miami on September 25-27."},
-    {"url": "https://interest.shellhacks.net/", "evidence": "Official INIT interest page announces September 25-27."}
+    {
+      "url": "https://calendar.fiu.edu/event/shellhacks-2026",
+      "evidence": "FIU lists the tenth annual ShellHacks beginning September 25, 2026."
+    },
+    {
+      "url": "https://www.mlh.com/seasons/2027/events",
+      "evidence": "Under calendar year 2026, MLH lists ShellHacks in Miami on September 25-27."
+    },
+    {
+      "url": "https://interest.shellhacks.net/",
+      "evidence": "Official INIT interest page announces September 25-27."
+    }
   ],
   "discovery_limits": {
-    "searches": ["ShellHacks 2026 Devpost judging criteria rules", "site:shellhacks.net 2026 rules judges", "site:devpost.com ShellHacks 2026"],
+    "searches": [
+      "ShellHacks 2026 Devpost judging criteria rules",
+      "site:shellhacks.net 2026 rules judges",
+      "site:devpost.com ShellHacks 2026"
+    ],
     "result": "Search returned historical 2025 ShellHacks rules and unrelated events; it did not establish a 2026 Devpost event or rubric. Attempts at plausible 2026 Devpost URLs were inaccessible and are not evidence that no event page exists.",
     "account_access": "No private hacker dashboard, login or Discord content was accessed. A rubric may exist there or appear later."
   },
   "historical_reference_only": {
     "edition": 2025,
     "criteria_url": "https://shellhacks2025.devpost.com/",
-    "criteria": ["Completion", "Originality", "Design", "Technology", "Practicality"],
+    "criteria": [
+      "Completion",
+      "Originality",
+      "Design",
+      "Technology",
+      "Practicality"
+    ],
     "rules_url": "https://shellhacks2025.devpost.com/rules",
     "rules_summary": "The 2025 rules restricted teams to one submission, required work created during the event, prohibited entering the same project in another hackathon, and required disclosure of reused external code. Libraries, frameworks and open-source code were permitted with attribution.",
     "recommendation": "Use historical patterns to prepare ideas, skills and evaluation plans, then check the current hacker guide and sponsor briefs before starting implementation or choosing a prize target. Current eligibility and submission rules take priority over historical examples."
@@ -53,5 +78,31 @@
     "Hardware includes a VR headset for Quests and Conflicts; distinguish that from building custom embedded hardware.",
     "Agent Zero's inclusion flag denotes a stated affordability/access objective, not disability accessibility or independently verified reduced financial exclusion.",
     "Intended social benefits are project goals, not measured real-world outcomes."
-  ]
+  ],
+  "latest_update": "2026-09-26",
+  "confirmed_challenge_followup": {
+    "accessed": "2026-09-26",
+    "edition_confirmation": "The user explicitly confirms the eight listed challenges apply to ShellHacks 2026. Accepted without rechecking mixed labels.",
+    "source": "https://www.mlh.com/events/shellhacks-b9/prizes",
+    "source_text": "challenge_briefs_2026.txt",
+    "confirmed_challenges": [
+      "ElevenLabs",
+      "Gemini API",
+      "Solana",
+      "Tiger Data",
+      "DigitalOcean",
+      "Snowflake API",
+      "MongoDB Atlas",
+      "GoDaddy Registry"
+    ],
+    "inventory_limit": "Eight confirmed categories, not an exhaustive inventory. No additional current brief established by the bounded official-source review.",
+    "team": "Reply 4 interpreted as four teammates; skills, hardware and remaining build time unspecified.",
+    "rules_review": "research_rules_2026.json",
+    "challenge_matrix": "sponsor_challenges_2026.json",
+    "idea_adaptations": "research_sponsor_adaptations_2026.json",
+    "decision_framework": "sponsor_evaluation_2026.json",
+    "finding": "Current general MLH policies provide a judging baseline for MLH categories and require member events to allow generative AI. Event-specific adoption, disclosure, reuse, submission and multi-category/award rules remain unresolved. Generic digital-event requirements are not imported into this in-person event.",
+    "recommendation": "ReplayBench with Tiger Data, conditional on SQL capability, account access, eligibility and remaining time; Handoff Lab and LineCheck are the alternatives. Scores are analyst judgments, not historical findings or winning probabilities.",
+    "no_implementation": "Research and planning only; no prototype, accounts, cloud resources, domain registrations or external messages created."
+  }
 }

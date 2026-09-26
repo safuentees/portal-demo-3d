@@ -1,0 +1,669 @@
+{
+  "schema_version": "1.0",
+  "as_of": "2026-09-26",
+  "scope": "Technical sponsor fit and bounded adaptation research only; no implementation or external messaging.",
+  "inputs": {
+    "ideas": "/Users/santiagofuentes/Desktop/portal-demo-3d/Docs/ShellHacksStudy/project_ideas_2026.json",
+    "confirmed_prizes": "/Users/santiagofuentes/.codex/attachments/8a9dec64-a368-4e32-8465-2383ed9661a8/Pasted text.txt",
+    "edition_handling": "All eight prizes are treated as user-confirmed ShellHacks 2026 offerings. Mixed year labels were not re-investigated.",
+    "assumptions": "Four people, 36 hours, software-first; individual skills and account access are unknown.",
+    "eligibility": "Technical fit does not establish entry eligibility, simultaneous-entry eligibility, judging criteria, credit access or award likelihood. Confirm with the separate rules research."
+  },
+  "rating_definitions": {
+    "strong natural": "The sponsor technology directly implements an important part of the stated workflow or a small coherent adaptation; this is a qualitative engineering judgment.",
+    "conditional useful": "Useful when a named addition or deployment need is real; ordinary hosting/domain support stays conditional and is not equal to a distinctive sponsor demonstration.",
+    "weak forced": "Little benefit within the existing scope, unnecessary infrastructure, or a substantial unrelated change just to target a prize."
+  },
+  "sponsor_order": [
+    "ElevenLabs",
+    "Gemini API",
+    "Solana",
+    "Tiger Data",
+    "DigitalOcean",
+    "Snowflake API",
+    "MongoDB Atlas",
+    "GoDaddy Registry"
+  ],
+  "matrix": [
+    {
+      "idea_id": "I01",
+      "name": "FormTrail",
+      "adaptation": "Keep one form and deterministic completeness rules. Optionally add source-grounded simplification or spoken instructions; retain the original text and accessible controls. Cloud drafts only if cross-device use is tested.",
+      "cells": {
+        "ElevenLabs": {
+          "rating": "conditional useful",
+          "rationale": "Read approved instructions aloud with captions and playback controls; useful access option, not the completeness engine."
+        },
+        "Gemini API": {
+          "rating": "conditional useful",
+          "rationale": "Simplify only supplied instructions with source references; never generate institutional requirements or decide eligibility."
+        },
+        "Solana": {
+          "rating": "weak forced",
+          "rationale": "One student's draft and checklist require no shared on-chain trust or payment rail."
+        },
+        "Tiger Data": {
+          "rating": "weak forced",
+          "rationale": "Sparse form drafts have no meaningful time-series or aggregate workload."
+        },
+        "DigitalOcean": {
+          "rating": "conditional useful",
+          "rationale": "Host the accessible guide; a secure API is needed only if adding model calls or cloud drafts."
+        },
+        "Snowflake API": {
+          "rating": "conditional useful",
+          "rationale": "Alternative to Gemini for source-grounded explanations; use one model provider for this role."
+        },
+        "MongoDB Atlas": {
+          "rating": "conditional useful",
+          "rationale": "One primary store for versioned drafts if cross-device persistence is in scope; local storage suffices for the base MVP."
+        },
+        "GoDaddy Registry": {
+          "rating": "conditional useful",
+          "rationale": "A memorable domain can aid demo access after the guide works; check the prize's registration path."
+        }
+      }
+    },
+    {
+      "idea_id": "I02",
+      "name": "Contract Canary",
+      "adaptation": "Preserve the replay-and-field-diff core. Add an optional explanation grounded in an explicit trace, or a small persistent regression history. Do not turn one flow into a generic autonomous debugging agent.",
+      "cells": {
+        "ElevenLabs": {
+          "rating": "weak forced",
+          "rationale": "Narrating a JSON diff adds little to the developer's visual replay task."
+        },
+        "Gemini API": {
+          "rating": "conditional useful",
+          "rationale": "Explain an already-detected failure from mapped fields and replay evidence; deterministic checks remain authoritative."
+        },
+        "Solana": {
+          "rating": "weak forced",
+          "rationale": "API fixture comparisons do not need wallet ownership, token incentives or blockchain consensus."
+        },
+        "Tiger Data": {
+          "rating": "conditional useful",
+          "rationale": "Useful only if repeated replay runs produce time-stamped latency/failure series with a real comparison view; twelve static mutations do not justify it."
+        },
+        "DigitalOcean": {
+          "rating": "conditional useful",
+          "rationale": "Host a runnable public fixture demo and API; keep arbitrary user code execution outside scope."
+        },
+        "Snowflake API": {
+          "rating": "conditional useful",
+          "rationale": "Alternative model endpoint for evidence-grounded trace summaries, not a second explanation service."
+        },
+        "MongoDB Atlas": {
+          "rating": "conditional useful",
+          "rationale": "Store versioned fixtures and replay records if saved collaborative runs matter; files suffice for the original local demo."
+        },
+        "GoDaddy Registry": {
+          "rating": "conditional useful",
+          "rationale": "Domain supports a shareable developer demo; it is independent of causal debugging quality."
+        }
+      }
+    },
+    {
+      "idea_id": "I03",
+      "name": "Counterexample Arcade",
+      "adaptation": "Keep the exhaustive bounded enumerator and animation as the product. Optional narrated steps or grounded hints are small additions; avoid AI-generated counterexamples as the proof.",
+      "cells": {
+        "ElevenLabs": {
+          "rating": "conditional useful",
+          "rationale": "Narrate the exact current pointer state with captions; controls must work without audio."
+        },
+        "Gemini API": {
+          "rating": "conditional useful",
+          "rationale": "Give a hint derived from the verified failing trace, with correctness checked against the enumerator."
+        },
+        "Solana": {
+          "rating": "weak forced",
+          "rationale": "No assets, payments or trust problem justify on-chain game state."
+        },
+        "Tiger Data": {
+          "rating": "weak forced",
+          "rationale": "A finite teaching exercise produces too little temporal data to justify time-series infrastructure."
+        },
+        "DigitalOcean": {
+          "rating": "conditional useful",
+          "rationale": "Deploy the browser game; a static site is sufficient unless model hints are added."
+        },
+        "Snowflake API": {
+          "rating": "conditional useful",
+          "rationale": "Alternative model for constrained hints; the API does not establish counterexample minimality."
+        },
+        "MongoDB Atlas": {
+          "rating": "weak forced",
+          "rationale": "Single-session finite examples and local progress do not need a cloud document database."
+        },
+        "GoDaddy Registry": {
+          "rating": "conditional useful",
+          "rationale": "A short domain makes the exercise easy to reach; registration eligibility is a separate check."
+        }
+      }
+    },
+    {
+      "idea_id": "I04",
+      "name": "WindowWise",
+      "adaptation": "Retain the six verified service records and deterministic interval solver. An optional natural-language request parser can turn an errand into explicit fields that the user confirms before calculation.",
+      "cells": {
+        "ElevenLabs": {
+          "rating": "conditional useful",
+          "rationale": "Read the computed plan and its conflict in plain language; retain visible times and sources."
+        },
+        "Gemini API": {
+          "rating": "conditional useful",
+          "rationale": "Parse a user's request or draft source extraction into a schema for confirmation; never invent office hours."
+        },
+        "Solana": {
+          "rating": "weak forced",
+          "rationale": "Campus errand feasibility has no decentralized settlement requirement."
+        },
+        "Tiger Data": {
+          "rating": "weak forced",
+          "rationale": "Office-hour intervals are not a time-series analytics need at this six-record scale."
+        },
+        "DigitalOcean": {
+          "rating": "conditional useful",
+          "rationale": "Host the planner and source-dated records; cloud hosting is useful support rather than the solver."
+        },
+        "Snowflake API": {
+          "rating": "conditional useful",
+          "rationale": "Alternative to Gemini for confirmed request extraction; do not add a second AI pipeline."
+        },
+        "MongoDB Atlas": {
+          "rating": "conditional useful",
+          "rationale": "Useful as the only store if staff can update shared service records; static JSON suffices for six fixed records."
+        },
+        "GoDaddy Registry": {
+          "rating": "conditional useful",
+          "rationale": "A campus-relevant domain aids access; name availability and the prize's allowed domain route remain unverified."
+        }
+      }
+    },
+    {
+      "idea_id": "I05",
+      "name": "PantryRelay",
+      "adaptation": "Use Atlas as the sole inventory/reservation store with atomic conditional updates or a transaction, idempotent collection, and explicit expiry processing. Show the last-item race live; omit AI and blockchain.",
+      "cells": {
+        "ElevenLabs": {
+          "rating": "conditional useful",
+          "rationale": "An optional spoken pickup confirmation can help a busy volunteer, with visible confirmation and no sensitive names read aloud."
+        },
+        "Gemini API": {
+          "rating": "weak forced",
+          "rationale": "The bounded inventory/hold/collection workflow gains little from generative decisions."
+        },
+        "Solana": {
+          "rating": "weak forced",
+          "rationale": "A single pantry is an authoritative operator; wallets and on-chain reservations add friction without solving its stated problem."
+        },
+        "Tiger Data": {
+          "rating": "conditional useful",
+          "rationale": "Could be the sole PostgreSQL backend instead of Atlas; trend analytics are a stretch and do not justify a duplicate store."
+        },
+        "DigitalOcean": {
+          "rating": "conditional useful",
+          "rationale": "Host the API, student sessions, volunteer view and expiry worker; reliability matters more than extra cloud services."
+        },
+        "Snowflake API": {
+          "rating": "weak forced",
+          "rationale": "Warehouse or LLM features do not solve inventory atomicity; omit them."
+        },
+        "MongoDB Atlas": {
+          "rating": "strong natural",
+          "rationale": "Atomic inventory/reservation updates and idempotent pickup directly implement the core promise; test concurrent claims and expiry."
+        },
+        "GoDaddy Registry": {
+          "rating": "conditional useful",
+          "rationale": "A short domain helps students reach the reservation demo after consistency works."
+        }
+      }
+    },
+    {
+      "idea_id": "I06",
+      "name": "LostLink",
+      "adaptation": "Use Gemini image/text embeddings for retrieval and a bounded image-attribute explanation; keep the found-item catalog, metadata and vectors in Atlas. Compare with a keyword/color baseline and demonstrate absent items and similar bags.",
+      "cells": {
+        "ElevenLabs": {
+          "rating": "conditional useful",
+          "rationale": "Read candidate attributes on request with matching text; do not announce a model score as proof of ownership."
+        },
+        "Gemini API": {
+          "rating": "strong natural",
+          "rationale": "Multimodal embeddings and image understanding directly serve photo/description retrieval and visible matching/conflicting attributes."
+        },
+        "Solana": {
+          "rating": "weak forced",
+          "rationale": "Matching a found object does not establish ownership; putting a claim on-chain would not fix that gap."
+        },
+        "Tiger Data": {
+          "rating": "weak forced",
+          "rationale": "The thirty-item visual catalog is a retrieval workload, not meaningful time-series analytics."
+        },
+        "DigitalOcean": {
+          "rating": "conditional useful",
+          "rationale": "Host the catalog UI and server-side model API calls; keep credentials out of the browser."
+        },
+        "Snowflake API": {
+          "rating": "conditional useful",
+          "rationale": "A vision-capable Cortex model can replace the Gemini attribute-extraction role; account/model access must be checked and duplicate inference is unnecessary."
+        },
+        "MongoDB Atlas": {
+          "rating": "strong natural",
+          "rationale": "One catalog stores item attributes and embeddings and performs vector retrieval with metadata constraints; avoid a second database."
+        },
+        "GoDaddy Registry": {
+          "rating": "conditional useful",
+          "rationale": "A memorable domain supports the public catalog demo; registration does not improve match quality."
+        }
+      }
+    },
+    {
+      "idea_id": "I07",
+      "name": "LineCheck",
+      "adaptation": "Choose one extraction path: Gemini structured document/image extraction, or Snowflake API-backed extraction. Compare confirmed fields with deterministic arithmetic and support source page/crop links only when verified; use two layouts and synthetic documents.",
+      "cells": {
+        "ElevenLabs": {
+          "rating": "weak forced",
+          "rationale": "Dense side-by-side quantities and prices benefit more from visible source review than an added voice layer."
+        },
+        "Gemini API": {
+          "rating": "strong natural",
+          "rationale": "Document/image understanding plus structured fields serves extraction; human confirmation and deterministic reconciliation remain necessary."
+        },
+        "Solana": {
+          "rating": "weak forced",
+          "rationale": "A ledger cannot establish whether OCR text or an invoice is correct; no decentralized settlement is needed."
+        },
+        "Tiger Data": {
+          "rating": "conditional useful",
+          "rationale": "Can be the sole relational record store if the team prefers SQL; time-series aggregates are unnecessary for ten pairs."
+        },
+        "DigitalOcean": {
+          "rating": "conditional useful",
+          "rationale": "Host uploads, source preview and server-side inference; keep the scope to synthetic supported documents."
+        },
+        "Snowflake API": {
+          "rating": "strong natural",
+          "rationale": "Cortex vision inference or staged document parsing gives a substantive alternative extraction backend; confirm the required API route and source-location limits."
+        },
+        "MongoDB Atlas": {
+          "rating": "conditional useful",
+          "rationale": "Could store document metadata, confirmed fields and review events as the only operational database; do not add it to a complete Snowflake store merely for a category."
+        },
+        "GoDaddy Registry": {
+          "rating": "conditional useful",
+          "rationale": "A domain makes the review demo reachable but is independent of extraction and matching evidence."
+        }
+      }
+    },
+    {
+      "idea_id": "I08",
+      "name": "Pulse Path",
+      "adaptation": "Do not select the original hardware build under the software-only assumption. A clearly renamed audio/visual cue-learning simulator can preserve cue-response replay, but it is a changed prototype and cannot substantiate tactile learning.",
+      "cells": {
+        "ElevenLabs": {
+          "rating": "conditional useful",
+          "rationale": "Spoken or audio cue patterns fit a software audio-maze variant; this is not the original tactile device and needs captions/alternative controls."
+        },
+        "Gemini API": {
+          "rating": "weak forced",
+          "rationale": "Four authored cues and deterministic responses require no language model."
+        },
+        "Solana": {
+          "rating": "weak forced",
+          "rationale": "Cue-response practice has no on-chain trust, payment or ownership need."
+        },
+        "Tiger Data": {
+          "rating": "conditional useful",
+          "rationale": "Only useful if repeated software sessions create a meaningful latency/error timeline; fifty bench cycles alone do not justify a backend."
+        },
+        "DigitalOcean": {
+          "rating": "conditional useful",
+          "rationale": "Host the explicitly labeled simulator and replay view."
+        },
+        "Snowflake API": {
+          "rating": "weak forced",
+          "rationale": "LLM or warehouse setup adds little to a four-cue practice game."
+        },
+        "MongoDB Atlas": {
+          "rating": "conditional useful",
+          "rationale": "A sole session/replay store is useful for multi-session comparison; local storage is enough for one demonstration."
+        },
+        "GoDaddy Registry": {
+          "rating": "conditional useful",
+          "rationale": "Domain can support the software variant, but does not recover the original physical interaction."
+        }
+      }
+    },
+    {
+      "idea_id": "I09",
+      "name": "StormTable",
+      "adaptation": "Keep every scenario fictional and deterministic. A focused adaptation stores report/decision events and freshness/resource histories in Tiger Data, then replays the same events and explains stale evidence; optional scripted voice briefings can follow.",
+      "cells": {
+        "ElevenLabs": {
+          "rating": "conditional useful",
+          "rationale": "Voice scripted situation reports with captions and explicit simulation labels; do not generate unscripted safety instructions."
+        },
+        "Gemini API": {
+          "rating": "conditional useful",
+          "rationale": "Parse player-written reports into reviewable fields or summarize a completed deterministic run; do not generate authoritative hazard outcomes."
+        },
+        "Solana": {
+          "rating": "weak forced",
+          "rationale": "A classroom simulation has no external trust or asset-transfer requirement."
+        },
+        "Tiger Data": {
+          "rating": "strong natural",
+          "rationale": "Timestamped reports, freshness queries and resource histories naturally support replay; use one SQL store and explicit refresh semantics, not unsupported speed claims on a tiny fixture."
+        },
+        "DigitalOcean": {
+          "rating": "conditional useful",
+          "rationale": "Host the fictional scenario and replay service; the rules can still run locally."
+        },
+        "Snowflake API": {
+          "rating": "conditional useful",
+          "rationale": "A grounded post-exercise summary can use Cortex as the only LLM provider; it must cite recorded events and not override the rules."
+        },
+        "MongoDB Atlas": {
+          "rating": "conditional useful",
+          "rationale": "An alternative sole event/state store if Tiger Data is not chosen; do not maintain both just for prize breadth."
+        },
+        "GoDaddy Registry": {
+          "rating": "conditional useful",
+          "rationale": "A domain can make the exercise easy to join, with simulation labeling visible."
+        }
+      }
+    },
+    {
+      "idea_id": "I10",
+      "name": "BranchBridge",
+      "adaptation": "Keep the authored mystery and deterministic shared state; give roles distinct ElevenLabs voices with captions. Atlas can persist the room and decision trail, with duplicate-action and reconnect checks. Avoid generated plot logic.",
+      "cells": {
+        "ElevenLabs": {
+          "rating": "strong natural",
+          "rationale": "Distinct character dialogue is part of the cooperative story experience; generate from the authored script and cache audio with captions."
+        },
+        "Gemini API": {
+          "rating": "conditional useful",
+          "rationale": "Constrained clue hints can use only already-revealed evidence; never let a model change the canonical branch state."
+        },
+        "Solana": {
+          "rating": "weak forced",
+          "rationale": "The short cooperative mystery has no economy or transferable assets; adding either changes the project."
+        },
+        "Tiger Data": {
+          "rating": "weak forced",
+          "rationale": "Three choices in one short scene do not need time-series analytics."
+        },
+        "DigitalOcean": {
+          "rating": "conditional useful",
+          "rationale": "Host synchronized rooms and the session API; demonstrate two browsers and reconnection rather than decorative infrastructure."
+        },
+        "Snowflake API": {
+          "rating": "conditional useful",
+          "rationale": "Alternative to Gemini for bounded character hints; generated story state remains out of scope."
+        },
+        "MongoDB Atlas": {
+          "rating": "strong natural",
+          "rationale": "One shared room record and durable decisions support atomic choice handling, idempotency and reconnect recovery."
+        },
+        "GoDaddy Registry": {
+          "rating": "conditional useful",
+          "rationale": "A memorable domain is useful for joining a two-role demo; check registration requirements separately."
+        }
+      }
+    }
+  ],
+  "cross_cutting_findings": [
+    "Do not sum ratings into a win-probability score; neither prize judging weights nor team strengths are established.",
+    "Use one primary persistence layer. Tiger Data, Atlas and Snowflake are alternatives when they would duplicate the same records.",
+    "Use one model provider per role. Gemini and Snowflake can be alternate extraction/hint paths; running both adds cost and integration risk without automatic value.",
+    "Solana is weak/forced for all ten current scopes. Do not add wallets, tokens, an economy or on-chain hashes solely to claim the category.",
+    "DigitalOcean and GoDaddy can support nearly any web demo, but deployment and naming alone do not imply a competitive Best Use entry.",
+    "StormTable is the clearest Tiger Data adaptation only if freshness/history/replay is implemented visibly; six records do not justify performance claims.",
+    "BranchBridge is the clearest ElevenLabs adaptation; PantryRelay is the clearest non-AI Atlas transaction demonstration.",
+    "Pulse Path's original hardware concept does not fit the software-only assumption. Its simulator must be clearly presented as a different prototype.",
+    "Every adaptation is proposed, not built, evaluated or guaranteed feasible for an unspecified team."
+  ],
+  "two_deep_dive_candidates": [
+    {
+      "idea_id": "I06",
+      "name": "LostLink",
+      "recommendation": "First candidate for a team with web/API and retrieval experience; strongest direct combination of Gemini visual retrieval and Atlas catalog/search. This is a fit judgment, not a probability of winning.",
+      "minimal_stack": [
+        "Gemini API: image/text embeddings; optional bounded attribute extraction",
+        "MongoDB Atlas: sole catalog, metadata and vector index",
+        "DigitalOcean App Platform: browser app and server API if deploying",
+        "GoDaddy Registry domain: optional after the working demo"
+      ],
+      "avoid": [
+        "Solana",
+        "Tiger Data for a tiny static catalog",
+        "Snowflake duplicating Gemini or Atlas",
+        "An ElevenLabs layer before retrieval is useful"
+      ],
+      "four_person_split": [
+        "Retrieval and Gemini integration",
+        "Atlas catalog/API and input handling",
+        "Candidate/review interface",
+        "Staged data, held-out evaluation and demo"
+      ],
+      "hour_3_gate": "One alternate photograph retrieves plausible candidates; embeddings and Atlas vector index are accessible; a keyword/color baseline exists. If access or measured value fails, keep the honest text/attribute version and reconsider the Gemini/Atlas claim.",
+      "mvp_36h": "Thirty staged objects, image or text query, top-three candidates, visible agreeing/conflicting attributes, ambiguous/no-match state and no property-release workflow.",
+      "verification": "Use the original twenty held-out alternate-photo queries including at least five absent items. Calibrate any retrieval threshold on separate development examples; report top-three success for present items, false matches for absent items and latency. Do not describe a similarity score as ownership probability.",
+      "demo": "Distinctive bottle; two similar backpacks; then a missing object. Show the keyword baseline and whether visual retrieval actually helps. Show a candidate's attributes in the stored record.",
+      "competition": [
+        {
+          "source_id": "C01",
+          "overlap": "NotLost already advertises photo-based object recognition and automated matching.",
+          "implication": "LostLink is not a new category and cannot claim AI lost-and-found matching as globally novel."
+        }
+      ],
+      "defensible_position": "An auditable campus-scale prototype whose demo makes ambiguity, conflicting visual attributes and no-match behavior explicit. This is a proposed presentation/evaluation focus, not evidence that competitors lack those features.",
+      "next_validation": "Ask a campus lost-property operator whether ambiguous lookalikes and incomplete descriptions cause meaningful work; the need and operator adoption are not established."
+    },
+    {
+      "idea_id": "I07",
+      "name": "LineCheck",
+      "recommendation": "Second candidate if at least one teammate can preserve document source locations and build an extraction evaluation. Larger integration risk and more mature competition than a plain visual-search demo.",
+      "minimal_stack_options": [
+        {
+          "option": "Gemini path",
+          "stack": [
+            "Gemini API extracts candidate fields from two supported document layouts",
+            "Deterministic arithmetic and explicit line identifiers reconcile reviewed values",
+            "One primary store only if persistence is needed",
+            "DigitalOcean hosts upload/review/API"
+          ],
+          "note": "The source trail must be verified with known page/crop coordinates or actual parser locations; schema output alone is not evidence."
+        },
+        {
+          "option": "Snowflake path",
+          "stack": [
+            "Cortex REST vision model handles extraction, or an agreed API route invokes staged document parsing",
+            "Snowflake stores extraction/review records if already used",
+            "Deterministic reconciliation runs in code or SQL",
+            "DigitalOcean hosts the review interface if useful"
+          ],
+          "note": "Confirm the prize's acceptable API route. AI_PARSE_DOCUMENT documents page content and image extraction boxes, not a guarantee of every text line's bounding box."
+        }
+      ],
+      "avoid": [
+        "Combining both extraction providers solely for prize count",
+        "Atlas plus Tiger Data plus Snowflake storing identical review rows",
+        "Blockchain proofs of OCR correctness",
+        "Payments, tax decisions or fraud labels"
+      ],
+      "four_person_split": [
+        "Extraction adapter and error states",
+        "Reconciliation and synthetic document fixtures",
+        "Source-linked review interface",
+        "Evaluation, integration and demo"
+      ],
+      "hour_3_gate": "Extract line ID, quantity and unit price from a supported pair; preserve a verified source page/crop; test account/model access. If location recovery fails, narrow to known layouts with explicit coordinates or a manual field-confirmation fallback.",
+      "mvp_36h": "Two layouts, one currency, ten synthetic pairs, page/crop-linked fields, human correction, deterministic quantities/prices/totals and clear extraction-error versus true-mismatch states.",
+      "verification": "Keep twenty seeded discrepancies plus clean controls; report extraction error rate separately from reconciliation precision/recall and use one held-out variation inside the supported layout family. A manual correction must remove a false extraction alert while retaining a true changed quantity.",
+      "demo": "One quantity change plus one OCR ambiguity. Correct the ambiguous field, watch its alert disappear, then inspect the real discrepancy on both source pages.",
+      "competition": [
+        {
+          "source_id": "C02",
+          "overlap": "DocuClipper already advertises PO extraction, two-way line matching, review and mismatch flags.",
+          "implication": "Source-aware invoice reconciliation is a crowded workflow, not a new product category."
+        },
+        {
+          "source_id": "C03",
+          "overlap": "Rossum already documents configurable invoice-to-PO line matching.",
+          "implication": "Do not claim that matching rules or human review are unique features."
+        }
+      ],
+      "defensible_position": "A narrow transparent teaching/demo workflow that separates extraction uncertainty from exact arithmetic discrepancies. Whether that focus is differentiated for a real buyer is unvalidated; do not state competitors lack it.",
+      "next_validation": "Ask a small-organization bookkeeper which supported document pair and review bottleneck actually matters; do not infer demand or financial benefit from a seeded fixture."
+    }
+  ],
+  "lighter_fallbacks": [
+    {
+      "idea_id": "I10",
+      "name": "BranchBridge",
+      "when": "Choose if the team is stronger in narrative/UI and real-time web state than OCR/embeddings.",
+      "stack": "ElevenLabs authored voices + Atlas room record + DigitalOcean deployment. No LLM-generated branch logic.",
+      "reason": "Clear audible sponsor role and a bounded two-role demo, though voice cache, captions and synchronization still need testing."
+    },
+    {
+      "idea_id": "I05",
+      "name": "PantryRelay",
+      "when": "Choose if the team is comfortable with database consistency and wants an AI-free product.",
+      "stack": "Atlas as sole transactional store + DigitalOcean API.",
+      "reason": "The last-item race, duplicate pickup and expiry are concrete correctness claims that can be demonstrated and tested."
+    }
+  ],
+  "sources": [
+    {
+      "id": "D01",
+      "publisher": "Google",
+      "title": "Gemini image understanding",
+      "url": "https://ai.google.dev/gemini-api/docs/image-understanding",
+      "supports": "Image understanding and structured detection/attribute workflows. Image outputs are predictions requiring evaluation."
+    },
+    {
+      "id": "D02",
+      "publisher": "Google",
+      "title": "Gemini embeddings",
+      "url": "https://ai.google.dev/gemini-api/docs/embeddings",
+      "supports": "Current docs describe gemini-embedding-2 multimodal embeddings with image and text in a shared space; verify account access before selecting it."
+    },
+    {
+      "id": "D03",
+      "publisher": "Google",
+      "title": "Gemini document understanding",
+      "url": "https://ai.google.dev/gemini-api/docs/document-processing",
+      "supports": "PDF vision and document extraction; source location accuracy must be validated separately."
+    },
+    {
+      "id": "D04",
+      "publisher": "Google",
+      "title": "Gemini structured outputs",
+      "url": "https://ai.google.dev/gemini-api/docs/structured-output",
+      "supports": "JSON schema formatting is supported, but values may be semantically incorrect and require application validation."
+    },
+    {
+      "id": "D05",
+      "publisher": "MongoDB",
+      "title": "MongoDB Vector Search Overview",
+      "url": "https://www.mongodb.com/docs/vector-search/",
+      "supports": "Embeddings can be stored in documents and searched; use the same embedding model/dimensions for catalog and query."
+    },
+    {
+      "id": "D06",
+      "publisher": "MongoDB",
+      "title": "Transactions",
+      "url": "https://www.mongodb.com/docs/manual/core/transactions/",
+      "supports": "Single-document operations are atomic; multi-document transactions are available and depend on appropriate read/write concerns. A database choice alone does not implement idempotency or expiry."
+    },
+    {
+      "id": "D07",
+      "publisher": "ElevenLabs",
+      "title": "Text to Dialogue",
+      "url": "https://elevenlabs.io/docs/overview/capabilities/text-to-dialogue",
+      "supports": "Text-to-dialogue provides expressive multi-speaker audio, a direct fit for authored character dialogue."
+    },
+    {
+      "id": "D08",
+      "publisher": "ElevenLabs",
+      "title": "Create dialogue API",
+      "url": "https://elevenlabs.io/docs/api-reference/text-to-dialogue/convert",
+      "supports": "The endpoint converts text/voice-ID pairs into dialogue audio; useful for an authored-script pipeline."
+    },
+    {
+      "id": "D09",
+      "publisher": "Tiger Data",
+      "title": "Continuous Aggregates: Incremental Materialized Views for Time-Series Data",
+      "url": "https://www.tigerdata.com/learn/continuous-aggregates-timescaledb",
+      "supports": "Official technical guide explains precomputed continuous aggregates and real-time mode. Since TimescaleDB 2.13+, materialized-only is the default; newest data needs refresh or explicit real-time aggregation."
+    },
+    {
+      "id": "D10",
+      "publisher": "DigitalOcean",
+      "title": "App Platform",
+      "url": "https://docs.digitalocean.com/products/app-platform/",
+      "supports": "Managed application deployment from repositories or container images; appropriate for the web/API component without adding redundant databases."
+    },
+    {
+      "id": "D11",
+      "publisher": "Snowflake",
+      "title": "Cortex REST API",
+      "url": "https://docs.snowflake.com/en/user-guide/snowflake-cortex/cortex-rest-api",
+      "supports": "API inference uses an account URL, token and available model. Supported vision models accept image inputs; availability and credentials are implementation gates."
+    },
+    {
+      "id": "D12",
+      "publisher": "Snowflake",
+      "title": "AI_PARSE_DOCUMENT",
+      "url": "https://docs.snowflake.com/en/sql-reference/functions/ai_parse_document",
+      "supports": "Parses staged documents into OCR text or layout, with optional page splits. Documented coordinates concern extracted images; do not infer guaranteed per-line text bounding boxes. A SQL function is not automatically the exact sponsor-required REST integration."
+    },
+    {
+      "id": "D13",
+      "publisher": "Solana",
+      "title": "Transactions",
+      "url": "https://solana.com/docs/core/transactions",
+      "supports": "Solana offers signed atomic transactions/instructions. None of the ten scoped concepts has a demonstrated need for decentralized shared state."
+    },
+    {
+      "id": "D14",
+      "publisher": "GoDaddy Registry",
+      "title": "GoDaddy Registry homepage",
+      "url": "https://registry.godaddy/",
+      "supports": "Registry operates domain namespaces; a registered domain is a naming/deployment addition, not an application API. Prize-specific allowed registration route is unverified here."
+    },
+    {
+      "id": "C01",
+      "publisher": "NotLost",
+      "title": "NotLost product homepage",
+      "url": "https://notlost.com/",
+      "supports": "Product advertises AI object recognition from photos and automated lost-property matching. This overlaps the central LostLink concept; marketing performance claims were not independently validated."
+    },
+    {
+      "id": "C02",
+      "publisher": "DocuClipper",
+      "title": "Purchase Order Data Extraction",
+      "url": "https://www.docuclipper.com/solutions/purchase-order-data-extraction/",
+      "supports": "Product advertises PO field and line-item extraction plus invoice-to-PO matching, editable review and mismatch flags. This overlaps the central LineCheck concept; marketing accuracy claims were not adopted."
+    },
+    {
+      "id": "C03",
+      "publisher": "Rossum",
+      "title": "Two-way PO Matching With Custom Function",
+      "url": "https://knowledge-base.rossum.ai/help/docs/two-way-po-matching-with-custom-function",
+      "supports": "Official product documentation covers captured invoice lines, purchase-order lookup and configurable exact/fuzzy/tolerance line matching."
+    }
+  ],
+  "source_caveats": [
+    "Only official vendor documentation/product pages support product capability and competition claims.",
+    "The Tiger Data docs endpoint returned a web-parser content-type error; the cited official Tiger Data technical guide was accessible.",
+    "All competitor claims are vendor descriptions, not independent performance tests.",
+    "Current model/plan/region access still needs a real account smoke check; no accounts were created or services purchased.",
+    "No domain availability, registration eligibility or multi-category eligibility was established by this research."
+  ]
+}

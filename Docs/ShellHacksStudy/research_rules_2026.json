@@ -1,0 +1,147 @@
+{
+  "accessed": "2026-09-25/26",
+  "scope": "Public read-only research. No private guide, account, dashboard or Discord accessed; no external messages or repository edits.",
+  "confirmed_prize_scope": {
+    "url": "https://www.mlh.com/events/shellhacks-b9/prizes",
+    "status": "accepted_as_2026_per_user_confirmation",
+    "evidence": "The public MLH page and user attachment list eight categories.",
+    "categories": [
+      "Best Use of ElevenLabs",
+      "Best Use of Gemini API",
+      "Best Use of Solana",
+      "Best Use of Tiger Data",
+      "Best Use of DigitalOcean",
+      "Best Use of Snowflake API",
+      "Best Use of MongoDB Atlas",
+      "Best Domain Name from GoDaddy Registry"
+    ],
+    "interpretation": "Treat all eight as confirmed. Mixed year labels do not delay analysis. Additional event/local sponsor categories remain possible."
+  },
+  "event_specific_findings": [
+    {
+      "topic": "Additional challenges",
+      "status": "not_publicly_verified",
+      "urls": [
+        "https://shellhacks.net/",
+        "https://www.mlh.com/events/shellhacks-b9/prizes"
+      ],
+      "evidence": "Bounded searches did not establish additional current challenge briefs. Official organizer announcements identify sponsors and partners but do not state challenge requirements.",
+      "consequence": "Continue the confirmed-eight analysis; additional categories are unknown, not absent."
+    },
+    {
+      "topic": "Overall judging rubric and weights",
+      "status": "not_publicly_verified",
+      "urls": [
+        "https://shellhacks.net/",
+        "https://shellhacks.net/guide"
+      ],
+      "evidence": "No 2026 event-adopted rubric recovered. Prior local research records public navigation marking the guide registered-only.",
+      "consequence": "Do not promote 2025 or generic MLH criteria to current overall ShellHacks rules."
+    },
+    {
+      "topic": "Submission requirements",
+      "status": "not_publicly_verified",
+      "urls": [
+        "https://shellhacks.net/guide"
+      ],
+      "evidence": "No verified current submission-platform URL, checklist, artifact/video requirements, exact cutoff, or sponsor opt-in process recovered.",
+      "consequence": "The previously verified 36-hour build window does not establish the exact submission cutoff."
+    },
+    {
+      "topic": "Prior work and reuse",
+      "status": "event_specific_rule_unknown",
+      "urls": [
+        "https://shellhacks.net/guide"
+      ],
+      "evidence": "No current ShellHacks policy recovered for earlier code, designs/assets, templates, previous submissions, or attribution.",
+      "consequence": "Keep pre-event work to research/planning pending current rules; do not infer permission to reuse a prebuilt app or this repository."
+    },
+    {
+      "topic": "AI tooling",
+      "status": "mlh_member_requirement_verified_event_details_unknown",
+      "urls": [
+        "https://github.com/MLH/mlh-policies/blob/main/member-event-guidelines.md",
+        "https://github.com/MLH/mlh-policies/blob/main/standard-hackathon-rules.md"
+      ],
+      "evidence": "Current membership policy requires allowing generative AI/LLMs; standard rules recommend disclosure. Current ShellHacks disclosure fields or details were not recovered.",
+      "consequence": "Record tools and human contributions, then follow the event form."
+    },
+    {
+      "topic": "Multiple category entries and prize stacking",
+      "status": "not_publicly_verified",
+      "urls": [
+        "https://www.mlh.com/events/shellhacks-b9/prizes",
+        "https://github.com/MLH/mlh-policies/blob/main/member-event-guidelines.md"
+      ],
+      "evidence": "MLH requires category opt-in support, but the prize page supplies no maximum entries, simultaneous-award limit, exclusivity rule, or separate-form requirement.",
+      "consequence": "Analyze coherent sponsor combinations as technical fit, conditional on event entry/award rules."
+    }
+  ],
+  "general_mlh_sources": [
+    {
+      "title": "MLH Member Event Agreement, 2027 Season",
+      "url": "https://github.com/MLH/mlh-policies/blob/main/member-event-guidelines.md",
+      "status": "current_general_member_requirements",
+      "version": "Updated May 22, 2026; July 1, 2026–June 30, 2027",
+      "evidence": "Requires member events to permit generative AI/LLMs and use a platform supporting prize-category opt-in. MLH confirms its final prize list with organizers. Does not supply ShellHacks scoring, disclosure fields, submission cutoff, or stacking limits."
+    },
+    {
+      "title": "MLH Standard Hackathon Rules",
+      "url": "https://github.com/MLH/mlh-policies/blob/main/standard-hackathon-rules.md",
+      "status": "general_rules_event_adoption_unverified",
+      "evidence": "Organizers may adopt or modify these rules. Earlier ideas are allowed; project work belongs in the hacking period. Earlier own project materials cannot be reused, but libraries/frameworks/open-source are allowed. Code must be public. AI assistance is permitted with disclosure. Technology, design, completion and learning have equal weight for MLH digital events or MLH categories at physical events. A two-minute video rule applies specifically to fully digital events hosted by MLH.",
+      "interpretation": "Preparation guidance; not proof of the ShellHacks 2026 overall rubric or full rules. Do not import digital-only requirements."
+    },
+    {
+      "title": "MLH Contest Terms",
+      "url": "https://github.com/MLH/mlh-policies/blob/main/contest-terms.md",
+      "status": "not_used_as_current_shellhacks_rules",
+      "evidence": "Opened document states a term ending June 30, 2026 and contains different scoring/application limits. No successor term or September 2026 adoption was established.",
+      "interpretation": "Do not use alone to settle current entry limits/scoring. This concerns a separate policy document, not applicability of the confirmed eight prize briefs."
+    }
+  ],
+  "excluded_near_matches": [
+    {
+      "url": "https://www.mlh.com/events/shellhacks-b996/prizes",
+      "reason": "Different slug and prize list; not tied to the user-confirmed page. Do not merge."
+    },
+    {
+      "url": "https://www.kaggle.com/competitions/305-hack-shells-edition-september-2026",
+      "reason": "Separate 305 HackShells event; Gemma track/rules do not establish ShellHacks requirements."
+    },
+    {
+      "url": "https://shellhacks2025.devpost.com/rules",
+      "reason": "Historical rules only."
+    },
+    {
+      "url": "https://www.linkedin.com/company/init-fiu",
+      "reason": "Official sponsor announcements establish relationships, not challenge requirements."
+    }
+  ],
+  "discovery_limits": {
+    "searches": [
+      "ShellHacks 2026 judging submission rules prizes challenges",
+      "site:devpost.com ShellHacks 2026",
+      "site:shellhacks.net 2026 challenges",
+      "ShellHacks 2026 rules",
+      "ShellHacks 2026 prizes",
+      "ShellHacks 2026 Devpost",
+      "MLH standard hackathon rules AI tools multiple prize categories"
+    ],
+    "unavailable_reads": [
+      "https://shellhacks.net/guide",
+      "https://www.mlh.com/events/shellhacks-b9/challenges",
+      "https://shellhacks2026.devpost.com/",
+      "https://shellhacks-2026.devpost.com/"
+    ],
+    "interpretation": "Reader errors, empty text and missing search hits are not evidence that pages/rules do not exist. Guide restriction comes from existing Docs/ShellHacksStudy/research_2026_context.json. No private access attempted."
+  },
+  "precise_missing_material_to_request": [
+    "Current 2026 hacker-guide Rules, Judging and Submission sections as copied text, screenshots or exported PDF; no credentials.",
+    "Exact official current Devpost/submission URL, with Rules, Prizes, Judging Criteria and participant submission-form instructions.",
+    "Any extra 2026 sponsor cards/opening slides: sponsor, challenge title, required product/features, rubric, eligibility, award and submission method.",
+    "Written rule for maximum sponsor categories per project, simultaneous sponsor/overall awards, exclusivity and separate demos/forms.",
+    "Current prior-work/AI policy: planning vs code/design/assets, template/open-source reuse, AI-tool disclosure, build window, post-deadline fixes, previous-hackathon restrictions.",
+    "Exact deadline/timezone, live demo and Q&A duration, video length, public repo/demo requirements, attendance and separate sponsor cutoffs."
+  ]
+}

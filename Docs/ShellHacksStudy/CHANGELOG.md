@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.0 — 2026-09-26
+
+- Accepted the user-confirmed applicability of eight sponsor challenges and separated required technology, optional examples, prizes, eligibility and unresolved submission details.
+- Evaluated all ten existing ideas across eight categories and added four fresh concepts with an explicit weighted decision framework, eligibility gates and sensitivity checks.
+- Recommended ReplayBench with Tiger Data under stated team and access assumptions, with Handoff Lab and LineCheck as alternatives; included measured validation plans and a four-person build/rest/submission schedule.
+- Reviewed current general MLH policies and official sources without inferring missing local rules or secondary-category eligibility. Preserved exact challenge text and structured research, scores and provenance.
+- Updated the professionally formatted companion using its existing template; preserved the historical report, dataset, workbook and original ten concept records. No project implementation performed.
+
 ## 1.1.0 — 2026-09-25
 
 - Added ten project concepts directly linked to 21 historical winner records, with conditional recommendations for different team skills.

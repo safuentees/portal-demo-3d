@@ -1,0 +1,141 @@
+
+Skip to main content
+Participate
+Organizers
+Community
+About
+DEV
+Attend
+For Businesses
+Sign In
+Major League Hacking
+Prizes
+Software
+Hardware
+Learn
+Address Form
+Resources
+Hackathons
+Prizes at ShellHacks
+Win awesome prizes, hacker gear, & swag by competing in one of these challenges and using new APIs.
+Prizes at ShellHacks
+ElevenLabs Q4 2025 - Q4 2026
+Best Use of ElevenLabs
+Wireless Earbuds
+
+Deploy natural, human-sounding audio with ElevenLabs. Create realistic, dynamic, and emotionally expressive voices for any project, from interactive AI companions to narrated stories and voice-enabled apps. ElevenLabs will empower you to build rich, immersive experiences without the need for actors or complex audio production, using simply the power of AI.
+
+Integrate fully autonomous audio experiences into your hack with ElevenLabs and give your project a voice, along with giving your team the chance to win some wireless earbuds!
+Log In To Claim Code →
+Build with ElevenLabs →
+Gemini Prize Category Q1 2025 - Q1 2026
+Best Use of Gemini API
+MLH Swag Kits
+
+It’s time to push the boundaries of what’s possible with AI using Google Gemini. Check out the Gemini API to build AI-powered apps that make your friends say WHOA. So, what can Gemini do for your hackathon project?
+
+    Understand language like a human and build a chatbot that gives personalized advice
+    Analyze info like a supercomputer and create an app that summarizes complex research papers
+    Generate creative content like code, scripts, music, and more
+
+Think of the possibilities… what will you build with the Google Gemini API this weekend?
+Build with Gemini →
+Solana Q4 2025 - Q4 2026
+Best Use of Solana
+Ledger Nano S Plus
+
+The world of development is evolving fast and Solana is leading the charge with a network built to handle all of your infrastructure needs. Forget high fees and slow confirmations, it’s time to build applications that are fast, efficient, and scalable.
+
+Harness Solana’s core advantages like blazing fast execution and near-zero transaction costs to make your hackathon ideas become real world projects. With Solana, the possibilities are endless.
+
+    Create a game, social app, or consumer product that relies on instant, high-frequency transactions.
+    Design a sophisticated trading, lending, or decentralized exchange (DEX).
+    Build a prototype for supply chain, identity, or payments that can handle massive, real-world volume.
+
+Show us how you can innovate with Solana for a chance to win some cool prizes for you and each member of your team!
+Build with Solana →
+Tiger Data Q3 2026 - Q2 2027
+Best Use of Tiger Data
+Stream Deck Mini
+
+Building high-performance apps under hackathon deadlines shouldn't mean spending half your weekend configuring complex databases or learning obscure query languages. Tiger Data extends PostgreSQL to give student developers an ultra-fast foundation for real-time data, time-series metrics, and complex analytics.
+
+Why build with Tiger Data this weekend?
+
+    Standard SQL Power: Query massive datasets instantly using the SQL you already know, with no complex NoSQL aggregation pipelines required.
+
+    Unified Data Stack: Store relational user profiles and high-frequency metric streams side-by-side in a single database.
+
+    Instant Dashboards: Serve lag-free, real-time frontend charts using pre-computed Continuous Aggregates.
+
+    90%+ Data Compression: Store millions of events on free-tier cloud instances without running out of disk space.
+
+Whether you’re building real-time IoT monitoring, AI-driven analytics dashboards, or financial prediction engines, show us how Tiger Data powers your project. The team that demonstrates the most innovative, impactful, and performance-driven use of Tiger Data will take home some great prizes!
+Build with Tiger Data →
+DigitalOcean
+Best Use of DigitalOcean
+Retro Wireless Mouse
+
+DigitalOcean offers a reliable and easy-to-use cloud platform for every stage of your project. Leverage core services like Droplets, Managed Databases, and App Platform to build, deploy, and scale your application effortlessly. Building with AI? DigitalOcean Gradient™ AI enables you to build, train, and deploy machine learning models, including access to GPU infrastructure and serverless inference!
+
+Sign up for DigitalOcean today and reach out to your MLH Coach for credits that you can use towards building your next great hack. Build with DigitalOcean’s robust cloud infrastructure for a chance to win some great prizes for you and each of your teammates!
+Build with DigitalOcean →
+Snowflake Q3 2025 - Q1 2026
+Best Use of Snowflake API
+Raspberry Pi 4
+
+Play with industry-leading LLMs on a single account using the Snowflake APIs. Adding AI capabilities into your application can be as simple as a single CURL command to Snowflake’s REST API.
+
+Build customized applications, RAG powered chat bots, or embed AI-powered features into your app in half the time with half the hassle. Get started for free with a special, student 120-day Snowflake trial and check out this repository for an example of the Snowflake REST API in action.
+Build with Snowflake →
+MongoDB Q4 2024 - Q4 2025
+Best Use of MongoDB Atlas
+M5Stack IoT Kit
+
+MongoDB Atlas takes the leading modern database and makes it accessible in the cloud! Get started with a $50 credit for students or sign up for the Atlas free forever tier (no credit card required). Along with a suite of services and functionalities, you’ll have everything you need to manage all of your data, and you can get a headstart with free resources from MongoDB University! Build a hack using MongoDB Atlas for a chance to win a M5Stack IoT Kit for you and each member of your group.
+Build with MongoDB →
+GoDaddy Registry 2025
+Best Domain Name from GoDaddy Registry
+Digital Gift Card
+
+GoDaddy Registry is giving you everything you need to be the best hacker no matter where you are. Register your domain name with GoDaddy Registry for a chance to win some amazing prizes!
+Log In To Claim Code →
+Build with GoDaddy Registry →
+Not at ShellHacks? Switch to another event.
+Footer
+Major League Hacking
+
+We help run the global hacker community. It's our mission to empower hackers, just like you.
+Instagram
+Discord
+TikTok
+LinkedIn
+YouTube
+Hackathons
+
+    Upcoming Hackathons
+    Global Hack Week
+    TechTogether
+
+Fellowship
+
+    Programs
+    Fellowship FAQ
+    Apply
+
+Resources
+
+    Code of Conduct
+    Prizes & Freebies
+    Branding Guidelines
+
+About MLH
+
+    Contact Us
+    Blog
+    Partners
+    Work at MLH
+
+    PrivacyTerms of Service
+
+Major League Hacking © 2026
