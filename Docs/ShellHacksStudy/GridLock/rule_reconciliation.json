@@ -1,0 +1,118 @@
+{
+  "version": "1.0.0",
+  "reviewed_on": "2026-09-26",
+  "status": "unresolved_pending_sperry_reply",
+  "confirmed_authoritative_profile": null,
+  "contact_status": {
+    "user_already_messaged_sperry": true,
+    "reply_received": false,
+    "assistant_contacted_sperry": false,
+    "basis": "User statement in current conversation; no external message or monitoring requested."
+  },
+  "correction": "Version 1.3.0 audited the two ZIP documents only and omitted the separate event guide. Its no-conflict finding on center versus closest-point distance does not apply across all supplied sources.",
+  "event_guide": {
+    "title": "Separate supplied ShellHacks event guide, Sperry Tech section",
+    "publication_date": null,
+    "date_note": "Publication date not established from the supplied paste; reviewed 2026-09-26.",
+    "full_attachment_path": "/Users/santiagofuentes/.codex/attachments/45af3bff-23e5-410d-8fc3-8ec354d04947/Pasted text.txt",
+    "full_attachment_sha256": "348c7b9b6627a5feb5339f405d2b41d90e30a5396ff75303f652df4649da3796",
+    "full_guide_line": 455,
+    "dedicated_extract_path": "/Users/santiagofuentes/.codex/attachments/76f284ea-2a78-42ad-b442-43ca2d58740b/Pasted text.txt",
+    "dedicated_extract_sha256": "176c78ed53c485e9d7e0ae649cd7544835616543cf611e80a410b24bce2aed5f",
+    "dedicated_extract_line": 67,
+    "geographic_rule_verbatim": "**Geographic overlap** — Two planned projects count as overlapping if they are **within 40 km (25 miles) of each other**. Closer than 40 km, we flag it. Farther, we ignore it. We measure the *closest points* between two projects, not their centers — a 60 km power line can still pass within 5 km of the other utility substation, and that counts.",
+    "ranking_bands_verbatim": [
+      "Closer overlaps are worth more, so we rank them by distance:",
+      "- **Touching / crossing** → must coordinate (outage timing, crossing structures)",
+      "- **Under 1.6 km** → can share the land itself (right-of-way, access roads, permits)",
+      "- **Under 8 km** → can share site logistics (laydown yards, deliveries)",
+      "- **Under 40 km** → can share crews and equipment",
+      "**Timeline overlap** — planned projects scheduled in the same build window.",
+      "- Teams should treat geographic overlap as the primary signal and timeline overlap as a strong secondary signal used together with it."
+    ]
+  },
+  "zip_sources": [
+    {
+      "archive_path": "Finding_Real_Locations_Guide.docx",
+      "sha256": "fbba553f13423a51fea9420b00f90cbbe1ffe61d4f27487dd694119a62a52578",
+      "modified_metadata": "2026-08-26T14:13:06+00:00"
+    },
+    {
+      "archive_path": "ShellHacks_Challenge_Gridlock.docx",
+      "sha256": "6cd4871942a5a2e9bf4258ebcaa3142452da773ed8c5356fbb0255e9cdb9ebbe",
+      "modified_metadata": "2026-08-26T13:19:12+00:00"
+    }
+  ],
+  "rule_profiles": [
+    {
+      "id": "event_guide_closest_40km",
+      "method": "minimum distance between scope-matched project geometries",
+      "threshold_km": 40,
+      "source_says": "within 40 km; closer than 40 km; closest points, not centers",
+      "boundary_operator": null,
+      "boundary_status": "unresolved: inclusive within versus strict closer than",
+      "authoritative": null
+    },
+    {
+      "id": "zip_center_25mi",
+      "method": "arithmetic midpoint of two named located points; single-point fallback when only one is located",
+      "threshold_miles": 25,
+      "threshold_km_exact": 40.2336,
+      "source_says": "within 25 miles / closer than 25 in brief; under 25 in guide",
+      "boundary_operator": null,
+      "boundary_status": "unresolved; earlier worksheet reproduction used strict less-than as a labeled assumption",
+      "authoritative": null
+    }
+  ],
+  "unit_reconciliation": {
+    "one_mile_km_exact": 1.609344,
+    "twenty_five_miles_km_exact": 40.2336,
+    "threshold_difference_meters": 233.6,
+    "finding": "Not exact unit equivalents. Geometry method is a separate and substantive conflict; neither threshold nor method is silently substituted."
+  },
+  "demo_effect": {
+    "pair": [
+      "DESC_3",
+      "GPC_3"
+    ],
+    "existing_center_proxy_miles": 10.24519266483327,
+    "closest_point_distance_km": null,
+    "closest_point_classification": "unknown_geometry_incomplete",
+    "source_of_limitation": "Actual work-section geometry is not validated; GPC work endpoint Georgia Pacific remains unlocated.",
+    "construction_overlap": "unknown",
+    "do_not_infer": "Do not promote the center-point result to a closest-point distance or a verified coordination opportunity."
+  },
+  "implementation_proposal": {
+    "rule_ui": "Two labeled pending profiles; confirmed profile unset. Keep each profile ranking separate.",
+    "missing_geometry": "Unknown / needs work geometry, not zero, failure, exclusion or silent proxy substitution.",
+    "ranking": "Ascending unrounded distance among comparable results under chosen profile; unknown geometry in an unranked review queue. Timing and precision displayed separately.",
+    "examples": "Synthetic geometry fixtures are explicitly labeled and never counted as real current opportunities.",
+    "source_bands_limit": "Crossing and under 1.6 / 8 / 40 km bands come from event guide. Resource-sharing interpretations require independent evidence; proximity does not prove permits, shared ROW or savings.",
+    "scope": "Documentation only; no project implementation."
+  },
+  "team_and_objectives": {
+    "team_size": 4,
+    "capability": "four capable teammates, user-confirmed",
+    "listed_sponsor_api_access": "obtainable, user-confirmed; not claimed provisioned",
+    "hardware": "unspecified",
+    "remaining_build_time": "unspecified",
+    "priorities": [
+      "internship value",
+      "strong portfolio",
+      "competition entry"
+    ],
+    "sponsor_strategy": "Sperry primary; integrations only for useful work. Secondary-category eligibility remains unverified."
+  },
+  "internship_source": {
+    "archive_entry": "Opportunities/Software_Engineer_Intern_Listing.docx",
+    "sha256": "6ae63eafdf341b69cb6d59418e8f2f5c9ccb3caf5c6dc13ba83b826907438087",
+    "reviewed_on": "2026-09-26",
+    "relevant_emphasis": [
+      "data extraction",
+      "normalization and data quality",
+      "document metadata",
+      "traceability to source material"
+    ],
+    "inference": "Prioritize reproducibility, source-linked corrections and understandable engineering ownership for interview discussion; no hiring outcome claimed."
+  }
+}

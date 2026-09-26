@@ -1,11 +1,20 @@
 {
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "reviewed_on": "2026-09-26",
   "purpose": "GridLock sample validation and pre-implementation plan; no application implemented",
   "user_confirmed": {
     "priority": "GridLock",
     "team_size": 4,
-    "skills_hardware_remaining_time": "unspecified"
+    "team_capability": "four capable teammates",
+    "sponsor_api_access": "listed sponsor API access can be obtained; not yet asserted provisioned",
+    "hardware": "unspecified",
+    "remaining_build_time": "unspecified",
+    "priorities": [
+      "internship value",
+      "strong portfolio",
+      "competition entry"
+    ],
+    "sperry_already_contacted_by_user": true
   },
   "evidence_classes": [
     "supplied_example",
@@ -2923,7 +2932,11 @@
     "shared_right_of_way": "not_established",
     "ranking_rationale": "Only one of the original six near pairs has located refreshed future milestones on both sides. This is an analyst selection for demonstration quality, not an official sponsor score.",
     "known_false_precision": "2028 date bounds express year precision, not uncertainty estimates or a promised construction interval.",
-    "scope_id_caution": "Keep later June 2032 corridor reconductoring separate from initial Jasper–Okatie #2 construction."
+    "scope_id_caution": "Keep later June 2032 corridor reconductoring separate from initial Jasper–Okatie #2 construction.",
+    "closest_point_distance_km": null,
+    "closest_point_status": "unknown_geometry_incomplete",
+    "rule_status": "unresolved_pending_sperry_reply",
+    "center_proxy_result_scope": "ZIP center-point method only; not a result under the separate event-guide closest-point method."
   },
   "rules_audit": {
     "audit_as_of": "2026-09-26",
@@ -3136,9 +3149,14 @@
       "shared_right_of_way": "not_established",
       "ranking_rationale": "Only one of the original six near pairs has located refreshed future milestones on both sides. This is an analyst selection for demonstration quality, not an official sponsor score.",
       "known_false_precision": "2028 date bounds express year precision, not uncertainty estimates or a promised construction interval.",
-      "scope_id_caution": "Keep later June 2032 corridor reconductoring separate from initial Jasper–Okatie #2 construction."
+      "scope_id_caution": "Keep later June 2032 corridor reconductoring separate from initial Jasper–Okatie #2 construction.",
+      "closest_point_distance_km": null,
+      "closest_point_status": "unknown_geometry_incomplete",
+      "rule_status": "unresolved_pending_sperry_reply",
+      "center_proxy_result_scope": "ZIP center-point method only; not a result under the separate event-guide closest-point method."
     },
-    "external_links": "No private SharePoint account was opened. No claims inferred from the unavailable linked Notion code example."
+    "external_links": "No private SharePoint account was opened. No claims inferred from the unavailable linked Notion code example.",
+    "interpretation_status": "ZIP-only audit retained as historical evidence. Not a complete comparison of supplied rules; see rule_reconciliation.json for the separate closest-point / 40 km event-guide requirement. No authoritative profile selected."
   },
   "utility_research": {
     "dominion": {
@@ -3905,5 +3923,13 @@
     "historical_dataset_sha256": "07166797968dc8cabe3c4ca411267a758c516a2ab346a4e9f7ba543a54e719cc",
     "original_ideas_sha256": "65d099ec45e670dcec8cc625a9f42a3aa6357862132088ad57708a462a3aa027",
     "note": "Downloaded review files identified for provenance; source URLs are recorded in utility_research. These review caches are not distributed with the sample."
+  },
+  "current_rule_status": {
+    "status": "unresolved_pending_sperry_reply",
+    "authority_profile": null,
+    "details_file": "rule_reconciliation.json",
+    "current_handoff": "IMPLEMENTATION_HANDOFF.md",
+    "supersedes": "The prior ZIP-only choice of center-point distance as the rule metric; workbook calculations and dated utility evidence remain unchanged.",
+    "archive_review_flags": "The archive reviewed flags preserve the initial version 1.3.0 review snapshot. The internship listing was subsequently reviewed for version 1.3.1; see rule_reconciliation.json internship_source."
   }
 }

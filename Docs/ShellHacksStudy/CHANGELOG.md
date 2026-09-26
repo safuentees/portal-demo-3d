@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.1 — 2026-09-26
+
+- Corrected the ZIP-only rule review using the separately supplied event guide: closest-point distance within 40 km conflicts with center-point distance under 25 miles. Preserved both profiles with no authoritative choice pending Sperry's reply; the user has already contacted them.
+- Kept the existing 10.25-mile result explicitly limited to the center-point proxy; closest-point distance remains unknown without validated work geometry. Preserved all original cells, calculations and utility evidence.
+- Added a concise implementation handoff for four capable teammates, with four responsibilities and internship, portfolio and competition priorities. Sponsor access is obtainable; useful integration and secondary-category eligibility remain separate questions. No implementation performed.
+
 ## 1.3.0 — 2026-09-26
 
 - Prioritized GridLock at the user's direction and added a companion addendum using the established report template, without modifying the prior sponsor scores or historical dataset.
