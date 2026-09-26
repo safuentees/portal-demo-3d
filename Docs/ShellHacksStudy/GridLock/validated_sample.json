@@ -1,0 +1,3909 @@
+{
+  "schema_version": "1.0.0",
+  "reviewed_on": "2026-09-26",
+  "purpose": "GridLock sample validation and pre-implementation plan; no application implemented",
+  "user_confirmed": {
+    "priority": "GridLock",
+    "team_size": 4,
+    "skills_hardware_remaining_time": "unspecified"
+  },
+  "evidence_classes": [
+    "supplied_example",
+    "official_public_record",
+    "public_map_proxy",
+    "recomputed_result",
+    "analyst_proposal",
+    "unresolved"
+  ],
+  "archive": {
+    "filename": "Sperry-Tech-Challenge.zip",
+    "sha256": "219784fe5ce7934a7c73055f54e08c20cb93d15729be05c16234dbffae8062e6",
+    "entries": [
+      {
+        "archive_path": "Finding_Real_Locations_Guide.docx",
+        "bytes": 23939,
+        "sha256": "fbba553f13423a51fea9420b00f90cbbe1ffe61d4f27487dd694119a62a52578",
+        "reviewed": true,
+        "created_metadata": "2026-08-25T18:37:00+00:00",
+        "modified_metadata": "2026-08-26T14:13:06+00:00"
+      },
+      {
+        "archive_path": "Opportunities/Software_Engineer_Intern_Listing.docx",
+        "bytes": 16913,
+        "sha256": "6ae63eafdf341b69cb6d59418e8f2f5c9ccb3caf5c6dc13ba83b826907438087",
+        "reviewed": false
+      },
+      {
+        "archive_path": "Project Listings/Dominion Energy/2024-2028-2million-and-above-project-descriptions.pdf",
+        "bytes": 413986,
+        "sha256": "890876d0faefd40576a0b5e598a804b54b4d8d2d56dd96fb7e40d5a406db0f46",
+        "reviewed": true
+      },
+      {
+        "archive_path": "Project Listings/Georgia Power/2025 IRP Volume 3 PUBLIC DISCLOSURE.pdf",
+        "bytes": 14762217,
+        "sha256": "0dae2fc3a38462f0930cc2eb0acedca35e329cd0924e4749c81422bdc8602a12",
+        "reviewed": true
+      },
+      {
+        "archive_path": "Projects_Overlaps.xlsx",
+        "bytes": 11423,
+        "sha256": "fe01df4ed0691d55fd565784a7510ddfe4682316ff63fb70b963b934c5974f24",
+        "reviewed": true,
+        "created_metadata": "2026-08-25T23:21:37",
+        "modified_metadata": "2026-08-26T13:00:15"
+      },
+      {
+        "archive_path": "ShellHacks_Challenge_Gridlock.docx",
+        "bytes": 28740,
+        "sha256": "6cd4871942a5a2e9bf4258ebcaa3142452da773ed8c5356fbb0255e9cdb9ebbe",
+        "reviewed": true,
+        "created_metadata": "2026-08-25T18:41:00+00:00",
+        "modified_metadata": "2026-08-26T13:19:12+00:00"
+      }
+    ],
+    "date_caution": "File metadata and archive timestamps are not utility publication dates."
+  },
+  "workbook_original": {
+    "projects": {
+      "dimensions": "A1:Q11",
+      "cells": [
+        {
+          "cell": "A1",
+          "value": "project_id",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "project_id"
+        },
+        {
+          "cell": "B1",
+          "value": "utility",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "utility"
+        },
+        {
+          "cell": "C1",
+          "value": "state",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "state"
+        },
+        {
+          "cell": "D1",
+          "value": "project_name",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "project_name"
+        },
+        {
+          "cell": "E1",
+          "value": "name_a",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "name_a"
+        },
+        {
+          "cell": "F1",
+          "value": "lat_a",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "lat_a"
+        },
+        {
+          "cell": "G1",
+          "value": "lon_a",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "lon_a"
+        },
+        {
+          "cell": "H1",
+          "value": "name_b",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "name_b"
+        },
+        {
+          "cell": "I1",
+          "value": "lat_b",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "lat_b"
+        },
+        {
+          "cell": "J1",
+          "value": "lon_b",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "lon_b"
+        },
+        {
+          "cell": "K1",
+          "value": "lat_center",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "lat_center"
+        },
+        {
+          "cell": "L1",
+          "value": "lon_center",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "lon_center"
+        },
+        {
+          "cell": "M1",
+          "value": "in_service_date",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "in_service_date"
+        },
+        {
+          "cell": "N1",
+          "value": "overlap_count",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "overlap_count"
+        },
+        {
+          "cell": "O1",
+          "value": "overlap_1",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "overlap_1"
+        },
+        {
+          "cell": "P1",
+          "value": "overlap_2",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "overlap_2"
+        },
+        {
+          "cell": "Q1",
+          "value": "overlap_3",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "overlap_3"
+        },
+        {
+          "cell": "A2",
+          "value": "DESC_1",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "DESC_1"
+        },
+        {
+          "cell": "B2",
+          "value": "Dominion Energy South Carolina",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Dominion Energy South Carolina"
+        },
+        {
+          "cell": "C2",
+          "value": "SC",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "SC"
+        },
+        {
+          "cell": "D2",
+          "value": "Stevens Creek - Hooks 115 kV / LR Plumb Branch 46 kV Rebuilds",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Stevens Creek - Hooks 115 kV / LR Plumb Branch 46 kV Rebuilds"
+        },
+        {
+          "cell": "E2",
+          "value": "Stevens Creek Sub",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Stevens Creek Sub"
+        },
+        {
+          "cell": "F2",
+          "value": 33.562599,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 33.562599
+        },
+        {
+          "cell": "G2",
+          "value": -82.051362,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": -82.051362
+        },
+        {
+          "cell": "H2",
+          "value": "Hooks Sub",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Hooks Sub"
+        },
+        {
+          "cell": "K2",
+          "value": "=IF(ISBLANK(I2), F2, IF(ISBLANK(F2), I2, (F2+I2)/2))",
+          "data_type": "f",
+          "number_format": "General",
+          "cached_value": 33.562599
+        },
+        {
+          "cell": "L2",
+          "value": "=IF(ISBLANK(J2), G2, IF(ISBLANK(G2), J2, (G2+J2)/2))",
+          "data_type": "f",
+          "number_format": "General",
+          "cached_value": -82.051362
+        },
+        {
+          "cell": "M2",
+          "value": "12/31/2024",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "12/31/2024"
+        },
+        {
+          "cell": "N2",
+          "value": 1,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 1
+        },
+        {
+          "cell": "O2",
+          "value": "GPC_1",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "GPC_1"
+        },
+        {
+          "cell": "A3",
+          "value": "DESC_2",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "DESC_2"
+        },
+        {
+          "cell": "B3",
+          "value": "Dominion Energy South Carolina",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Dominion Energy South Carolina"
+        },
+        {
+          "cell": "C3",
+          "value": "SC",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "SC"
+        },
+        {
+          "cell": "D3",
+          "value": "Hooks - Thurmond 115 kV Tie: Rebuild",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Hooks - Thurmond 115 kV Tie: Rebuild"
+        },
+        {
+          "cell": "E3",
+          "value": "Hooks Sub",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Hooks Sub"
+        },
+        {
+          "cell": "H3",
+          "value": "Thurmond Sub",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Thurmond Sub"
+        },
+        {
+          "cell": "I3",
+          "value": 33.660127,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 33.660127
+        },
+        {
+          "cell": "J3",
+          "value": -82.195931,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": -82.195931
+        },
+        {
+          "cell": "K3",
+          "value": "=IF(ISBLANK(I3), F3, IF(ISBLANK(F3), I3, (F3+I3)/2))",
+          "data_type": "f",
+          "number_format": "General",
+          "cached_value": 33.660127
+        },
+        {
+          "cell": "L3",
+          "value": "=IF(ISBLANK(J3), G3, IF(ISBLANK(G3), J3, (G3+J3)/2))",
+          "data_type": "f",
+          "number_format": "General",
+          "cached_value": -82.195931
+        },
+        {
+          "cell": "M3",
+          "value": "12/31/2024",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "12/31/2024"
+        },
+        {
+          "cell": "N3",
+          "value": 1,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 1
+        },
+        {
+          "cell": "O3",
+          "value": "GPC_1",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "GPC_1"
+        },
+        {
+          "cell": "A4",
+          "value": "DESC_3",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "DESC_3"
+        },
+        {
+          "cell": "B4",
+          "value": "Dominion Energy South Carolina",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Dominion Energy South Carolina"
+        },
+        {
+          "cell": "C4",
+          "value": "SC",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "SC"
+        },
+        {
+          "cell": "D4",
+          "value": "Jasper - Okatie 230 kV #2: Construct",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Jasper - Okatie 230 kV #2: Construct"
+        },
+        {
+          "cell": "E4",
+          "value": "Jasper Sub",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Jasper Sub"
+        },
+        {
+          "cell": "F4",
+          "value": 32.35912,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 32.35912
+        },
+        {
+          "cell": "G4",
+          "value": -81.1246,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": -81.1246
+        },
+        {
+          "cell": "H4",
+          "value": "Okatie Sub",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Okatie Sub"
+        },
+        {
+          "cell": "I4",
+          "value": 32.333758,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 32.333758
+        },
+        {
+          "cell": "J4",
+          "value": -81.032495,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": -81.032495
+        },
+        {
+          "cell": "K4",
+          "value": "=IF(ISBLANK(I4), F4, IF(ISBLANK(F4), I4, (F4+I4)/2))",
+          "data_type": "f",
+          "number_format": "General",
+          "cached_value": 32.346439000000004
+        },
+        {
+          "cell": "L4",
+          "value": "=IF(ISBLANK(J4), G4, IF(ISBLANK(G4), J4, (G4+J4)/2))",
+          "data_type": "f",
+          "number_format": "General",
+          "cached_value": -81.0785475
+        },
+        {
+          "cell": "M4",
+          "value": "12/31/2025",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "12/31/2025"
+        },
+        {
+          "cell": "N4",
+          "value": 2,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 2
+        },
+        {
+          "cell": "O4",
+          "value": "GPC_2",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "GPC_2"
+        },
+        {
+          "cell": "P4",
+          "value": "GPC_3",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "GPC_3"
+        },
+        {
+          "cell": "A5",
+          "value": "DESC_4",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "DESC_4"
+        },
+        {
+          "cell": "B5",
+          "value": "Dominion Energy South Carolina",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Dominion Energy South Carolina"
+        },
+        {
+          "cell": "C5",
+          "value": "SC",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "SC"
+        },
+        {
+          "cell": "D5",
+          "value": "Queensboro - Ft Johnson 115 kV & Queensboro-Bayfront 115 kV (Queensboro-James Island Sect)",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Queensboro - Ft Johnson 115 kV & Queensboro-Bayfront 115 kV (Queensboro-James Island Sect)"
+        },
+        {
+          "cell": "E5",
+          "value": "Queensboro Sub",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Queensboro Sub"
+        },
+        {
+          "cell": "F5",
+          "value": 32.722793,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 32.722793
+        },
+        {
+          "cell": "G5",
+          "value": -79.967332,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": -79.967332
+        },
+        {
+          "cell": "H5",
+          "value": "Ft Johnson Sub",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Ft Johnson Sub"
+        },
+        {
+          "cell": "K5",
+          "value": "=IF(ISBLANK(I5), F5, IF(ISBLANK(F5), I5, (F5+I5)/2))",
+          "data_type": "f",
+          "number_format": "General",
+          "cached_value": 32.722793
+        },
+        {
+          "cell": "L5",
+          "value": "=IF(ISBLANK(J5), G5, IF(ISBLANK(G5), J5, (G5+J5)/2))",
+          "data_type": "f",
+          "number_format": "General",
+          "cached_value": -79.967332
+        },
+        {
+          "cell": "M5",
+          "value": "12/31/2023",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "12/31/2023"
+        },
+        {
+          "cell": "N5",
+          "value": 0,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 0
+        },
+        {
+          "cell": "A6",
+          "value": "DESC_5",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "DESC_5"
+        },
+        {
+          "cell": "B6",
+          "value": "Dominion Energy South Carolina",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Dominion Energy South Carolina"
+        },
+        {
+          "cell": "C6",
+          "value": "SC",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "SC"
+        },
+        {
+          "cell": "D6",
+          "value": "Okatie-Bluffton 115 kV: Rebuild",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Okatie-Bluffton 115 kV: Rebuild"
+        },
+        {
+          "cell": "E6",
+          "value": "Okatie Sub",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Okatie Sub"
+        },
+        {
+          "cell": "F6",
+          "value": 32.333758,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 32.333758
+        },
+        {
+          "cell": "G6",
+          "value": -81.032495,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": -81.032495
+        },
+        {
+          "cell": "H6",
+          "value": "Bluffton Sub",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Bluffton Sub"
+        },
+        {
+          "cell": "I6",
+          "value": 32.235027,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 32.235027
+        },
+        {
+          "cell": "J6",
+          "value": -80.853384,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": -80.853384
+        },
+        {
+          "cell": "K6",
+          "value": "=IF(ISBLANK(I6), F6, IF(ISBLANK(F6), I6, (F6+I6)/2))",
+          "data_type": "f",
+          "number_format": "General",
+          "cached_value": 32.2843925
+        },
+        {
+          "cell": "L6",
+          "value": "=IF(ISBLANK(J6), G6, IF(ISBLANK(G6), J6, (G6+J6)/2))",
+          "data_type": "f",
+          "number_format": "General",
+          "cached_value": -80.9429395
+        },
+        {
+          "cell": "M6",
+          "value": "2025-06-01T00:00:00",
+          "data_type": "d",
+          "number_format": "mm-dd-yy",
+          "cached_value": "2025-06-01T00:00:00"
+        },
+        {
+          "cell": "N6",
+          "value": 2,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 2
+        },
+        {
+          "cell": "O6",
+          "value": "GPC_2",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "GPC_2"
+        },
+        {
+          "cell": "P6",
+          "value": "GPC_3",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "GPC_3"
+        },
+        {
+          "cell": "A7",
+          "value": "GPC_1",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "GPC_1"
+        },
+        {
+          "cell": "B7",
+          "value": "Georgia Power",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Georgia Power"
+        },
+        {
+          "cell": "C7",
+          "value": "GA",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "GA"
+        },
+        {
+          "cell": "D7",
+          "value": "EVANS PRIMARY - THURMOND DAM (USA) #5 115KV REBUILD",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "EVANS PRIMARY - THURMOND DAM (USA) #5 115KV REBUILD"
+        },
+        {
+          "cell": "E7",
+          "value": "EVANS PRIMARY",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "EVANS PRIMARY"
+        },
+        {
+          "cell": "F7",
+          "value": 33.543994,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 33.543994
+        },
+        {
+          "cell": "G7",
+          "value": -82.168648,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": -82.168648
+        },
+        {
+          "cell": "H7",
+          "value": "THURMOND DAM #5",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "THURMOND DAM #5"
+        },
+        {
+          "cell": "I7",
+          "value": 33.660127,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 33.660127
+        },
+        {
+          "cell": "J7",
+          "value": -82.195931,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": -82.195931
+        },
+        {
+          "cell": "K7",
+          "value": "=IF(ISBLANK(I7), F7, IF(ISBLANK(F7), I7, (F7+I7)/2))",
+          "data_type": "f",
+          "number_format": "General",
+          "cached_value": 33.6020605
+        },
+        {
+          "cell": "L7",
+          "value": "=IF(ISBLANK(J7), G7, IF(ISBLANK(G7), J7, (G7+J7)/2))",
+          "data_type": "f",
+          "number_format": "General",
+          "cached_value": -82.1822895
+        },
+        {
+          "cell": "M7",
+          "value": "6/1/2033",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "6/1/2033"
+        },
+        {
+          "cell": "N7",
+          "value": 2,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 2
+        },
+        {
+          "cell": "O7",
+          "value": "DESC_2",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "DESC_2"
+        },
+        {
+          "cell": "P7",
+          "value": "DESC_1",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "DESC_1"
+        },
+        {
+          "cell": "A8",
+          "value": "GPC_2",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "GPC_2"
+        },
+        {
+          "cell": "B8",
+          "value": "Georgia Power",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Georgia Power"
+        },
+        {
+          "cell": "C8",
+          "value": "GA",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "GA"
+        },
+        {
+          "cell": "D8",
+          "value": "SAV: MCINTOSH - PURRYSBURG 230KV REACTORS",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "SAV: MCINTOSH - PURRYSBURG 230KV REACTORS"
+        },
+        {
+          "cell": "E8",
+          "value": "MCINTOSH",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "MCINTOSH"
+        },
+        {
+          "cell": "F8",
+          "value": 32.352116,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 32.352116
+        },
+        {
+          "cell": "G8",
+          "value": -81.175112,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": -81.175112
+        },
+        {
+          "cell": "H8",
+          "value": "PURRYSBURG",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "PURRYSBURG"
+        },
+        {
+          "cell": "K8",
+          "value": "=IF(ISBLANK(I8), F8, IF(ISBLANK(F8), I8, (F8+I8)/2))",
+          "data_type": "f",
+          "number_format": "General",
+          "cached_value": 32.352116
+        },
+        {
+          "cell": "L8",
+          "value": "=IF(ISBLANK(J8), G8, IF(ISBLANK(G8), J8, (G8+J8)/2))",
+          "data_type": "f",
+          "number_format": "General",
+          "cached_value": -81.175112
+        },
+        {
+          "cell": "M8",
+          "value": "6/1/2026",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "6/1/2026"
+        },
+        {
+          "cell": "N8",
+          "value": 2,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 2
+        },
+        {
+          "cell": "O8",
+          "value": "DESC_3",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "DESC_3"
+        },
+        {
+          "cell": "P8",
+          "value": "DESC_5",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "DESC_5"
+        },
+        {
+          "cell": "A9",
+          "value": "GPC_3",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "GPC_3"
+        },
+        {
+          "cell": "B9",
+          "value": "Georgia Power",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Georgia Power"
+        },
+        {
+          "cell": "C9",
+          "value": "GA",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "GA"
+        },
+        {
+          "cell": "D9",
+          "value": "SAV: GOSHEN (SAV) - MCINTOSH 115KV LINE REBUILD",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "SAV: GOSHEN (SAV) - MCINTOSH 115KV LINE REBUILD"
+        },
+        {
+          "cell": "E9",
+          "value": "GOSHEN",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "GOSHEN"
+        },
+        {
+          "cell": "F9",
+          "value": 32.248701,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 32.248701
+        },
+        {
+          "cell": "G9",
+          "value": -81.209472,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": -81.209472
+        },
+        {
+          "cell": "H9",
+          "value": "MCINTOSH",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "MCINTOSH"
+        },
+        {
+          "cell": "I9",
+          "value": 32.352116,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 32.352116
+        },
+        {
+          "cell": "J9",
+          "value": -81.182105,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": -81.182105
+        },
+        {
+          "cell": "K9",
+          "value": "=IF(ISBLANK(I9), F9, IF(ISBLANK(F9), I9, (F9+I9)/2))",
+          "data_type": "f",
+          "number_format": "General",
+          "cached_value": 32.3004085
+        },
+        {
+          "cell": "L9",
+          "value": "=IF(ISBLANK(J9), G9, IF(ISBLANK(G9), J9, (G9+J9)/2))",
+          "data_type": "f",
+          "number_format": "General",
+          "cached_value": -81.1957885
+        },
+        {
+          "cell": "M9",
+          "value": "6/1/2027",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "6/1/2027"
+        },
+        {
+          "cell": "N9",
+          "value": 2,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 2
+        },
+        {
+          "cell": "O9",
+          "value": "DESC_3",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "DESC_3"
+        },
+        {
+          "cell": "P9",
+          "value": "DESC_5",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "DESC_5"
+        },
+        {
+          "cell": "A10",
+          "value": "GPC_4",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "GPC_4"
+        },
+        {
+          "cell": "B10",
+          "value": "Georgia Power",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Georgia Power"
+        },
+        {
+          "cell": "C10",
+          "value": "GA",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "GA"
+        },
+        {
+          "cell": "D10",
+          "value": "MITCHELL - NORTH TIFTON 230KV RECONDUCTOR",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "MITCHELL - NORTH TIFTON 230KV RECONDUCTOR"
+        },
+        {
+          "cell": "E10",
+          "value": "Mitchell Substation",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Mitchell Substation"
+        },
+        {
+          "cell": "F10",
+          "value": 31.447121,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 31.447121
+        },
+        {
+          "cell": "G10",
+          "value": -84.133843,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": -84.133843
+        },
+        {
+          "cell": "H10",
+          "value": "North Tifton Substation",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "North Tifton Substation"
+        },
+        {
+          "cell": "I10",
+          "value": 31.478089,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 31.478089
+        },
+        {
+          "cell": "J10",
+          "value": -83.54913,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": -83.54913
+        },
+        {
+          "cell": "K10",
+          "value": "=IF(ISBLANK(I10), F10, IF(ISBLANK(F10), I10, (F10+I10)/2))",
+          "data_type": "f",
+          "number_format": "General",
+          "cached_value": 31.462605
+        },
+        {
+          "cell": "L10",
+          "value": "=IF(ISBLANK(J10), G10, IF(ISBLANK(G10), J10, (G10+J10)/2))",
+          "data_type": "f",
+          "number_format": "General",
+          "cached_value": -83.8414865
+        },
+        {
+          "cell": "M10",
+          "value": "2025-05-01T00:00:00",
+          "data_type": "d",
+          "number_format": "mm-dd-yy",
+          "cached_value": "2025-05-01T00:00:00"
+        },
+        {
+          "cell": "N10",
+          "value": 0,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 0
+        },
+        {
+          "cell": "A11",
+          "value": "GPC_5",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "GPC_5"
+        },
+        {
+          "cell": "B11",
+          "value": "Georgia Power",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Georgia Power"
+        },
+        {
+          "cell": "C11",
+          "value": "GA",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "GA"
+        },
+        {
+          "cell": "D11",
+          "value": "JESUP - LUDOWICI PRIMARY 115KV REBUILD",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "JESUP - LUDOWICI PRIMARY 115KV REBUILD"
+        },
+        {
+          "cell": "E11",
+          "value": "JESUP",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "JESUP"
+        },
+        {
+          "cell": "F11",
+          "value": 31.603106,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 31.603106
+        },
+        {
+          "cell": "G11",
+          "value": -81.924947,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": -81.924947
+        },
+        {
+          "cell": "H11",
+          "value": "LUDOWICI PRIMARY",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "LUDOWICI PRIMARY"
+        },
+        {
+          "cell": "I11",
+          "value": 31.721597,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 31.721597
+        },
+        {
+          "cell": "J11",
+          "value": -81.743703,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": -81.743703
+        },
+        {
+          "cell": "K11",
+          "value": "=IF(ISBLANK(I11), F11, IF(ISBLANK(F11), I11, (F11+I11)/2))",
+          "data_type": "f",
+          "number_format": "General",
+          "cached_value": 31.6623515
+        },
+        {
+          "cell": "L11",
+          "value": "=IF(ISBLANK(J11), G11, IF(ISBLANK(G11), J11, (G11+J11)/2))",
+          "data_type": "f",
+          "number_format": "General",
+          "cached_value": -81.834325
+        },
+        {
+          "cell": "M11",
+          "value": "6/1/2025",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "6/1/2025"
+        },
+        {
+          "cell": "N11",
+          "value": 0,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 0
+        }
+      ]
+    },
+    "overlaps": {
+      "dimensions": "A1:I7",
+      "cells": [
+        {
+          "cell": "A1",
+          "value": "overlap_id",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "overlap_id"
+        },
+        {
+          "cell": "B1",
+          "value": "distance_mi",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "distance_mi"
+        },
+        {
+          "cell": "C1",
+          "value": "time_gap (day)",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "time_gap (day)"
+        },
+        {
+          "cell": "D1",
+          "value": "utility_a",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "utility_a"
+        },
+        {
+          "cell": "E1",
+          "value": "project_id_a",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "project_id_a"
+        },
+        {
+          "cell": "F1",
+          "value": "project_name_a",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "project_name_a"
+        },
+        {
+          "cell": "G1",
+          "value": "utility_b",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "utility_b"
+        },
+        {
+          "cell": "H1",
+          "value": "project_id_b",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "project_id_b"
+        },
+        {
+          "cell": "I1",
+          "value": "project_name_b",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "project_name_b"
+        },
+        {
+          "cell": "A2",
+          "value": "OVL_1",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "OVL_1"
+        },
+        {
+          "cell": "B2",
+          "value": 4.09,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 4.09
+        },
+        {
+          "cell": "C2",
+          "value": 3074,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 3074
+        },
+        {
+          "cell": "D2",
+          "value": "Dominion Energy South Carolina",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Dominion Energy South Carolina"
+        },
+        {
+          "cell": "E2",
+          "value": "DESC_2",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "DESC_2"
+        },
+        {
+          "cell": "F2",
+          "value": "Hooks - Thurmond 115 kV Tie: Rebuild",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Hooks - Thurmond 115 kV Tie: Rebuild"
+        },
+        {
+          "cell": "G2",
+          "value": "Georgia Power",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Georgia Power"
+        },
+        {
+          "cell": "H2",
+          "value": "GPC_1",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "GPC_1"
+        },
+        {
+          "cell": "I2",
+          "value": "EVANS PRIMARY - THURMOND DAM (USA) #5 115KV REBUILD",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "EVANS PRIMARY - THURMOND DAM (USA) #5 115KV REBUILD"
+        },
+        {
+          "cell": "A3",
+          "value": "OVL_2",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "OVL_2"
+        },
+        {
+          "cell": "B3",
+          "value": 5.65,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 5.65
+        },
+        {
+          "cell": "C3",
+          "value": 152,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 152
+        },
+        {
+          "cell": "D3",
+          "value": "Dominion Energy South Carolina",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Dominion Energy South Carolina"
+        },
+        {
+          "cell": "E3",
+          "value": "DESC_3",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "DESC_3"
+        },
+        {
+          "cell": "F3",
+          "value": "Jasper - Okatie 230 kV #2: Construct",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Jasper - Okatie 230 kV #2: Construct"
+        },
+        {
+          "cell": "G3",
+          "value": "Georgia Power",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Georgia Power"
+        },
+        {
+          "cell": "H3",
+          "value": "GPC_2",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "GPC_2"
+        },
+        {
+          "cell": "I3",
+          "value": "SAV: MCINTOSH - PURRYSBURG 230KV REACTORS",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "SAV: MCINTOSH - PURRYSBURG 230KV REACTORS"
+        },
+        {
+          "cell": "A4",
+          "value": "OVL_3",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "OVL_3"
+        },
+        {
+          "cell": "B4",
+          "value": 7.55,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 7.55
+        },
+        {
+          "cell": "C4",
+          "value": 517,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 517
+        },
+        {
+          "cell": "D4",
+          "value": "Dominion Energy South Carolina",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Dominion Energy South Carolina"
+        },
+        {
+          "cell": "E4",
+          "value": "DESC_3",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "DESC_3"
+        },
+        {
+          "cell": "F4",
+          "value": "Jasper - Okatie 230 kV #2: Construct",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Jasper - Okatie 230 kV #2: Construct"
+        },
+        {
+          "cell": "G4",
+          "value": "Georgia Power",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Georgia Power"
+        },
+        {
+          "cell": "H4",
+          "value": "GPC_3",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "GPC_3"
+        },
+        {
+          "cell": "I4",
+          "value": "SAV: GOSHEN (SAV) - MCINTOSH 115KV LINE REBUILD",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "SAV: GOSHEN (SAV) - MCINTOSH 115KV LINE REBUILD"
+        },
+        {
+          "cell": "A5",
+          "value": "OVL_4",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "OVL_4"
+        },
+        {
+          "cell": "B5",
+          "value": 8.01,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 8.01
+        },
+        {
+          "cell": "C5",
+          "value": 3074,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 3074
+        },
+        {
+          "cell": "D5",
+          "value": "Dominion Energy South Carolina",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Dominion Energy South Carolina"
+        },
+        {
+          "cell": "E5",
+          "value": "DESC_1",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "DESC_1"
+        },
+        {
+          "cell": "F5",
+          "value": "Stevens Creek - Hooks 115 kV / LR Plumb Branch 46 kV Rebuilds",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Stevens Creek - Hooks 115 kV / LR Plumb Branch 46 kV Rebuilds"
+        },
+        {
+          "cell": "G5",
+          "value": "Georgia Power",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Georgia Power"
+        },
+        {
+          "cell": "H5",
+          "value": "GPC_1",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "GPC_1"
+        },
+        {
+          "cell": "I5",
+          "value": "EVANS PRIMARY - THURMOND DAM (USA) #5 115KV REBUILD",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "EVANS PRIMARY - THURMOND DAM (USA) #5 115KV REBUILD"
+        },
+        {
+          "cell": "A6",
+          "value": "OVL_5",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "OVL_5"
+        },
+        {
+          "cell": "B6",
+          "value": 14.34,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 14.34
+        },
+        {
+          "cell": "C6",
+          "value": 365,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 365
+        },
+        {
+          "cell": "D6",
+          "value": "Dominion Energy South Carolina",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Dominion Energy South Carolina"
+        },
+        {
+          "cell": "E6",
+          "value": "DESC_5",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "DESC_5"
+        },
+        {
+          "cell": "F6",
+          "value": "Okatie-Bluffton 115 kV: Rebuild",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Okatie-Bluffton 115 kV: Rebuild"
+        },
+        {
+          "cell": "G6",
+          "value": "Georgia Power",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Georgia Power"
+        },
+        {
+          "cell": "H6",
+          "value": "GPC_2",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "GPC_2"
+        },
+        {
+          "cell": "I6",
+          "value": "SAV: MCINTOSH - PURRYSBURG 230KV REACTORS",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "SAV: MCINTOSH - PURRYSBURG 230KV REACTORS"
+        },
+        {
+          "cell": "A7",
+          "value": "OVL_6",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "OVL_6"
+        },
+        {
+          "cell": "B7",
+          "value": 14.81,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 14.81
+        },
+        {
+          "cell": "C7",
+          "value": 730,
+          "data_type": "n",
+          "number_format": "General",
+          "cached_value": 730
+        },
+        {
+          "cell": "D7",
+          "value": "Dominion Energy South Carolina",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Dominion Energy South Carolina"
+        },
+        {
+          "cell": "E7",
+          "value": "DESC_5",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "DESC_5"
+        },
+        {
+          "cell": "F7",
+          "value": "Okatie-Bluffton 115 kV: Rebuild",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Okatie-Bluffton 115 kV: Rebuild"
+        },
+        {
+          "cell": "G7",
+          "value": "Georgia Power",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "Georgia Power"
+        },
+        {
+          "cell": "H7",
+          "value": "GPC_3",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "GPC_3"
+        },
+        {
+          "cell": "I7",
+          "value": "SAV: GOSHEN (SAV) - MCINTOSH 115KV LINE REBUILD",
+          "data_type": "s",
+          "number_format": "General",
+          "cached_value": "SAV: GOSHEN (SAV) - MCINTOSH 115KV LINE REBUILD"
+        }
+      ]
+    }
+  },
+  "projects": [
+    {
+      "id": "DESC_1",
+      "workbook_row": 2,
+      "original_values": {
+        "project_id": "DESC_1",
+        "utility": "Dominion Energy South Carolina",
+        "state": "SC",
+        "project_name": "Stevens Creek - Hooks 115 kV / LR Plumb Branch 46 kV Rebuilds",
+        "name_a": "Stevens Creek Sub",
+        "lat_a": 33.562599,
+        "lon_a": -82.051362,
+        "name_b": "Hooks Sub",
+        "lat_b": null,
+        "lon_b": null,
+        "lat_center": 33.562599,
+        "lon_center": -82.051362,
+        "in_service_date": "12/31/2024",
+        "overlap_count": 1,
+        "overlap_1": "GPC_1",
+        "overlap_2": null,
+        "overlap_3": null
+      },
+      "original_date_normalized": "2024-12-31",
+      "original_date_meaning": "planned_in_service_date",
+      "scope_schedule_evidence": {
+        "sample_id": "DESC_1",
+        "source_project_id": "6809 E",
+        "original_name": "Stevens Creek - Hooks 115kV/LR Plumb Branch 46kV Rebuilds",
+        "original_page": 14,
+        "original_status": "In Progress",
+        "original_planned_in_service": "2024-12-31",
+        "sample_date_correct": true,
+        "geometry": {
+          "kind": "line/corridor",
+          "length_miles": 9.5,
+          "location_detail": "Named Stevens Creek–Hooks and Little River/Plum Branch corridor; original spells Plumb. Includes 115kV and 46kV lines.",
+          "route_coordinates_provided": false,
+          "route_geometry_provided": false
+        },
+        "latest_evidence": {
+          "status": "Completed and in service",
+          "actual_in_service_month": "2024-08",
+          "reported_in": "DESC_IRP_2025",
+          "pdf_page": 49,
+          "printed_page": "43",
+          "evidence_date": "2025-03-31",
+          "confidence": "high for named scope; strong identity match, although IRP does not repeat project ID"
+        },
+        "identity_caution": "Do not merge with 6809 G: original page 15 is a separate 6.5-mile project. Current plan page 20 calls 6809 G Hooks–Modoc and schedules it for 2027-12-31."
+      },
+      "coordinate_assessment": {
+        "verdict": "Stevens Creek point is near the mapped dam substation, not its current OSM bounding-box center. Hooks missing. Single endpoint only; no verified route.",
+        "public_map_features": [
+          {
+            "type": "way",
+            "id": 52102616,
+            "version": 10,
+            "timestamp": "2022-06-25T22:21:01Z",
+            "center": {
+              "lat": 33.5616178,
+              "lon": -82.0532936
+            },
+            "tags": {
+              "barrier": "fence",
+              "name": "Stevens Creek Dam Substation",
+              "power": "substation",
+              "substation": "transmission",
+              "voltage": "115000"
+            },
+            "url": "https://www.openstreetmap.org/way/52102616"
+          }
+        ],
+        "utility_authoritative_coordinates": false,
+        "surveyed_geometry": false
+      },
+      "screening_disposition": "historical_only"
+    },
+    {
+      "id": "DESC_2",
+      "workbook_row": 3,
+      "original_values": {
+        "project_id": "DESC_2",
+        "utility": "Dominion Energy South Carolina",
+        "state": "SC",
+        "project_name": "Hooks - Thurmond 115 kV Tie: Rebuild",
+        "name_a": "Hooks Sub",
+        "lat_a": null,
+        "lon_a": null,
+        "name_b": "Thurmond Sub",
+        "lat_b": 33.660127,
+        "lon_b": -82.195931,
+        "lat_center": 33.660127,
+        "lon_center": -82.195931,
+        "in_service_date": "12/31/2024",
+        "overlap_count": 1,
+        "overlap_1": "GPC_1",
+        "overlap_2": null,
+        "overlap_3": null
+      },
+      "original_date_normalized": "2024-12-31",
+      "original_date_meaning": "planned_in_service_date",
+      "scope_schedule_evidence": {
+        "sample_id": "DESC_2",
+        "source_project_id": "6810 A",
+        "original_name": "Hooks - Thurmond 115kV Tie: Rebuild",
+        "original_page": 31,
+        "original_status": "In Progress",
+        "original_planned_in_service": "2024-12-31",
+        "sample_date_correct": true,
+        "geometry": {
+          "kind": "line section",
+          "length_miles": 2.3,
+          "length_qualifier": "approximately",
+          "location_detail": "Between Hooks and Thurmond on existing right-of-way; rebuild with steel poles.",
+          "route_coordinates_provided": false,
+          "route_geometry_provided": false
+        },
+        "latest_evidence": {
+          "status": "Completed and in service",
+          "actual_in_service_month": "2024-11",
+          "reported_in": "DESC_IRP_2025",
+          "pdf_page": 49,
+          "printed_page": "43",
+          "evidence_date": "2025-03-31",
+          "confidence": "high; exact named rebuild match; IRP does not repeat project ID"
+        }
+      },
+      "coordinate_assessment": {
+        "verdict": "Thurmond matches the named 115 kV station to rounding. Hooks missing; single endpoint is not the line center.",
+        "public_map_features": [
+          {
+            "type": "way",
+            "id": 52102019,
+            "version": 3,
+            "timestamp": "2022-03-20T20:31:12Z",
+            "center": {
+              "lat": 33.6601273,
+              "lon": -82.1959307
+            },
+            "tags": {
+              "barrier": "fence",
+              "name": "Thurmond Substation",
+              "operator": "Georgia Power",
+              "operator:wikidata": "Q5547666",
+              "operator:wikipedia": "en:Georgia Power",
+              "power": "substation",
+              "substation": "generation",
+              "voltage": "115000"
+            },
+            "url": "https://www.openstreetmap.org/way/52102019"
+          }
+        ],
+        "utility_authoritative_coordinates": false,
+        "surveyed_geometry": false
+      },
+      "screening_disposition": "historical_only"
+    },
+    {
+      "id": "DESC_3",
+      "workbook_row": 4,
+      "original_values": {
+        "project_id": "DESC_3",
+        "utility": "Dominion Energy South Carolina",
+        "state": "SC",
+        "project_name": "Jasper - Okatie 230 kV #2: Construct",
+        "name_a": "Jasper Sub",
+        "lat_a": 32.35912,
+        "lon_a": -81.1246,
+        "name_b": "Okatie Sub",
+        "lat_b": 32.333758,
+        "lon_b": -81.032495,
+        "lat_center": 32.346439000000004,
+        "lon_center": -81.0785475,
+        "in_service_date": "12/31/2025",
+        "overlap_count": 2,
+        "overlap_1": "GPC_2",
+        "overlap_2": "GPC_3",
+        "overlap_3": null
+      },
+      "original_date_normalized": "2025-12-31",
+      "original_date_meaning": "planned_in_service_date",
+      "scope_schedule_evidence": {
+        "sample_id": "DESC_3",
+        "source_project_id": "06367 D - G",
+        "original_name": "Jasper – Okatie 230 kV #2: Construct",
+        "original_page": 23,
+        "original_status": "In Progress",
+        "original_planned_in_service": "2025-12-31",
+        "sample_date_correct": true,
+        "geometry": {
+          "kind": "new line",
+          "length_miles_original": 6.5,
+          "length_qualifier_original": "estimated",
+          "length_miles_2026_order": 6.64,
+          "location_detail": "Jasper substation in Hardeeville to Okatie substation in Okatie, South Carolina; public order page 2.",
+          "route_coordinates_provided": false,
+          "route_geometry_provided": false
+        },
+        "latest_evidence": {
+          "status": "Under construction",
+          "reported_in": "PSC_2026_482",
+          "pdf_page": 2,
+          "evidence_date": "2026-08-26",
+          "underlying_request_date": "2026-07-02",
+          "confidence": "high for reported construction status, not a live status feed",
+          "latest_exact_planned_in_service": "2026-12-01",
+          "schedule_source": "DESC_PLAN_2026",
+          "schedule_pdf_page": 12,
+          "schedule_source_project_id": "06367 D - G",
+          "schedule_source_date": "PDF metadata 2026-04-28; publication date unspecified"
+        },
+        "corroboration": [
+          {
+            "source": "DESC_IRP_2025",
+            "pdf_page": 133,
+            "printed_page": "APPENDIX B-1",
+            "summary": "Combined Jasper–Okatie #2/Okatie–Riverport construction entry shifts to December 2026 because of permitting delays."
+          },
+          {
+            "source": "DESC_IRP_2026",
+            "pdf_page": 83,
+            "summary": "Combined construction entry remains on schedule for December 2026."
+          }
+        ],
+        "scope_caution": "June 2032 in PSC Order 2026-482 page 5 is the later corridor reconductoring project, not the original #2 line-construction COD."
+      },
+      "coordinate_assessment": {
+        "verdict": "Jasper sample is near the mapped station but differs from its center. Okatie sample aligns with an unnamed 230 kV switching feature and the official route-map area; name and operator are absent from that OSM feature. Use station-area proxies at medium confidence.",
+        "public_map_features": [
+          {
+            "type": "way",
+            "id": 185380597,
+            "version": 3,
+            "timestamp": "2022-05-22T05:05:25Z",
+            "center": {
+              "lat": 32.3606993,
+              "lon": -81.1241523
+            },
+            "tags": {
+              "barrier": "fence",
+              "name": "Jasper Substation",
+              "power": "substation",
+              "substation": "generation",
+              "voltage": "230000"
+            },
+            "url": "https://www.openstreetmap.org/way/185380597"
+          },
+          {
+            "type": "way",
+            "id": 1064022697,
+            "version": 1,
+            "timestamp": "2022-05-26T12:57:44Z",
+            "center": {
+              "lat": 32.3337624,
+              "lon": -81.0326063
+            },
+            "tags": {
+              "barrier": "fence",
+              "power": "substation",
+              "substation": "switching",
+              "voltage": "230000"
+            },
+            "url": "https://www.openstreetmap.org/way/1064022697"
+          }
+        ],
+        "utility_authoritative_coordinates": false,
+        "surveyed_geometry": false
+      },
+      "screening_disposition": "current_plan_candidate"
+    },
+    {
+      "id": "DESC_4",
+      "workbook_row": 5,
+      "original_values": {
+        "project_id": "DESC_4",
+        "utility": "Dominion Energy South Carolina",
+        "state": "SC",
+        "project_name": "Queensboro - Ft Johnson 115 kV & Queensboro-Bayfront 115 kV (Queensboro-James Island Sect)",
+        "name_a": "Queensboro Sub",
+        "lat_a": 32.722793,
+        "lon_a": -79.967332,
+        "name_b": "Ft Johnson Sub",
+        "lat_b": null,
+        "lon_b": null,
+        "lat_center": 32.722793,
+        "lon_center": -79.967332,
+        "in_service_date": "12/31/2023",
+        "overlap_count": 0,
+        "overlap_1": null,
+        "overlap_2": null,
+        "overlap_3": null
+      },
+      "original_date_normalized": "2023-12-31",
+      "original_date_meaning": "planned_in_service_date",
+      "scope_schedule_evidence": {
+        "sample_id": "DESC_4",
+        "source_project_id": "6807 B",
+        "original_name": "Queensboro - Ft Johnson 115 kV & Queensboro-Bayfront 115kV (Queensboro-James Island Sect)",
+        "original_page": 1,
+        "original_status": "In Progress",
+        "original_planned_in_service": "2023-12-31",
+        "sample_date_correct": true,
+        "geometry": {
+          "kind": "line rebuild",
+          "length_miles": null,
+          "location_detail": "Title names Queensboro, Ft Johnson, Bayfront and the Queensboro–James Island section. Description specifically describes replacement of Queensboro–Ft Johnson line and structures.",
+          "route_coordinates_provided": false,
+          "route_geometry_provided": false
+        },
+        "latest_evidence": {
+          "status": "Completed and in service for Queensboro–Fort Johnson named rebuild",
+          "actual_in_service_month": "2024-12",
+          "reported_in": "DESC_IRP_2025",
+          "pdf_page": 49,
+          "printed_page": "43",
+          "corroborating_pdf_page": 133,
+          "corroborating_printed_page": "APPENDIX B-1",
+          "evidence_date": "2025-03-31",
+          "confidence": "high for Queensboro–Fort Johnson scope; medium for full original compound title"
+        },
+        "scope_caution": "IRP names Queensboro–Fort Johnson and omits the Bayfront/James Island parenthetical. Do not assert separately that every component in the compound original title is complete without a utility scope crosswalk."
+      },
+      "coordinate_assessment": {
+        "verdict": "Queensborough spelling alias matches the 115 kV map feature. Nearby Santee Cooper Queensborough Switching is distinct. Fort Johnson missing. Compound scope unresolved.",
+        "public_map_features": [
+          {
+            "type": "way",
+            "id": 290264139,
+            "version": 3,
+            "timestamp": "2022-05-31T06:24:17Z",
+            "center": {
+              "lat": 32.7227934,
+              "lon": -79.9673323
+            },
+            "tags": {
+              "barrier": "fence",
+              "name": "Queensborough Substation",
+              "power": "substation",
+              "substation": "distribution",
+              "voltage": "115000"
+            },
+            "url": "https://www.openstreetmap.org/way/290264139"
+          }
+        ],
+        "utility_authoritative_coordinates": false,
+        "surveyed_geometry": false
+      },
+      "screening_disposition": "completed_named_scope_other_scope_unresolved"
+    },
+    {
+      "id": "DESC_5",
+      "workbook_row": 6,
+      "original_values": {
+        "project_id": "DESC_5",
+        "utility": "Dominion Energy South Carolina",
+        "state": "SC",
+        "project_name": "Okatie-Bluffton 115 kV: Rebuild",
+        "name_a": "Okatie Sub",
+        "lat_a": 32.333758,
+        "lon_a": -81.032495,
+        "name_b": "Bluffton Sub",
+        "lat_b": 32.235027,
+        "lon_b": -80.853384,
+        "lat_center": 32.2843925,
+        "lon_center": -80.9429395,
+        "in_service_date": "2025-06-01T00:00:00",
+        "overlap_count": 2,
+        "overlap_1": "GPC_2",
+        "overlap_2": "GPC_3",
+        "overlap_3": null
+      },
+      "original_date_normalized": "2025-06-01",
+      "original_date_meaning": "planned_in_service_date",
+      "scope_schedule_evidence": {
+        "sample_id": "DESC_5",
+        "source_project_id": "6808 S",
+        "original_name": "Okatie-Bluffton 115kV: Rebuild",
+        "original_page": 10,
+        "original_status": "In Progress",
+        "original_planned_in_service": "2025-06-01",
+        "sample_date_correct": true,
+        "geometry": {
+          "kind": "line rebuild",
+          "length_miles": null,
+          "location_detail": "Named Okatie–Bluffton corridor; replacement of wooden H-frames with steel and conductor upgrade.",
+          "route_coordinates_provided": false,
+          "route_geometry_provided": false
+        },
+        "latest_evidence": {
+          "status": "In service",
+          "actual_in_service_month": "2025-05",
+          "reported_in": "DESC_IRP_2026",
+          "pdf_page": 83,
+          "printed_page": "83",
+          "evidence_date": "2026-03-31",
+          "confidence": "high; exact named rebuild match; IRP does not repeat project ID"
+        },
+        "intermediate_evidence": {
+          "source": "DESC_PLAN_2025",
+          "pdf_page": 8,
+          "source_project_id": "6808 S",
+          "status": "In Progress",
+          "planned_in_service": "2025-06-01"
+        }
+      },
+      "coordinate_assessment": {
+        "verdict": "Bluffton matches the named 115 kV station. Okatie sample aligns with a 230 kV feature; precise 115 kV terminal not established. Retain only a station-area proxy.",
+        "public_map_features": [
+          {
+            "type": "way",
+            "id": 1064022697,
+            "version": 1,
+            "timestamp": "2022-05-26T12:57:44Z",
+            "center": {
+              "lat": 32.3337624,
+              "lon": -81.0326063
+            },
+            "tags": {
+              "barrier": "fence",
+              "power": "substation",
+              "substation": "switching",
+              "voltage": "230000"
+            },
+            "url": "https://www.openstreetmap.org/way/1064022697"
+          },
+          {
+            "type": "way",
+            "id": 498967268,
+            "version": 2,
+            "timestamp": "2022-05-29T09:17:52Z",
+            "center": {
+              "lat": 32.2350272,
+              "lon": -80.8533836
+            },
+            "tags": {
+              "barrier": "fence",
+              "name": "Bluffton Substation",
+              "operator": "South Carolina Electric & Gas",
+              "power": "substation",
+              "substation": "distribution",
+              "voltage": "115000"
+            },
+            "url": "https://www.openstreetmap.org/way/498967268"
+          }
+        ],
+        "utility_authoritative_coordinates": false,
+        "surveyed_geometry": false
+      },
+      "screening_disposition": "historical_only"
+    },
+    {
+      "id": "GPC_1",
+      "workbook_row": 7,
+      "original_values": {
+        "project_id": "GPC_1",
+        "utility": "Georgia Power",
+        "state": "GA",
+        "project_name": "EVANS PRIMARY - THURMOND DAM (USA) #5 115KV REBUILD",
+        "name_a": "EVANS PRIMARY",
+        "lat_a": 33.543994,
+        "lon_a": -82.168648,
+        "name_b": "THURMOND DAM #5",
+        "lat_b": 33.660127,
+        "lon_b": -82.195931,
+        "lat_center": 33.6020605,
+        "lon_center": -82.1822895,
+        "in_service_date": "6/1/2033",
+        "overlap_count": 2,
+        "overlap_1": "DESC_2",
+        "overlap_2": "DESC_1",
+        "overlap_3": null
+      },
+      "original_date_normalized": "2033-06-01",
+      "original_date_meaning": "need_date",
+      "scope_schedule_evidence": {
+        "project_id": "GPC_1",
+        "workbook_row": 7,
+        "name": "EVANS PRIMARY - THURMOND DAM (USA) #5 115KV REBUILD",
+        "teams_number": 20793,
+        "workbook_date": "2033-06-01",
+        "irp_pdf_page": 410,
+        "irp_plan_page": "240 of 304",
+        "irp_start_date": "2029-06-01",
+        "irp_need_date": "2033-06-01",
+        "public_scope": "Rebuild approximately 5.45 miles of the Euchee Creek–Thurmond Dam section of the named line; replace the main bus at Thurmond Dam.",
+        "geometry_type": "partial_line_plus_terminal_equipment",
+        "geometry_verdict": "The full Evans Primary–Thurmond midpoint does not represent this work. Preserve the named segment and the bus work as separate components; require public route/segment evidence before calling a corridor overlap.",
+        "latest_confirmed_plan": {
+          "value": "2033-06-01",
+          "precision": "day",
+          "meaning": "need_date",
+          "source": "irp2025",
+          "source_snapshot": "2024-12",
+          "status": "planned_in_snapshot; current execution status unconfirmed"
+        },
+        "corroboration": {
+          "source": "sertp2024final",
+          "pdf_page": 133,
+          "in_service_year": 2033
+        },
+        "later_search_result": "No matching replacement schedule or completion record located in the checked 2025 final and 2026 public materials. Absence does not prove completion, cancellation, or continued unchanged scope.",
+        "demo_disposition": "Useful negative/control example: workbook DESC_1/DESC_2 dates are 2024 while this need date is 2033, a 3,074-day gap in the original rows. Spatial adjacency alone does not establish a construction coordination window."
+      },
+      "coordinate_assessment": {
+        "verdict": "Evans and Thurmond match stations, but actual rebuild is Euchee Creek–Thurmond plus bus work. Reject full-line midpoint as work center. Euchee Creek missing.",
+        "public_map_features": [
+          {
+            "type": "way",
+            "id": 52103255,
+            "version": 9,
+            "timestamp": "2022-09-21T13:55:49Z",
+            "center": {
+              "lat": 33.5439942,
+              "lon": -82.1686481
+            },
+            "tags": {
+              "barrier": "fence",
+              "name": "Evans Primary Substation",
+              "operator": "Georgia Power",
+              "operator:wikidata": "Q5547666",
+              "operator:wikipedia": "en:Georgia Power",
+              "power": "substation",
+              "substation": "transmission",
+              "voltage": "230000;115000"
+            },
+            "url": "https://www.openstreetmap.org/way/52103255"
+          },
+          {
+            "type": "way",
+            "id": 52102019,
+            "version": 3,
+            "timestamp": "2022-03-20T20:31:12Z",
+            "center": {
+              "lat": 33.6601273,
+              "lon": -82.1959307
+            },
+            "tags": {
+              "barrier": "fence",
+              "name": "Thurmond Substation",
+              "operator": "Georgia Power",
+              "operator:wikidata": "Q5547666",
+              "operator:wikipedia": "en:Georgia Power",
+              "power": "substation",
+              "substation": "generation",
+              "voltage": "115000"
+            },
+            "url": "https://www.openstreetmap.org/way/52102019"
+          }
+        ],
+        "utility_authoritative_coordinates": false,
+        "surveyed_geometry": false
+      },
+      "screening_disposition": "stale_future_plan_requires_refresh"
+    },
+    {
+      "id": "GPC_2",
+      "workbook_row": 8,
+      "original_values": {
+        "project_id": "GPC_2",
+        "utility": "Georgia Power",
+        "state": "GA",
+        "project_name": "SAV: MCINTOSH - PURRYSBURG 230KV REACTORS",
+        "name_a": "MCINTOSH",
+        "lat_a": 32.352116,
+        "lon_a": -81.175112,
+        "name_b": "PURRYSBURG",
+        "lat_b": null,
+        "lon_b": null,
+        "lat_center": 32.352116,
+        "lon_center": -81.175112,
+        "in_service_date": "6/1/2026",
+        "overlap_count": 2,
+        "overlap_1": "DESC_3",
+        "overlap_2": "DESC_5",
+        "overlap_3": null
+      },
+      "original_date_normalized": "2026-06-01",
+      "original_date_meaning": "need_date",
+      "scope_schedule_evidence": {
+        "project_id": "GPC_2",
+        "workbook_row": 8,
+        "name": "SAV: MCINTOSH - PURRYSBURG 230KV REACTORS",
+        "teams_number": 20277,
+        "workbook_date": "2026-06-01",
+        "irp_pdf_page": 227,
+        "irp_plan_page": "57 of 304",
+        "irp_start_date": "2024-01-01",
+        "irp_need_date": "2026-06-01",
+        "public_scope": "Install reactors at McIntosh on the Black and White McIntosh–Purrysburg tie lines, plus rebuild 0.1 miles of the GPC portion of each line.",
+        "geometry_type": "station_equipment_plus_two_short_line_portions",
+        "workbook_coordinate": {
+          "latitude": 32.352116,
+          "longitude": -81.175112
+        },
+        "geometry_verdict": "A single point loses the two short line portions. However, the suspected river-point error is not supported: the coordinate matches the public OSM center of named McIntosh Substation, 230 kV, operated by Georgia Power. It is a reasonable station proxy, not verified reactor equipment geometry. Do not label the sample a confirmed geocoding false positive.",
+        "map_crosscheck": {
+          "source": "osm_mcintosh",
+          "center": {
+            "latitude": 32.3521162,
+            "longitude": -81.1751124
+          },
+          "confidence": "named station proxy supported; exact work footprint unverified"
+        },
+        "latest_confirmed_plan": {
+          "value": "2026-06-01",
+          "precision": "day",
+          "meaning": "need_date",
+          "source": "irp2025",
+          "source_snapshot": "2024-12",
+          "status": "planned_in_snapshot; actual completion unconfirmed"
+        },
+        "corroboration": [
+          {
+            "source": "sertp2024final",
+            "pdf_page": 77,
+            "in_service_year": 2026
+          },
+          {
+            "source": "sertp2024q2",
+            "pdf_page": 83,
+            "in_service_year": 2026
+          }
+        ],
+        "later_search_result": "No newer sample-specific public schedule or completion confirmation found. A passed June 2026 need date is not evidence of completion.",
+        "demo_disposition": "Retain as a station-plus-line component modeling case. Existing DESC_3 and DESC_5 pair distances are screening distances, not proof that construction footprints overlap."
+      },
+      "coordinate_assessment": {
+        "verdict": "McIntosh matches named Georgia Power 230 kV substation. Valid station proxy; exact reactor and two 0.1-mile line footprints unknown. Purrysburg is not required to locate the reactor equipment.",
+        "public_map_features": [
+          {
+            "type": "way",
+            "id": 121624352,
+            "version": 7,
+            "timestamp": "2022-08-21T11:32:03Z",
+            "center": {
+              "lat": 32.3521162,
+              "lon": -81.1751124
+            },
+            "tags": {
+              "barrier": "fence",
+              "frequency": "60",
+              "location": "outdoor",
+              "name": "McIntosh Substation",
+              "operator": "Georgia Power",
+              "operator:wikidata": "Q5547666",
+              "power": "substation",
+              "substation": "transmission",
+              "voltage": "230000"
+            },
+            "url": "https://www.openstreetmap.org/way/121624352"
+          }
+        ],
+        "utility_authoritative_coordinates": false,
+        "surveyed_geometry": false
+      },
+      "screening_disposition": "past_need_date_status_unresolved"
+    },
+    {
+      "id": "GPC_3",
+      "workbook_row": 9,
+      "original_values": {
+        "project_id": "GPC_3",
+        "utility": "Georgia Power",
+        "state": "GA",
+        "project_name": "SAV: GOSHEN (SAV) - MCINTOSH 115KV LINE REBUILD",
+        "name_a": "GOSHEN",
+        "lat_a": 32.248701,
+        "lon_a": -81.209472,
+        "name_b": "MCINTOSH",
+        "lat_b": 32.352116,
+        "lon_b": -81.182105,
+        "lat_center": 32.3004085,
+        "lon_center": -81.1957885,
+        "in_service_date": "6/1/2027",
+        "overlap_count": 2,
+        "overlap_1": "DESC_3",
+        "overlap_2": "DESC_5",
+        "overlap_3": null
+      },
+      "original_date_normalized": "2027-06-01",
+      "original_date_meaning": "need_date",
+      "scope_schedule_evidence": {
+        "project_id": "GPC_3",
+        "workbook_row": 9,
+        "name": "SAV: GOSHEN (SAV) - MCINTOSH 115KV LINE REBUILD",
+        "teams_number": 20065,
+        "workbook_date": "2027-06-01",
+        "irp_pdf_page": 314,
+        "irp_plan_page": "144 of 304",
+        "irp_start_date": "2025-06-01",
+        "irp_need_date": "2027-06-01",
+        "public_scope": "Approximately 6.7 miles of the Goshen (Savannah)–Georgia Pacific (Rincon) section of the broader Goshen–McIntosh line.",
+        "geometry_type": "partial_line",
+        "geometry_verdict": "Use Goshen–Georgia Pacific section geometry when publicly available. The full Goshen–McIntosh midpoint is not the work footprint, regardless of whether its end stations are correctly geocoded.",
+        "coordinate_caution": "GPC_3 calls longitude -81.182105 at latitude 32.352116 McIntosh, approximately 0.41 mile west of GPC_2's same-named coordinate. OSM has a distinct West McIntosh 500 kV station nearby. Do not collapse these labels or repair the coordinate without endpoint evidence. The project actually terminates its rebuilt section at Georgia Pacific.",
+        "latest_confirmed_plan": {
+          "value": "2028",
+          "precision": "year",
+          "meaning": "planned_in_service_year",
+          "source": "sertp2026prelim",
+          "report_date": "2026-06-12",
+          "pdf_page": 53,
+          "status": "planned; preliminary regional plan; completion unconfirmed"
+        },
+        "schedule_change": "The 2025 final and 2026 preliminary SERTP both show 2028. Supersede the workbook's 2027 need date for latest-plan screening, while retaining the old value and provenance. Do not invent a month/day such as June 1, 2028.",
+        "corroboration": {
+          "source": "sertp2025final",
+          "pdf_page": 111,
+          "printed_page": 110,
+          "in_service_year": 2028
+        },
+        "scope_change": "Current SERTP lists 200°C 1351 ACSS conductor for the same 6.7-mile section; supplied IRP describes an earlier conductor specification.",
+        "demo_disposition": "Strongest sample for a source-version and geometry review demonstration near Savannah. Pairing with DESC_3 is a candidate for human review, not a confirmed common corridor or shared construction window; current DESC dates require the separate DESC review."
+      },
+      "coordinate_assessment": {
+        "verdict": "Goshen matches named 115 kV station. McIntosh longitude differs by 0.408 mile between workbook rows and is not the actual rebuilt segment endpoint. Reject it for work geometry; Georgia Pacific endpoint missing. Use Goshen-only fallback with low geometry confidence.",
+        "public_map_features": [
+          {
+            "type": "way",
+            "id": 1008141064,
+            "version": 3,
+            "timestamp": "2022-10-11T06:12:56Z",
+            "center": {
+              "lat": 32.2487012,
+              "lon": -81.2094724
+            },
+            "tags": {
+              "barrier": "fence",
+              "name": "Goshen Substation",
+              "operator": "Georgia Power",
+              "operator:wikidata": "Q5547666",
+              "power": "substation",
+              "substation": "distribution",
+              "voltage": "115000"
+            },
+            "url": "https://www.openstreetmap.org/way/1008141064"
+          },
+          {
+            "type": "way",
+            "id": 121624352,
+            "version": 7,
+            "timestamp": "2022-08-21T11:32:03Z",
+            "center": {
+              "lat": 32.3521162,
+              "lon": -81.1751124
+            },
+            "tags": {
+              "barrier": "fence",
+              "frequency": "60",
+              "location": "outdoor",
+              "name": "McIntosh Substation",
+              "operator": "Georgia Power",
+              "operator:wikidata": "Q5547666",
+              "power": "substation",
+              "substation": "transmission",
+              "voltage": "230000"
+            },
+            "url": "https://www.openstreetmap.org/way/121624352"
+          },
+          {
+            "type": "way",
+            "id": 121624371,
+            "version": 7,
+            "timestamp": "2023-05-07T13:36:02Z",
+            "center": {
+              "lat": 32.3543695,
+              "lon": -81.1824528
+            },
+            "tags": {
+              "barrier": "fence",
+              "frequency": "60",
+              "location": "outdoor",
+              "name": "West McIntosh Substation",
+              "operator": "Georgia Power",
+              "operator:wikidata": "Q5547666",
+              "power": "substation",
+              "start_date": "1986",
+              "substation": "transmission",
+              "voltage": "500000"
+            },
+            "url": "https://www.openstreetmap.org/way/121624371"
+          }
+        ],
+        "utility_authoritative_coordinates": false,
+        "surveyed_geometry": false
+      },
+      "screening_disposition": "current_plan_candidate"
+    },
+    {
+      "id": "GPC_4",
+      "workbook_row": 10,
+      "original_values": {
+        "project_id": "GPC_4",
+        "utility": "Georgia Power",
+        "state": "GA",
+        "project_name": "MITCHELL - NORTH TIFTON 230KV RECONDUCTOR",
+        "name_a": "Mitchell Substation",
+        "lat_a": 31.447121,
+        "lon_a": -84.133843,
+        "name_b": "North Tifton Substation",
+        "lat_b": 31.478089,
+        "lon_b": -83.54913,
+        "lat_center": 31.462605,
+        "lon_center": -83.8414865,
+        "in_service_date": "2025-05-01T00:00:00",
+        "overlap_count": 0,
+        "overlap_1": null,
+        "overlap_2": null,
+        "overlap_3": null
+      },
+      "original_date_normalized": "2025-05-01",
+      "original_date_meaning": "need_date",
+      "scope_schedule_evidence": {
+        "project_id": "GPC_4",
+        "workbook_row": 10,
+        "name": "MITCHELL - NORTH TIFTON 230KV RECONDUCTOR",
+        "teams_number": 18492,
+        "workbook_date": "2025-05-01",
+        "irp_pdf_page": 233,
+        "irp_plan_page": "63 of 304",
+        "irp_start_date": "2021-12-31",
+        "irp_need_date": "2025-05-01",
+        "public_scope": "Rebuild approximately 35.21 miles of the Mitchell–North Tifton 230 kV line.",
+        "geometry_type": "line",
+        "geometry_verdict": "A midpoint is only a coarse search anchor for a 35-mile line; use route geometry to test proximity anywhere along its length. The named endpoints are more consistent with scope than the partial-line samples, but still do not establish the route.",
+        "latest_confirmed_plan": {
+          "value": "2025-05-01",
+          "precision": "day",
+          "meaning": "need_date",
+          "source": "irp2025",
+          "source_snapshot": "2024-12",
+          "status": "planned_in_snapshot; actual completion unconfirmed"
+        },
+        "irp_change_notes": "IRP says advanced within 2025 versus prior ten-year plan and delayed from 2024 to 2025 versus prior IRP.",
+        "corroboration": {
+          "source": "sertp2024final",
+          "pdf_page": 61,
+          "in_service_year": 2025
+        },
+        "later_search_result": "No newer matching public schedule or actual completion confirmation located. Past planned date does not establish completed status.",
+        "demo_disposition": "Useful line-versus-midpoint control; no existing cross-utility overlap listed in workbook."
+      },
+      "coordinate_assessment": {
+        "verdict": "Mitchell matches 230 kV station. North Tifton sample maps to a 500 kV yard, while project specifies 230 kV. Exact terminal and line route unresolved; do not silently substitute nearby 115 kV yard.",
+        "public_map_features": [
+          {
+            "type": "way",
+            "id": 656743294,
+            "version": 3,
+            "timestamp": "2022-08-21T11:32:03Z",
+            "center": {
+              "lat": 31.4471208,
+              "lon": -84.1338426
+            },
+            "tags": {
+              "barrier": "fence",
+              "name": "Mitchell Substation (230kV)",
+              "operator": "Georgia Power",
+              "operator:wikidata": "Q5547666",
+              "power": "substation",
+              "substation": "transmission",
+              "voltage": "230000;115000"
+            },
+            "url": "https://www.openstreetmap.org/way/656743294"
+          },
+          {
+            "type": "way",
+            "id": 53154820,
+            "version": 10,
+            "timestamp": "2022-08-21T11:32:03Z",
+            "center": {
+              "lat": 31.4780887,
+              "lon": -83.5491296
+            },
+            "tags": {
+              "barrier": "fence",
+              "frequency": "60",
+              "name": "North Tifton Substation (500kV)",
+              "operator": "Georgia Power",
+              "operator:wikidata": "Q5547666",
+              "power": "substation",
+              "substation": "transmission",
+              "voltage": "500000"
+            },
+            "url": "https://www.openstreetmap.org/way/53154820"
+          }
+        ],
+        "utility_authoritative_coordinates": false,
+        "surveyed_geometry": false
+      },
+      "screening_disposition": "past_need_date_status_unresolved"
+    },
+    {
+      "id": "GPC_5",
+      "workbook_row": 11,
+      "original_values": {
+        "project_id": "GPC_5",
+        "utility": "Georgia Power",
+        "state": "GA",
+        "project_name": "JESUP - LUDOWICI PRIMARY 115KV REBUILD",
+        "name_a": "JESUP",
+        "lat_a": 31.603106,
+        "lon_a": -81.924947,
+        "name_b": "LUDOWICI PRIMARY",
+        "lat_b": 31.721597,
+        "lon_b": -81.743703,
+        "lat_center": 31.6623515,
+        "lon_center": -81.834325,
+        "in_service_date": "6/1/2025",
+        "overlap_count": 0,
+        "overlap_1": null,
+        "overlap_2": null,
+        "overlap_3": null
+      },
+      "original_date_normalized": "2025-06-01",
+      "original_date_meaning": "need_date",
+      "scope_schedule_evidence": {
+        "project_id": "GPC_5",
+        "workbook_row": 11,
+        "name": "JESUP - LUDOWICI PRIMARY 115KV REBUILD",
+        "teams_number": 11821,
+        "workbook_date": "2025-06-01",
+        "irp_pdf_page": 240,
+        "irp_plan_page": "70 of 304",
+        "irp_start_date": "2023-06-01",
+        "irp_need_date": "2025-06-01",
+        "public_scope": "Rebuild approximately 7.5 miles of the Jesup–North Jesup–Rayonier section of the broader Jesup–Ludowici Primary line.",
+        "geometry_type": "partial_line",
+        "geometry_verdict": "The full Jesup–Ludowici midpoint does not describe the narrower rebuilt section. Preserve North Jesup and Rayonier as segment identifiers pending public route evidence.",
+        "latest_confirmed_plan": {
+          "value": "2025-06-01",
+          "precision": "day",
+          "meaning": "need_date",
+          "source": "irp2025",
+          "source_snapshot": "2024-12",
+          "status": "planned_in_snapshot; actual completion unconfirmed"
+        },
+        "corroboration": {
+          "source": "sertp2024final",
+          "pdf_page": 60,
+          "in_service_year": 2025
+        },
+        "later_search_result": "No later matching official public schedule or completion record located. Current Jesup–Offerman work is a different named project and was not treated as this sample.",
+        "ocr_check": "A search-engine OCR lead suggested May 1, 2025 in a public exhibit mirror. Visual inspection of exhibit PDF page 17 shows June 1, 2025 instead, consistent with the supplied IRP. No schedule contradiction established.",
+        "demo_disposition": "Useful partial-line normalization example; no existing cross-utility overlap listed in workbook."
+      },
+      "coordinate_assessment": {
+        "verdict": "Jesup and Ludowici match named 115 kV stations, but work is Jesup–North Jesup–Rayonier. Reject full-line midpoint as work center; missing segment endpoints.",
+        "public_map_features": [
+          {
+            "type": "way",
+            "id": 103029795,
+            "version": 6,
+            "timestamp": "2023-02-26T03:30:35Z",
+            "center": {
+              "lat": 31.6031063,
+              "lon": -81.9249474
+            },
+            "tags": {
+              "barrier": "fence",
+              "name": "Jesup Substation",
+              "operator": "Georgia Power",
+              "operator:wikidata": "Q5547666",
+              "power": "substation",
+              "substation": "distribution",
+              "voltage": "115000"
+            },
+            "url": "https://www.openstreetmap.org/way/103029795"
+          },
+          {
+            "type": "way",
+            "id": 358894868,
+            "version": 3,
+            "timestamp": "2022-12-20T22:06:16Z",
+            "center": {
+              "lat": 31.7215974,
+              "lon": -81.7437028
+            },
+            "tags": {
+              "barrier": "fence",
+              "name": "Ludowici Primary Substation",
+              "operator": "Georgia Power",
+              "operator:wikidata": "Q5547666",
+              "power": "substation",
+              "substation": "distribution",
+              "voltage": "115000"
+            },
+            "url": "https://www.openstreetmap.org/way/358894868"
+          }
+        ],
+        "utility_authoritative_coordinates": false,
+        "surveyed_geometry": false
+      },
+      "screening_disposition": "past_need_date_status_unresolved"
+    }
+  ],
+  "all_25_original_pair_calculations": [
+    {
+      "a": "DESC_2",
+      "b": "GPC_1",
+      "distance_mi": 4.088046314511573,
+      "gap_days": 3074,
+      "within_provisional_strict_25mi": true,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity.",
+      "review_outcome": "Historical control; DESC_2 completed November 2024. GPC_1 is a stale 2033 need date and its midpoint represents the wrong section."
+    },
+    {
+      "a": "DESC_3",
+      "b": "GPC_2",
+      "distance_mi": 5.650125904250266,
+      "gap_days": 152,
+      "within_provisional_strict_25mi": true,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity.",
+      "review_outcome": "Unresolved; GPC_2 June 2026 need date has passed without a located completion or replacement schedule. Do not call this verified future work."
+    },
+    {
+      "a": "DESC_3",
+      "b": "GPC_3",
+      "distance_mi": 7.54809071186944,
+      "gap_days": 517,
+      "within_provisional_strict_25mi": true,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity.",
+      "review_outcome": "Preferred demonstration candidate after correcting scope, anchors and dates; geometry incomplete and simultaneous construction unverified."
+    },
+    {
+      "a": "DESC_1",
+      "b": "GPC_1",
+      "distance_mi": 8.014384939802925,
+      "gap_days": 3074,
+      "within_provisional_strict_25mi": true,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity.",
+      "review_outcome": "Historical control; DESC_1 completed August 2024. Also reject GPC_1 full-line midpoint as work center."
+    },
+    {
+      "a": "DESC_5",
+      "b": "GPC_2",
+      "distance_mi": 14.341444074141288,
+      "gap_days": 365,
+      "within_provisional_strict_25mi": true,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity.",
+      "review_outcome": "Historical control; DESC_5 completed May 2025; GPC_2 status unresolved."
+    },
+    {
+      "a": "DESC_5",
+      "b": "GPC_3",
+      "distance_mi": 14.809531070247024,
+      "gap_days": 730,
+      "within_provisional_strict_25mi": true,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity.",
+      "review_outcome": "Historical control; DESC_5 completed May 2025 despite GPC_3 future 2028 plan."
+    },
+    {
+      "a": "DESC_3",
+      "b": "GPC_5",
+      "distance_mi": 64.76831195006194,
+      "gap_days": 213,
+      "within_provisional_strict_25mi": false,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity."
+    },
+    {
+      "a": "DESC_5",
+      "b": "GPC_5",
+      "distance_mi": 67.65136100174087,
+      "gap_days": 0,
+      "within_provisional_strict_25mi": false,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity."
+    },
+    {
+      "a": "DESC_4",
+      "b": "GPC_2",
+      "distance_mi": 74.86767151075672,
+      "gap_days": 883,
+      "within_provisional_strict_25mi": false,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity."
+    },
+    {
+      "a": "DESC_4",
+      "b": "GPC_3",
+      "distance_mi": 77.29665443176799,
+      "gap_days": 1248,
+      "within_provisional_strict_25mi": false,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity."
+    },
+    {
+      "a": "DESC_1",
+      "b": "GPC_2",
+      "distance_mi": 97.8543938997661,
+      "gap_days": 517,
+      "within_provisional_strict_25mi": false,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity."
+    },
+    {
+      "a": "DESC_1",
+      "b": "GPC_3",
+      "distance_mi": 100.33410740086381,
+      "gap_days": 882,
+      "within_provisional_strict_25mi": false,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity."
+    },
+    {
+      "a": "DESC_3",
+      "b": "GPC_1",
+      "distance_mi": 107.7918424215948,
+      "gap_days": 2709,
+      "within_provisional_strict_25mi": false,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity."
+    },
+    {
+      "a": "DESC_2",
+      "b": "GPC_2",
+      "distance_mi": 108.00857807424313,
+      "gap_days": 517,
+      "within_provisional_strict_25mi": false,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity."
+    },
+    {
+      "a": "DESC_2",
+      "b": "GPC_3",
+      "distance_mi": 110.39039331757586,
+      "gap_days": 882,
+      "within_provisional_strict_25mi": false,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity."
+    },
+    {
+      "a": "DESC_5",
+      "b": "GPC_1",
+      "distance_mi": 115.9840445888439,
+      "gap_days": 2922,
+      "within_provisional_strict_25mi": false,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity."
+    },
+    {
+      "a": "DESC_4",
+      "b": "GPC_5",
+      "distance_mi": 131.47025303066803,
+      "gap_days": 518,
+      "within_provisional_strict_25mi": false,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity."
+    },
+    {
+      "a": "DESC_1",
+      "b": "GPC_5",
+      "distance_mi": 131.90069588338676,
+      "gap_days": 152,
+      "within_provisional_strict_25mi": false,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity."
+    },
+    {
+      "a": "DESC_2",
+      "b": "GPC_5",
+      "distance_mi": 139.62619181270128,
+      "gap_days": 152,
+      "within_provisional_strict_25mi": false,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity."
+    },
+    {
+      "a": "DESC_4",
+      "b": "GPC_1",
+      "distance_mi": 141.78229731534978,
+      "gap_days": 3440,
+      "within_provisional_strict_25mi": false,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity."
+    },
+    {
+      "a": "DESC_3",
+      "b": "GPC_4",
+      "distance_mi": 173.17786638045297,
+      "gap_days": 244,
+      "within_provisional_strict_25mi": false,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity."
+    },
+    {
+      "a": "DESC_1",
+      "b": "GPC_4",
+      "distance_mi": 178.68550660728948,
+      "gap_days": 121,
+      "within_provisional_strict_25mi": false,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity."
+    },
+    {
+      "a": "DESC_5",
+      "b": "GPC_4",
+      "distance_mi": 179.29303554265766,
+      "gap_days": 31,
+      "within_provisional_strict_25mi": false,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity."
+    },
+    {
+      "a": "DESC_2",
+      "b": "GPC_4",
+      "distance_mi": 179.536973039086,
+      "gap_days": 121,
+      "within_provisional_strict_25mi": false,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity."
+    },
+    {
+      "a": "DESC_4",
+      "b": "GPC_4",
+      "distance_mi": 242.8949073531148,
+      "gap_days": 487,
+      "within_provisional_strict_25mi": false,
+      "evidence_class": "recomputed_result",
+      "interpretation": "Original example recalculation, not a verified current opportunity."
+    }
+  ],
+  "recommended_demo": {
+    "pair": [
+      "DESC_3",
+      "GPC_3"
+    ],
+    "supplied_desc3_center": [
+      32.34723085,
+      -81.0783793
+    ],
+    "supplied_goshen_workscope_anchor": [
+      32.2487012,
+      -81.2094724
+    ],
+    "distance_mi": 10.24519266483327,
+    "distance_display_mi": 10.245,
+    "desc3_planned_in_service": "2026-12-01",
+    "gpc3_planned_in_service_precision": "year",
+    "gpc3_planned_in_service_year": 2028,
+    "possible_gpc3_date_range": [
+      "2028-01-01",
+      "2028-12-31"
+    ],
+    "absolute_milestone_gap_days_min": 396,
+    "absolute_milestone_gap_days_max": 761,
+    "defensible_claim": "Nearby cross-utility project candidate under the guide’s center-distance rule, using Goshen as the only validated work-scope anchor and explicitly retaining partial geometry confidence.",
+    "unsupported_claims": [
+      "Proven overlapping construction windows",
+      "Shared route or right-of-way",
+      "Guaranteed shared crews, cost savings or coordination opportunity",
+      "A precisely known 2028 in-service day",
+      "Distance to the actual complete rebuilt line section"
+    ],
+    "geometry_note": "Public map features are checked against named work scope; the GPC proxy is one located endpoint, not the verified center of the entire rebuilt section. The arithmetic was independently checked; exact route geometry remains unresolved.",
+    "evidence_class": "analyst_proposal",
+    "geometry_confidence": "partial; no verified route or exact work center",
+    "desc3_anchor_provenance": {
+      "jasper_osm_way": 185380597,
+      "okatie_osm_way": 1064022697,
+      "method": "Arithmetic midpoint of the two OSM bounding-box centers; Okatie identity map-corroborated at station-area level only."
+    },
+    "gpc3_anchor_provenance": {
+      "goshen_osm_way": 1008141064,
+      "method": "One located work endpoint fallback. Georgia Pacific not geocoded; McIntosh discarded as outside work section."
+    },
+    "verified_current_coordination_opportunity": false,
+    "construction_window_overlap": "unknown",
+    "shared_right_of_way": "not_established",
+    "ranking_rationale": "Only one of the original six near pairs has located refreshed future milestones on both sides. This is an analyst selection for demonstration quality, not an official sponsor score.",
+    "known_false_precision": "2028 date bounds express year precision, not uncertainty estimates or a promised construction interval.",
+    "scope_id_caution": "Keep later June 2032 corridor reconductoring separate from initial Jasper–Okatie #2 construction."
+  },
+  "rules_audit": {
+    "audit_as_of": "2026-09-26",
+    "scope": "Independent read-only audit of both supplied DOCX package contents and raw workbook calculations. Source files unchanged.",
+    "documents": [
+      {
+        "file": "ShellHacks_Challenge_Gridlock.docx",
+        "modified_metadata": "2026-08-26T13:19:12.3993022Z",
+        "package_scan": "All 13 XML/relationship parts inspected; no comments, textboxes, headers/footers, tracked inserts/deletions, drawings or embedded files.",
+        "locators": "Paragraph numbers count all w:p elements in word/document.xml, including table cells.",
+        "relevant_paragraphs": {
+          "6": "Overview says projects may overlap either through physical closeness or scheduling around the same time.",
+          "60": "Geographic threshold is within 25 mi; next sentence says closer than 25 mi.",
+          "62": "Timeline overlap means the same build window.",
+          "63": "Geographic overlap is primary; timeline is a strong secondary signal used together with it."
+        }
+      },
+      {
+        "file": "Finding_Real_Locations_Guide.docx",
+        "modified_metadata": "2026-08-26T14:13:06.8907881Z",
+        "package_scan": "All 13 XML/relationship parts inspected; no comments, textboxes, headers/footers, tracked inserts/deletions, drawings or embedded files.",
+        "relevant_paragraphs": {
+          "46": "Use center-to-center distance; center is midpoint of two named sub-points, or the one located point. Straight-line/haversine acceptable. Pairs under 25 miles become overlap rows. Record in-service-date gap in days, as a lighter consideration."
+        },
+        "numeric_caution": "The code example also contains timeout:25; this is an Overpass timeout, not another geographic threshold."
+      }
+    ],
+    "rule_findings": [
+      {
+        "topic": "Mileage cutoff",
+        "verdict": "Consistent numeric threshold: 25 miles. No alternative mileage value found in body text or any other DOCX XML layer.",
+        "confidence": "high"
+      },
+      {
+        "topic": "Exact boundary",
+        "verdict": "Ambiguous at exactly 25.0 miles: within can be read inclusively, but closer than and under imply strict less-than. No explicit <= operator is supplied.",
+        "recommended_documented_assumption": "Use distance_mi < 25, consistent with the guide and explicit closer-than wording. Evaluate unrounded distance; disclose boundary convention."
+      },
+      {
+        "topic": "Geography versus timeline-only eligibility",
+        "verdict": "Opening prose permits either closeness OR similar timing. Detailed prose and companion guide instead make geography the primary inclusion signal and timing secondary.",
+        "recommended_documented_assumption": "Use geographic candidates for the main overlap table, display timing separately, and flag organizer clarification for whether distant timeline-only pairs should be a distinct class."
+      },
+      {
+        "topic": "Timeline strength",
+        "verdict": "Challenge calls it strong secondary; guide calls it a lighter look. Neither specifies a day cutoff, score formula, numeric weight, or acceptable construction-window gap.",
+        "recommended_documented_assumption": "Report date gap and precision visibly. Treat any scoring weights or time bands as team choices, not official rules."
+      },
+      {
+        "topic": "Midpoint versus corridor proximity",
+        "verdict": "No source conflict. Guide explicitly requests midpoint/single-point center distance. Neither source requires minimum route-to-route distance.",
+        "recommended_documented_assumption": "Keep center distance as the rule metric; any closest-corridor distance is an additional metric and requires validated route geometry."
+      },
+      {
+        "topic": "Dates and actual build overlap",
+        "verdict": "The guide asks for in-service-date gap, but the challenge describes same build window. An in-service date is a milestone, not a construction interval.",
+        "recommended_documented_assumption": "A small milestone gap alone does not prove simultaneous construction; unknown start/end dates must remain unknown."
+      }
+    ],
+    "workbook": {
+      "reviewed_file_name": "Projects_Overlaps.xlsx",
+      "raw_input_range": "projects!A2:M11",
+      "center_formula_range": "projects!K2:L11",
+      "overlap_result_range": "overlaps!A2:I7",
+      "method": "Arithmetic mean of the supplied endpoint latitudes and longitudes, falling back to the one supplied point; haversine with Earth radius 3958.7613 miles; absolute calendar-day difference of explicitly parsed US month/day/year dates.",
+      "formula_cache_check": "All 10 center caches match independently calculated centers.",
+      "all_25_cross_utility_pairs_checked": true,
+      "pairs_below_25_miles": 6,
+      "six_reported_pairs_match": true,
+      "root_recomputed_json_match": "All six distances match exactly and all six day gaps match.",
+      "pairs": [
+        {
+          "overlap_id": "OVL_1",
+          "a": "DESC_2",
+          "b": "GPC_1",
+          "distance_mi": 4.088046314511573,
+          "rounded_distance_mi": 4.09,
+          "workbook_distance_mi": 4.09,
+          "distance_match_at_display_precision": true,
+          "gap_days": 3074,
+          "workbook_gap_days": 3074,
+          "gap_match": true,
+          "root_distance_difference_mi": 0.0,
+          "root_gap_match": true
+        },
+        {
+          "overlap_id": "OVL_2",
+          "a": "DESC_3",
+          "b": "GPC_2",
+          "distance_mi": 5.650125904250266,
+          "rounded_distance_mi": 5.65,
+          "workbook_distance_mi": 5.65,
+          "distance_match_at_display_precision": true,
+          "gap_days": 152,
+          "workbook_gap_days": 152,
+          "gap_match": true,
+          "root_distance_difference_mi": 0.0,
+          "root_gap_match": true
+        },
+        {
+          "overlap_id": "OVL_3",
+          "a": "DESC_3",
+          "b": "GPC_3",
+          "distance_mi": 7.54809071186944,
+          "rounded_distance_mi": 7.55,
+          "workbook_distance_mi": 7.55,
+          "distance_match_at_display_precision": true,
+          "gap_days": 517,
+          "workbook_gap_days": 517,
+          "gap_match": true,
+          "root_distance_difference_mi": 0.0,
+          "root_gap_match": true
+        },
+        {
+          "overlap_id": "OVL_4",
+          "a": "DESC_1",
+          "b": "GPC_1",
+          "distance_mi": 8.014384939802925,
+          "rounded_distance_mi": 8.01,
+          "workbook_distance_mi": 8.01,
+          "distance_match_at_display_precision": true,
+          "gap_days": 3074,
+          "workbook_gap_days": 3074,
+          "gap_match": true,
+          "root_distance_difference_mi": 0.0,
+          "root_gap_match": true
+        },
+        {
+          "overlap_id": "OVL_5",
+          "a": "DESC_5",
+          "b": "GPC_2",
+          "distance_mi": 14.341444074141288,
+          "rounded_distance_mi": 14.34,
+          "workbook_distance_mi": 14.34,
+          "distance_match_at_display_precision": true,
+          "gap_days": 365,
+          "workbook_gap_days": 365,
+          "gap_match": true,
+          "root_distance_difference_mi": 0.0,
+          "root_gap_match": true
+        },
+        {
+          "overlap_id": "OVL_6",
+          "a": "DESC_5",
+          "b": "GPC_3",
+          "distance_mi": 14.809531070247024,
+          "rounded_distance_mi": 14.81,
+          "workbook_distance_mi": 14.81,
+          "distance_match_at_display_precision": true,
+          "gap_days": 730,
+          "workbook_gap_days": 730,
+          "gap_match": true,
+          "root_distance_difference_mi": 0.0,
+          "root_gap_match": true
+        }
+      ],
+      "limits": [
+        "Distance and day-gap result cells are hardcoded, not formulas. Their current values reconcile, but do not auto-update from changes to coordinates or dates.",
+        "Dates mix text strings and Excel date values; parsing was explicit.",
+        "Arithmetic accuracy does not validate endpoint identity, project scope, date precision, current status or actual construction overlap.",
+        "Workbook examples do not settle the exact 25-mile boundary or numerical timeline weighting."
+      ]
+    },
+    "prospective_demo": {
+      "pair": [
+        "DESC_3",
+        "GPC_3"
+      ],
+      "supplied_desc3_center": [
+        32.34723085,
+        -81.0783793
+      ],
+      "supplied_goshen_workscope_anchor": [
+        32.2487012,
+        -81.2094724
+      ],
+      "distance_mi": 10.24519266483327,
+      "distance_display_mi": 10.245,
+      "desc3_planned_in_service": "2026-12-01",
+      "gpc3_planned_in_service_precision": "year",
+      "gpc3_planned_in_service_year": 2028,
+      "possible_gpc3_date_range": [
+        "2028-01-01",
+        "2028-12-31"
+      ],
+      "absolute_milestone_gap_days_min": 396,
+      "absolute_milestone_gap_days_max": 761,
+      "defensible_claim": "Nearby cross-utility project candidate under the guide’s center-distance rule, using Goshen as the only validated work-scope anchor and explicitly retaining partial geometry confidence.",
+      "unsupported_claims": [
+        "Proven overlapping construction windows",
+        "Shared route or right-of-way",
+        "Guaranteed shared crews, cost savings or coordination opportunity",
+        "A precisely known 2028 in-service day",
+        "Distance to the actual complete rebuilt line section"
+      ],
+      "geometry_note": "Public map features are checked against named work scope; the GPC proxy is one located endpoint, not the verified center of the entire rebuilt section. The arithmetic was independently checked; exact route geometry remains unresolved.",
+      "evidence_class": "analyst_proposal",
+      "geometry_confidence": "partial; no verified route or exact work center",
+      "desc3_anchor_provenance": {
+        "jasper_osm_way": 185380597,
+        "okatie_osm_way": 1064022697,
+        "method": "Arithmetic midpoint of the two OSM bounding-box centers; Okatie identity map-corroborated at station-area level only."
+      },
+      "gpc3_anchor_provenance": {
+        "goshen_osm_way": 1008141064,
+        "method": "One located work endpoint fallback. Georgia Pacific not geocoded; McIntosh discarded as outside work section."
+      },
+      "verified_current_coordination_opportunity": false,
+      "construction_window_overlap": "unknown",
+      "shared_right_of_way": "not_established",
+      "ranking_rationale": "Only one of the original six near pairs has located refreshed future milestones on both sides. This is an analyst selection for demonstration quality, not an official sponsor score.",
+      "known_false_precision": "2028 date bounds express year precision, not uncertainty estimates or a promised construction interval.",
+      "scope_id_caution": "Keep later June 2032 corridor reconductoring separate from initial Jasper–Okatie #2 construction."
+    },
+    "external_links": "No private SharePoint account was opened. No claims inferred from the unavailable linked Notion code example."
+  },
+  "utility_research": {
+    "dominion": {
+      "research_as_of": "2026-09-26",
+      "scope": "Read-only review of five sample Dominion projects and official public planning/status sources. No repository edits or implementation.",
+      "summary": "All five sample dates match the supplied historical PDF. Four named scopes have subsequent explicit in-service reports; Jasper–Okatie #2 has an updated December 1, 2026 construction target and is described as under construction in an August 2026 order.",
+      "sources": [
+        {
+          "id": "DESC_ORIGINAL",
+          "title": "DESC planned transmission projects $2M and above, 2024–2028 budget",
+          "url": "https://www.scrtp.com/assets/pdfs/home/2024-2028-2million-and-above-project-descriptions.pdf",
+          "reviewed_file_name": "2024-2028-2million-and-above-project-descriptions.pdf",
+          "pages": 44,
+          "document_date": null,
+          "pdf_created": "2024-03-05T13:42:34-05:00",
+          "date_note": "No explicit publication/as-of date found; creation metadata is not proof of publication date. Budget horizon is 2024–2028."
+        },
+        {
+          "id": "DESC_IRP_2025",
+          "title": "DESC 2025 Integrated Resource Plan Update",
+          "url": "https://dms.psc.sc.gov/Attachments/Matter/8f3cca6c-1724-4a97-b7d4-4194c09cd77c",
+          "reviewed_file_name": "desc-irp-2025-psc.pdf",
+          "document_date": "2025-03-31",
+          "filing_date": "2025-03-31",
+          "pages": 171,
+          "relevant_pages": [
+            {
+              "pdf_page": 49,
+              "printed_page": "43"
+            },
+            {
+              "pdf_page": 133,
+              "printed_page": "APPENDIX B-1"
+            }
+          ]
+        },
+        {
+          "id": "DESC_IRP_2026",
+          "title": "2026 DESC Integrated Resource Plan",
+          "url": "https://cdn-dominionenergy-prd-001.azureedge.net/-/media/content/about/our-company/irp/pdfs/integrated-resource-plan-desc.pdf?rev=6d54ce9381204687b19e43fe861cb4aa",
+          "landing_url": "https://www.dominionenergy.com/about/our-company/irp",
+          "reviewed_file_name": "desc-irp-2026.pdf",
+          "document_date": "2026-03-31",
+          "filing_date": "2026-03-31",
+          "pages": 127,
+          "relevant_pages": [
+            {
+              "pdf_page": 83,
+              "printed_page": "83",
+              "section": "Appendix B"
+            }
+          ],
+          "filing_date_corroboration": "https://dms.psc.sc.gov/Attachments/Matter/96b6471d-326d-46b1-ae2e-1e6e4bd10195"
+        },
+        {
+          "id": "DESC_PLAN_2026",
+          "title": "DESC planned transmission projects $2M and above, 2026–2030 budget",
+          "url": "https://www.scrtp.com/assets/pdfs/home/2026-2030-2million-and-above-project-descriptions.pdf",
+          "reviewed_file_name": "desc-projects-2026-2030.pdf",
+          "pages": 54,
+          "document_date": null,
+          "pdf_created": "2026-04-28T10:04:18-04:00",
+          "date_note": "Linked by SCRTP homepage on research date. Metadata gives creation date; no explicit publication date located.",
+          "relevant_pages": [
+            12,
+            20
+          ]
+        },
+        {
+          "id": "PSC_2026_482",
+          "title": "PSC Order 2026-482, Docket 2026-175-E",
+          "url": "https://dms.psc.sc.gov/Attachments/Order/263ec907-a4ee-42a3-88a2-e4be043bc817",
+          "document_date": "2026-08-26",
+          "pages": 9,
+          "relevant_pages": [
+            2,
+            3,
+            4,
+            5,
+            7,
+            8,
+            9
+          ],
+          "underlying_request_date": "2026-07-02"
+        },
+        {
+          "id": "SCRTP_MARCH_2026",
+          "title": "SCRTP March 11, 2026 stakeholder presentation",
+          "url": "https://www.scrtp.com/assets/pdfs/meeting-archives/scrtp-meeting-2026-03-11-presentation.pdf",
+          "document_date": "2026-03-11",
+          "reviewed_file_name": "scrtp-march-2026.pdf",
+          "pages": 72,
+          "relevant_pages": [
+            24,
+            50
+          ]
+        },
+        {
+          "id": "DESC_PLAN_2025",
+          "title": "DESC planned transmission projects $2M and above, 2025–2029 budget",
+          "url": "https://www.scrtp.com/assets/pdfs/home/2025-2029-2million-and-above-project-descriptions.pdf",
+          "pages": 47,
+          "document_date": null,
+          "relevant_pages": [
+            8,
+            11
+          ]
+        },
+        {
+          "id": "SCRTP_HOME",
+          "title": "South Carolina Regional Transmission Planning homepage",
+          "url": "https://www.scrtp.com/",
+          "accessed": "2026-09-26"
+        },
+        {
+          "id": "SCRTP_ARCHIVES",
+          "title": "SCRTP meeting archives",
+          "url": "https://www.scrtp.com/meeting-archives.html",
+          "accessed": "2026-09-26"
+        },
+        {
+          "id": "SERTP_HOME",
+          "title": "Southeastern Regional Transmission Planning homepage",
+          "url": "https://www.southeasternrtp.com/",
+          "accessed": "2026-09-26"
+        }
+      ],
+      "projects": [
+        {
+          "sample_id": "DESC_1",
+          "source_project_id": "6809 E",
+          "original_name": "Stevens Creek - Hooks 115kV/LR Plumb Branch 46kV Rebuilds",
+          "original_page": 14,
+          "original_status": "In Progress",
+          "original_planned_in_service": "2024-12-31",
+          "sample_date_correct": true,
+          "geometry": {
+            "kind": "line/corridor",
+            "length_miles": 9.5,
+            "location_detail": "Named Stevens Creek–Hooks and Little River/Plum Branch corridor; original spells Plumb. Includes 115kV and 46kV lines.",
+            "route_coordinates_provided": false,
+            "route_geometry_provided": false
+          },
+          "latest_evidence": {
+            "status": "Completed and in service",
+            "actual_in_service_month": "2024-08",
+            "reported_in": "DESC_IRP_2025",
+            "pdf_page": 49,
+            "printed_page": "43",
+            "evidence_date": "2025-03-31",
+            "confidence": "high for named scope; strong identity match, although IRP does not repeat project ID"
+          },
+          "identity_caution": "Do not merge with 6809 G: original page 15 is a separate 6.5-mile project. Current plan page 20 calls 6809 G Hooks–Modoc and schedules it for 2027-12-31."
+        },
+        {
+          "sample_id": "DESC_2",
+          "source_project_id": "6810 A",
+          "original_name": "Hooks - Thurmond 115kV Tie: Rebuild",
+          "original_page": 31,
+          "original_status": "In Progress",
+          "original_planned_in_service": "2024-12-31",
+          "sample_date_correct": true,
+          "geometry": {
+            "kind": "line section",
+            "length_miles": 2.3,
+            "length_qualifier": "approximately",
+            "location_detail": "Between Hooks and Thurmond on existing right-of-way; rebuild with steel poles.",
+            "route_coordinates_provided": false,
+            "route_geometry_provided": false
+          },
+          "latest_evidence": {
+            "status": "Completed and in service",
+            "actual_in_service_month": "2024-11",
+            "reported_in": "DESC_IRP_2025",
+            "pdf_page": 49,
+            "printed_page": "43",
+            "evidence_date": "2025-03-31",
+            "confidence": "high; exact named rebuild match; IRP does not repeat project ID"
+          }
+        },
+        {
+          "sample_id": "DESC_3",
+          "source_project_id": "06367 D - G",
+          "original_name": "Jasper – Okatie 230 kV #2: Construct",
+          "original_page": 23,
+          "original_status": "In Progress",
+          "original_planned_in_service": "2025-12-31",
+          "sample_date_correct": true,
+          "geometry": {
+            "kind": "new line",
+            "length_miles_original": 6.5,
+            "length_qualifier_original": "estimated",
+            "length_miles_2026_order": 6.64,
+            "location_detail": "Jasper substation in Hardeeville to Okatie substation in Okatie, South Carolina; public order page 2.",
+            "route_coordinates_provided": false,
+            "route_geometry_provided": false
+          },
+          "latest_evidence": {
+            "status": "Under construction",
+            "reported_in": "PSC_2026_482",
+            "pdf_page": 2,
+            "evidence_date": "2026-08-26",
+            "underlying_request_date": "2026-07-02",
+            "confidence": "high for reported construction status, not a live status feed",
+            "latest_exact_planned_in_service": "2026-12-01",
+            "schedule_source": "DESC_PLAN_2026",
+            "schedule_pdf_page": 12,
+            "schedule_source_project_id": "06367 D - G",
+            "schedule_source_date": "PDF metadata 2026-04-28; publication date unspecified"
+          },
+          "corroboration": [
+            {
+              "source": "DESC_IRP_2025",
+              "pdf_page": 133,
+              "printed_page": "APPENDIX B-1",
+              "summary": "Combined Jasper–Okatie #2/Okatie–Riverport construction entry shifts to December 2026 because of permitting delays."
+            },
+            {
+              "source": "DESC_IRP_2026",
+              "pdf_page": 83,
+              "summary": "Combined construction entry remains on schedule for December 2026."
+            }
+          ],
+          "scope_caution": "June 2032 in PSC Order 2026-482 page 5 is the later corridor reconductoring project, not the original #2 line-construction COD."
+        },
+        {
+          "sample_id": "DESC_4",
+          "source_project_id": "6807 B",
+          "original_name": "Queensboro - Ft Johnson 115 kV & Queensboro-Bayfront 115kV (Queensboro-James Island Sect)",
+          "original_page": 1,
+          "original_status": "In Progress",
+          "original_planned_in_service": "2023-12-31",
+          "sample_date_correct": true,
+          "geometry": {
+            "kind": "line rebuild",
+            "length_miles": null,
+            "location_detail": "Title names Queensboro, Ft Johnson, Bayfront and the Queensboro–James Island section. Description specifically describes replacement of Queensboro–Ft Johnson line and structures.",
+            "route_coordinates_provided": false,
+            "route_geometry_provided": false
+          },
+          "latest_evidence": {
+            "status": "Completed and in service for Queensboro–Fort Johnson named rebuild",
+            "actual_in_service_month": "2024-12",
+            "reported_in": "DESC_IRP_2025",
+            "pdf_page": 49,
+            "printed_page": "43",
+            "corroborating_pdf_page": 133,
+            "corroborating_printed_page": "APPENDIX B-1",
+            "evidence_date": "2025-03-31",
+            "confidence": "high for Queensboro–Fort Johnson scope; medium for full original compound title"
+          },
+          "scope_caution": "IRP names Queensboro–Fort Johnson and omits the Bayfront/James Island parenthetical. Do not assert separately that every component in the compound original title is complete without a utility scope crosswalk."
+        },
+        {
+          "sample_id": "DESC_5",
+          "source_project_id": "6808 S",
+          "original_name": "Okatie-Bluffton 115kV: Rebuild",
+          "original_page": 10,
+          "original_status": "In Progress",
+          "original_planned_in_service": "2025-06-01",
+          "sample_date_correct": true,
+          "geometry": {
+            "kind": "line rebuild",
+            "length_miles": null,
+            "location_detail": "Named Okatie–Bluffton corridor; replacement of wooden H-frames with steel and conductor upgrade.",
+            "route_coordinates_provided": false,
+            "route_geometry_provided": false
+          },
+          "latest_evidence": {
+            "status": "In service",
+            "actual_in_service_month": "2025-05",
+            "reported_in": "DESC_IRP_2026",
+            "pdf_page": 83,
+            "printed_page": "83",
+            "evidence_date": "2026-03-31",
+            "confidence": "high; exact named rebuild match; IRP does not repeat project ID"
+          },
+          "intermediate_evidence": {
+            "source": "DESC_PLAN_2025",
+            "pdf_page": 8,
+            "source_project_id": "6808 S",
+            "status": "In Progress",
+            "planned_in_service": "2025-06-01"
+          }
+        }
+      ],
+      "separate_project_identity": {
+        "project_id": "6809 G",
+        "original_source": "DESC_ORIGINAL",
+        "original_page": 15,
+        "original_name": "Stevens Creek - Hooks 115kV/LR Plumb Branch 46kV",
+        "original_length_miles": 6.5,
+        "original_planned_in_service": "2025-12-31",
+        "latest_source": "DESC_PLAN_2026",
+        "latest_page": 20,
+        "latest_name": "Hooks - Modoc 115/46 kV Rebuild",
+        "latest_status": "Planned",
+        "latest_planned_in_service": "2027-12-31",
+        "conclusion": "Same project ID across renamed entries; distinct from sample DESC_1 / 6809 E."
+      },
+      "refreshed_demo_evidence": {
+        "source": "PSC_2026_482",
+        "source_pages": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "summary": "Pages 3–4 explicitly describe coordinating Okatie–McIntosh reconductoring with Jasper corridor work and sharing construction resources. Page 3 identifies roughly 6.3 miles of shared ROW with Jasper–Yemassee lines. This supports a documented coordination case.",
+        "schedule": "The later reconductoring scope has estimated completion June 2032 (page 5). Keep separate from original Jasper–Okatie #2 construction.",
+        "cross_utility_limit": "The Southern Company/Santee Cooper new-line scheme is an alternative considered, not the chosen plan. The order does not turn GPC_2 reactor work into a shared line corridor or prove a cross-utility construction-window overlap.",
+        "candidate_extension": "SCRTP March 11, 2026 slides 24/50 list Santee Cooper Purrysburg–McIntosh tie-line reconductoring with May 1, 2026 in-service date; this is a scheduled date, not proof of actual completion or a confirmed shared construction window."
+      },
+      "methods_and_limits": [
+        "All page numbers are one-based PDF pages; printed page numbers stated separately.",
+        "Completion months remain month precision; no invented day. Planned in-service dates are not actual completion dates or construction intervals.",
+        "No sample supplies a verified route polyline or endpoint coordinates. Names/lengths identify facilities but cannot by themselves establish geometric corridor overlap.",
+        "Status sources must be joined by utility, project ID, scope, voltage and phase; normalize punctuation and aliases without collapsing distinct IDs.",
+        "Absence from a newer list is not evidence of completion, cancellation or delay. Completion conclusions here rely on explicit IRP statements.",
+        "Official public SCRTP, Dominion and PSC records only. No CEII-secure SERTP models, private accounts or access-controlled data were accessed or used.",
+        "SCRTP homepage describes joining SERTP effective with the DESC Order 1920 compliance filing; this notice alone does not establish that migration is already effective.",
+        "Latest evidence means latest relevant statement located within bounded public research, not a claim of exhaustive monitoring."
+      ],
+      "verification": {
+        "original_five_pages_text_verified": [
+          14,
+          31,
+          23,
+          1,
+          10
+        ],
+        "rendered_and_visually_checked": [
+          "desc-irp-2025-p49.png",
+          "desc-irp-2026-p83.png",
+          "desc-projects-2026-2030-p12.png"
+        ],
+        "needs_utility_confirmation": [
+          "Exact construction start/end windows and outage windows for overlap analysis.",
+          "Authoritative route/ROW geometry with permitted use and provenance.",
+          "Formal crosswalk for full Queensboro/Bayfront/James Island compound scope if whole-project completion is material."
+        ]
+      }
+    },
+    "georgia_power": {
+      "review_as_of": "2026-09-26",
+      "scope": "Read-only review of five Georgia Power samples, public source schedules and construction geography. No implementation or repository edits.",
+      "workbook": {
+        "reviewed_file_name": "Projects_Overlaps.xlsx",
+        "project_range": "projects!A7:Q11",
+        "date_range": "projects!M7:M11",
+        "endpoint_range": "projects!E7:J11",
+        "center_range": "projects!K7:L11",
+        "overlap_range": "overlaps!A2:I7",
+        "finding": "The workbook field in_service_date copies dates labeled Need Date in the supplied IRP. These are planning dates, not confirmed actual in-service dates. Center formulas average available endpoint coordinates or fall back to the one available endpoint; they are screening proxies, not route or construction-footprint geometry."
+      },
+      "sources": [
+        {
+          "id": "irp2025",
+          "title": "Georgia Power 2025 IRP Technical Appendix Volume 3, Transmission Plan, PUBLIC DISCLOSURE",
+          "reviewed_file_name": "2025 IRP Volume 3 PUBLIC DISCLOSURE.pdf",
+          "official_docket_url": "https://psc.ga.gov/search/facts-docket/?docketId=56002",
+          "official_context_url": "https://www.georgiapower.com/about/company/filings/irp.html",
+          "date": "2025 publication; foreword states snapshot as of December 2024",
+          "snapshot_date_precision": "month",
+          "snapshot_as_of": "2024-12",
+          "date_evidence_pdf_page": 4,
+          "embedded_plan": "2024 GA ITS Ten-Year Plan (2025–2034)",
+          "note": "Supplied public-disclosure PDF is the exact source reviewed. The direct official PDF URL was not recovered from the dynamic docket; the docket URL is a provenance landing page, not a claimed direct download."
+        },
+        {
+          "id": "sertp2024final",
+          "title": "2024 Regional Transmission Plan and Input Assumptions",
+          "url": "https://www.southeasternrtp.com/docs/general/2024/2024_Regional_Transmission_Plan_and_Input_Assumptions.pdf",
+          "report_date": "2024-11-27",
+          "relevant_pdf_pages": [
+            60,
+            61,
+            77,
+            133
+          ],
+          "note": "Public SERTP baseline corroborates planned years 2025 for Jesup and Mitchell, 2026 for McIntosh reactors, and 2033 for Evans–Thurmond #5. Not an actual completion record."
+        },
+        {
+          "id": "sertp2024q2",
+          "title": "2024 SERTP 2nd Quarter Presentation",
+          "url": "https://www.southeasternrtp.com/docs/general/2024/2024_SERTP_2nd_Qtr_Presentation.pdf",
+          "meeting_date": "2024-06-27",
+          "relevant_pdf_pages": [
+            83
+          ],
+          "reviewed_file_name": "2024_SERTP_2nd_Qtr_Presentation.pdf",
+          "note": "Slide 83 has separate callouts for reactor installation at McIntosh and rebuilding 0.1 miles of each tie line. The schematic supports component separation, not a surveyed equipment coordinate."
+        },
+        {
+          "id": "sertp2025final",
+          "title": "2025 Regional Transmission Plan and Input Assumptions",
+          "url": "https://www.southeasternrtp.com/docs/general/2025/2025%20Regional%20Transmission%20Plan%20and%20Input%20Assumptions.pdf",
+          "report_date": "2025-11-26",
+          "relevant_pdf_page": 111,
+          "relevant_printed_page": 110,
+          "reviewed_file_name": "2025_SERTP_Final.pdf",
+          "note": "Goshen–McIntosh listed for 2028 with the 6.7-mile Goshen–Georgia Pacific section."
+        },
+        {
+          "id": "sertp2026prelim",
+          "title": "2026 SERTP Preliminary Expansion Plan Report (Non-CEII)",
+          "url": "https://www.southeasternrtp.com/docs/general/2026/2026_SERTP_Preliminary_Expansion_Plan_Report_%28Non-CEII%29.pdf",
+          "report_date": "2026-06-12",
+          "relevant_pdf_page": 53,
+          "relevant_printed_page": 53,
+          "reviewed_file_name": "2026_SERTP_Preliminary.pdf",
+          "note": "Latest located official public project schedule for GPC_3: in-service year 2028. The public reference library labels this file Non-CEII."
+        },
+        {
+          "id": "sertp2026q3",
+          "title": "2026 SERTP 3rd Quarter Meeting Presentation",
+          "url": "https://www.southeasternrtp.com/docs/general/2026/2026_SERTP_3rd_Quarter_Meeting_Presentation.pdf",
+          "meeting_date": "2026-09-22",
+          "note": "Checked for a later update; did not locate revised dates or completion confirmation for these samples."
+        },
+        {
+          "id": "sertplibrary",
+          "title": "SERTP Reference Library",
+          "url": "https://www.southeasternrtp.com/reference_library.cshtml",
+          "accessed": "2026-09-26",
+          "note": "Used current public 2026 preliminary plans, public presentations, and prior final plans. Secure-area models were not accessed."
+        },
+        {
+          "id": "gpcprojects",
+          "title": "Georgia Power Transmission Projects",
+          "url": "https://www.georgiapower.com/about/grid-reliability/grid-improvements/grid-projects/transmission-projects.html",
+          "accessed": "2026-09-26",
+          "note": "Selected public project page did not provide newer sample-specific completion confirmation."
+        },
+        {
+          "id": "sc2026482",
+          "title": "South Carolina PSC Order 2026-482, Docket 2026-175-E",
+          "url": "https://dms.psc.sc.gov/Attachments/Order/263ec907-a4ee-42a3-88a2-e4be043bc817",
+          "report_date": "2026-08-26",
+          "relevant_pdf_pages": [
+            2,
+            3,
+            4,
+            5,
+            8,
+            9
+          ],
+          "note": "Primary regulatory evidence for the Jasper/Savannah corridor and distinctions between current construction, future reconductoring, and rejected alternatives."
+        },
+        {
+          "id": "osm_mcintosh",
+          "title": "OpenStreetMap McIntosh Substation way 121624352",
+          "url": "https://www.openstreetmap.org/way/121624352",
+          "element_timestamp": "2022-08-21T11:32:03Z",
+          "note": "Public community map data, not utility certification of equipment location. Named 230 kV Georgia Power substation center matches GPC_2 coordinate to rounding."
+        },
+        {
+          "id": "osm_goshen",
+          "title": "OpenStreetMap Goshen Substation way 1008141064",
+          "url": "https://www.openstreetmap.org/way/1008141064",
+          "element_timestamp": "2022-10-11T06:12:56Z",
+          "note": "Public map anchor matches workbook Goshen coordinate to rounding; does not establish the construction route."
+        }
+      ],
+      "projects": [
+        {
+          "project_id": "GPC_1",
+          "workbook_row": 7,
+          "name": "EVANS PRIMARY - THURMOND DAM (USA) #5 115KV REBUILD",
+          "teams_number": 20793,
+          "workbook_date": "2033-06-01",
+          "irp_pdf_page": 410,
+          "irp_plan_page": "240 of 304",
+          "irp_start_date": "2029-06-01",
+          "irp_need_date": "2033-06-01",
+          "public_scope": "Rebuild approximately 5.45 miles of the Euchee Creek–Thurmond Dam section of the named line; replace the main bus at Thurmond Dam.",
+          "geometry_type": "partial_line_plus_terminal_equipment",
+          "geometry_verdict": "The full Evans Primary–Thurmond midpoint does not represent this work. Preserve the named segment and the bus work as separate components; require public route/segment evidence before calling a corridor overlap.",
+          "latest_confirmed_plan": {
+            "value": "2033-06-01",
+            "precision": "day",
+            "meaning": "need_date",
+            "source": "irp2025",
+            "source_snapshot": "2024-12",
+            "status": "planned_in_snapshot; current execution status unconfirmed"
+          },
+          "corroboration": {
+            "source": "sertp2024final",
+            "pdf_page": 133,
+            "in_service_year": 2033
+          },
+          "later_search_result": "No matching replacement schedule or completion record located in the checked 2025 final and 2026 public materials. Absence does not prove completion, cancellation, or continued unchanged scope.",
+          "demo_disposition": "Useful negative/control example: workbook DESC_1/DESC_2 dates are 2024 while this need date is 2033, a 3,074-day gap in the original rows. Spatial adjacency alone does not establish a construction coordination window."
+        },
+        {
+          "project_id": "GPC_2",
+          "workbook_row": 8,
+          "name": "SAV: MCINTOSH - PURRYSBURG 230KV REACTORS",
+          "teams_number": 20277,
+          "workbook_date": "2026-06-01",
+          "irp_pdf_page": 227,
+          "irp_plan_page": "57 of 304",
+          "irp_start_date": "2024-01-01",
+          "irp_need_date": "2026-06-01",
+          "public_scope": "Install reactors at McIntosh on the Black and White McIntosh–Purrysburg tie lines, plus rebuild 0.1 miles of the GPC portion of each line.",
+          "geometry_type": "station_equipment_plus_two_short_line_portions",
+          "workbook_coordinate": {
+            "latitude": 32.352116,
+            "longitude": -81.175112
+          },
+          "geometry_verdict": "A single point loses the two short line portions. However, the suspected river-point error is not supported: the coordinate matches the public OSM center of named McIntosh Substation, 230 kV, operated by Georgia Power. It is a reasonable station proxy, not verified reactor equipment geometry. Do not label the sample a confirmed geocoding false positive.",
+          "map_crosscheck": {
+            "source": "osm_mcintosh",
+            "center": {
+              "latitude": 32.3521162,
+              "longitude": -81.1751124
+            },
+            "confidence": "named station proxy supported; exact work footprint unverified"
+          },
+          "latest_confirmed_plan": {
+            "value": "2026-06-01",
+            "precision": "day",
+            "meaning": "need_date",
+            "source": "irp2025",
+            "source_snapshot": "2024-12",
+            "status": "planned_in_snapshot; actual completion unconfirmed"
+          },
+          "corroboration": [
+            {
+              "source": "sertp2024final",
+              "pdf_page": 77,
+              "in_service_year": 2026
+            },
+            {
+              "source": "sertp2024q2",
+              "pdf_page": 83,
+              "in_service_year": 2026
+            }
+          ],
+          "later_search_result": "No newer sample-specific public schedule or completion confirmation found. A passed June 2026 need date is not evidence of completion.",
+          "demo_disposition": "Retain as a station-plus-line component modeling case. Existing DESC_3 and DESC_5 pair distances are screening distances, not proof that construction footprints overlap."
+        },
+        {
+          "project_id": "GPC_3",
+          "workbook_row": 9,
+          "name": "SAV: GOSHEN (SAV) - MCINTOSH 115KV LINE REBUILD",
+          "teams_number": 20065,
+          "workbook_date": "2027-06-01",
+          "irp_pdf_page": 314,
+          "irp_plan_page": "144 of 304",
+          "irp_start_date": "2025-06-01",
+          "irp_need_date": "2027-06-01",
+          "public_scope": "Approximately 6.7 miles of the Goshen (Savannah)–Georgia Pacific (Rincon) section of the broader Goshen–McIntosh line.",
+          "geometry_type": "partial_line",
+          "geometry_verdict": "Use Goshen–Georgia Pacific section geometry when publicly available. The full Goshen–McIntosh midpoint is not the work footprint, regardless of whether its end stations are correctly geocoded.",
+          "coordinate_caution": "GPC_3 calls longitude -81.182105 at latitude 32.352116 McIntosh, approximately 0.41 mile west of GPC_2's same-named coordinate. OSM has a distinct West McIntosh 500 kV station nearby. Do not collapse these labels or repair the coordinate without endpoint evidence. The project actually terminates its rebuilt section at Georgia Pacific.",
+          "latest_confirmed_plan": {
+            "value": "2028",
+            "precision": "year",
+            "meaning": "planned_in_service_year",
+            "source": "sertp2026prelim",
+            "report_date": "2026-06-12",
+            "pdf_page": 53,
+            "status": "planned; preliminary regional plan; completion unconfirmed"
+          },
+          "schedule_change": "The 2025 final and 2026 preliminary SERTP both show 2028. Supersede the workbook's 2027 need date for latest-plan screening, while retaining the old value and provenance. Do not invent a month/day such as June 1, 2028.",
+          "corroboration": {
+            "source": "sertp2025final",
+            "pdf_page": 111,
+            "printed_page": 110,
+            "in_service_year": 2028
+          },
+          "scope_change": "Current SERTP lists 200°C 1351 ACSS conductor for the same 6.7-mile section; supplied IRP describes an earlier conductor specification.",
+          "demo_disposition": "Strongest sample for a source-version and geometry review demonstration near Savannah. Pairing with DESC_3 is a candidate for human review, not a confirmed common corridor or shared construction window; current DESC dates require the separate DESC review."
+        },
+        {
+          "project_id": "GPC_4",
+          "workbook_row": 10,
+          "name": "MITCHELL - NORTH TIFTON 230KV RECONDUCTOR",
+          "teams_number": 18492,
+          "workbook_date": "2025-05-01",
+          "irp_pdf_page": 233,
+          "irp_plan_page": "63 of 304",
+          "irp_start_date": "2021-12-31",
+          "irp_need_date": "2025-05-01",
+          "public_scope": "Rebuild approximately 35.21 miles of the Mitchell–North Tifton 230 kV line.",
+          "geometry_type": "line",
+          "geometry_verdict": "A midpoint is only a coarse search anchor for a 35-mile line; use route geometry to test proximity anywhere along its length. The named endpoints are more consistent with scope than the partial-line samples, but still do not establish the route.",
+          "latest_confirmed_plan": {
+            "value": "2025-05-01",
+            "precision": "day",
+            "meaning": "need_date",
+            "source": "irp2025",
+            "source_snapshot": "2024-12",
+            "status": "planned_in_snapshot; actual completion unconfirmed"
+          },
+          "irp_change_notes": "IRP says advanced within 2025 versus prior ten-year plan and delayed from 2024 to 2025 versus prior IRP.",
+          "corroboration": {
+            "source": "sertp2024final",
+            "pdf_page": 61,
+            "in_service_year": 2025
+          },
+          "later_search_result": "No newer matching public schedule or actual completion confirmation located. Past planned date does not establish completed status.",
+          "demo_disposition": "Useful line-versus-midpoint control; no existing cross-utility overlap listed in workbook."
+        },
+        {
+          "project_id": "GPC_5",
+          "workbook_row": 11,
+          "name": "JESUP - LUDOWICI PRIMARY 115KV REBUILD",
+          "teams_number": 11821,
+          "workbook_date": "2025-06-01",
+          "irp_pdf_page": 240,
+          "irp_plan_page": "70 of 304",
+          "irp_start_date": "2023-06-01",
+          "irp_need_date": "2025-06-01",
+          "public_scope": "Rebuild approximately 7.5 miles of the Jesup–North Jesup–Rayonier section of the broader Jesup–Ludowici Primary line.",
+          "geometry_type": "partial_line",
+          "geometry_verdict": "The full Jesup–Ludowici midpoint does not describe the narrower rebuilt section. Preserve North Jesup and Rayonier as segment identifiers pending public route evidence.",
+          "latest_confirmed_plan": {
+            "value": "2025-06-01",
+            "precision": "day",
+            "meaning": "need_date",
+            "source": "irp2025",
+            "source_snapshot": "2024-12",
+            "status": "planned_in_snapshot; actual completion unconfirmed"
+          },
+          "corroboration": {
+            "source": "sertp2024final",
+            "pdf_page": 60,
+            "in_service_year": 2025
+          },
+          "later_search_result": "No later matching official public schedule or completion record located. Current Jesup–Offerman work is a different named project and was not treated as this sample.",
+          "ocr_check": "A search-engine OCR lead suggested May 1, 2025 in a public exhibit mirror. Visual inspection of exhibit PDF page 17 shows June 1, 2025 instead, consistent with the supplied IRP. No schedule contradiction established.",
+          "demo_disposition": "Useful partial-line normalization example; no existing cross-utility overlap listed in workbook."
+        }
+      ],
+      "cross_utility_demo": {
+        "recommended_region": "Savannah / McIntosh–Jasper–Purrysburg area",
+        "recommended_claim": "Public-source review can identify nearby projects, update stale dates, distinguish station equipment from line sections, and surface candidates for planner review.",
+        "not_yet_supported": "No verified GPC–DESC pair in these five samples has a proven shared construction footprint and simultaneous construction window from the sources reviewed.",
+        "sample_candidate": "DESC_3 / GPC_3 after the integrated Dominion and Georgia review. Latest milestones are 2026-12-01 and year-only 2028; the original 517-day gap is superseded for current-plan screening. Construction overlap remains unknown.",
+        "public_corridor_example": {
+          "source": "sc2026482",
+          "description": "The 2026 order documents DESC's plan to combine work within the Okatie–McIntosh/Jasper corridor, reuse access and matting, and reconductor nearby lines. It separately says Jasper–Okatie #2 was being constructed.",
+          "pages": [
+            2,
+            3,
+            4
+          ],
+          "future_reconductoring_package_estimated_completion": "2032-06",
+          "completion_date_page": 5,
+          "distinction": "The future reconductoring package is not the same schedule as initial Jasper–Okatie #2 construction. The Southern Company/Santee Cooper coordinated new-line proposal was an alternative considered, not the selected project."
+        },
+        "thurmond_disposition": "Keep as an example showing that nearby planned assets can have widely separated dates. Do not portray the original 2024-versus-2033 pair as a confirmed current coordination opportunity.",
+        "geometry_priority": "For each project, retain component type, named work endpoints, source date, geometry provenance, and confidence. Do not calculate line-overlap certainty from center-to-center distances."
+      },
+      "public_information_boundary": {
+        "used": "Supplied PUBLIC DISCLOSURE IRP, public Non-CEII SERTP reports and presentations, public regulatory order, and public OSM station labels independently checked in this integrated review.",
+        "not_used": "Secure SERTP models, access-controlled CEII data, redacted supporting statements/costs, or inferred reconstruction of redactions.",
+        "label_caution": "Some released documents retain generic CEII/confidential boilerplate or text-layer headings despite their PUBLIC DISCLOSURE/Non-CEII publication context. Only clearly released visible descriptions and dates were used. The public source label is not permission to obtain or infer restricted underlying models."
+      },
+      "verification": {
+        "workbook_read": "Read-only, formulas and values inspected.",
+        "visual_pages": [
+          "IRP PDF 227",
+          "IRP PDF 233",
+          "IRP PDF 240",
+          "IRP PDF 314",
+          "IRP PDF 410",
+          "2024 SERTP Q2 slide83",
+          "2025 SERTP final PDF111",
+          "2026 SERTP preliminary PDF53",
+          "Public exhibit mirror PDF17"
+        ],
+        "status_limit": "Latest confirmed plan means the newest matching source found in this bounded public review, not a guarantee of current construction status. None of the five samples has an actual completion date established here."
+      }
+    }
+  },
+  "map_provenance": {
+    "provider": "OpenStreetMap public Overpass API",
+    "attribution": "© OpenStreetMap contributors",
+    "license": "ODbL",
+    "license_url": "https://www.openstreetmap.org/copyright",
+    "snapshot_metadata": [
+      {
+        "file": "osm_savannah.json",
+        "sha256": "883ce6904925a1ebcf9e4cc39374a36c4d7553bad34147d2c97680d79574bf77",
+        "timestamp_osm_base": "2026-09-26T06:23:05Z"
+      },
+      {
+        "file": "osm_other_samples.json",
+        "sha256": "a56d4763a607cfb98b67edc7ef91371586e10d939bbbdc784bc8dbd19682975b",
+        "timestamp_osm_base": "2026-09-26T06:27:06Z"
+      }
+    ],
+    "limits": "Coordinates are OSM bounding-box centers, not surveyed centroids or utility-certified equipment coordinates. Element timestamps are map-edit dates, not construction status dates. User IDs and usernames omitted.",
+    "query_endpoint": "https://overpass-api.de/api/interpreter",
+    "savannah_query": "[out:json][timeout:20];nwr[\"power\"=\"substation\"](32.2,-81.3,32.4,-80.8);out center meta;",
+    "other_sample_query_method": "Union of power=substation nwr features within 1200 meters of eight non-Savannah workbook points; out center meta. Reviewed features retained per project.",
+    "official_route_map": {
+      "landing_url": "https://www.dominionenergy.com/about/delivering-energy/electric-projects/power-line-projects/jasper-okatie-sherwood",
+      "url": "https://cdn-dominionenergy-prd-001.azureedge.net/-/media/content/about/power-line-projects/jasper-okatie-riverport/pdfs/jor-final-route-selection-map.pdf?hash=DE7109A4DC801CD5FAF7F15A34486039&rev=87c654fe97664d0894aa92a8532b7f4e",
+      "landing_page_document_date": "2022-07-11",
+      "pdf_explicit_date": null,
+      "sha256": "e0892c6da49f89c867c5997723fb4abb41527ff12435c34da44c5c1534c2d302",
+      "review": "Visually inspected selected Jasper-to-Okatie corridor against roads and station areas. Image map does not supply a surveyed/georeferenced route. Study corridor width is not actual shared ROW or a cost quantity."
+    }
+  },
+  "limits": [
+    "Only these ten supplied examples were audited; public research was bounded and is not an exhaustive project inventory.",
+    "No reviewed pair establishes simultaneous construction, shared ROW or quantified savings.",
+    "Passed planned/need dates do not prove completion.",
+    "Guide-prescribed center distance is a screening proxy; route distance would require separately validated geometry.",
+    "Public disclosures and Non-CEII sources only; no secure models or redaction reconstruction."
+  ],
+  "source_preservation": {
+    "downloaded_reviewed_files": [
+      {
+        "filename": "2024_SERTP_2nd_Qtr_Presentation.pdf",
+        "sha256": "d442a89916fa60e4f61cc021b8523b5e8805ddd75affe66f319fe3efe7205605",
+        "bytes": 7540088
+      },
+      {
+        "filename": "2025_Public_Exhibits_Mirror.pdf",
+        "sha256": "5596186e50e780f369959a1f45b08ce3a98508a6cb12fdc9f588493ba751a1c2",
+        "bytes": 5135203
+      },
+      {
+        "filename": "2025_SERTP_Final.pdf",
+        "sha256": "9183e3ffcb4fc06e46db2afc50510948b6c0f950312440b6272aaa862bc9da6b",
+        "bytes": 5112510
+      },
+      {
+        "filename": "2026_SERTP_Preliminary.pdf",
+        "sha256": "d3785576bb2f558f558931b7fea22503deaafc6d1f81cec25b8d471deb32cb2c",
+        "bytes": 1996939
+      },
+      {
+        "filename": "desc-irp-2025-psc.pdf",
+        "sha256": "d9ed892e140a227b24ab9724597107e10ff43079ba794a1e7e47ab8aac2e02b3",
+        "bytes": 7809624
+      },
+      {
+        "filename": "desc-irp-2026.pdf",
+        "sha256": "102c3a667b039f041ca9e863e47d75ad14e6389562cc116e6cd145023866afa2",
+        "bytes": 12209712
+      },
+      {
+        "filename": "desc-projects-2026-2030.pdf",
+        "sha256": "e98bfeb86f2263f790f95f3510a9ab1e1b128c47e4ae633b8ccd27bedfea9b26",
+        "bytes": 555527
+      },
+      {
+        "filename": "jasper_final_route.pdf",
+        "sha256": "e0892c6da49f89c867c5997723fb4abb41527ff12435c34da44c5c1534c2d302",
+        "bytes": 402634
+      },
+      {
+        "filename": "scrtp-march-2026.pdf",
+        "sha256": "d522c353eb3c1dc7c156580307ecaceb2f83f3705f8d7b0fc48da9cd02a83c5c",
+        "bytes": 5318271
+      }
+    ],
+    "historical_dataset_sha256": "07166797968dc8cabe3c4ca411267a758c516a2ab346a4e9f7ba543a54e719cc",
+    "original_ideas_sha256": "65d099ec45e670dcec8cc625a9f42a3aa6357862132088ad57708a462a3aa027",
+    "note": "Downloaded review files identified for provenance; source URLs are recorded in utility_research. These review caches are not distributed with the sample."
+  }
+}

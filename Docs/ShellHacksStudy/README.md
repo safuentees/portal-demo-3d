@@ -1,9 +1,16 @@
 # ShellHacks winner case study
 
-Version 1.2.0. Sponsor review updated 26 September 2026; historical cohort cutoff remains 25 September 2026.
+Version 1.3.0. GridLock sample review added 26 September 2026; historical cohort cutoff remains 25 September 2026.
+
+The current priority is **GridLock**, following the user's newly supplied Sperry challenge. Read the [GridLock sample review and MVP plan](GridLock/GridLock_Validated_Sample_and_MVP.pdf) and [validated sample](GridLock/validated_sample.json) first. The earlier sponsor ranking remains a dated analysis of the original eight challenges; it does not include Sperry and no longer represents the user's preferred direction. No project implementation has started.
+
+The preferred demonstration is DESC_3 Jasper–Okatie #2 with GPC_3's Goshen–Georgia Pacific rebuild section. Reviewed screening anchors are approximately 10.25 miles apart, using a midpoint and one located endpoint. Refreshed milestones are 1 December 2026 and year-only 2028, a 396–761-day possible milestone gap. These facts support a proximity candidate for review, not verified concurrent construction, shared right-of-way or savings. Both supplied rule documents use 25 miles; boundary inclusion and the role of timing remain ambiguous.
 
 ## Deliverables
 
+- `GridLock/GridLock_Validated_Sample_and_MVP.pdf`: eight-page addendum covering the supplied brief, ten project audits, all six original proximity hits, a defensible demonstration pair, rule ambiguities, the smallest MVP and a conditional four-person plan.
+- `GridLock/GridLock_Validated_Sample_and_MVP.docx`: editable addendum using the existing companion template.
+- `GridLock/validated_sample.json`: all 224 populated workbook cells with formulas/caches/formats, ten scope/date/location reviews, all 25 original pair calculations, public map provenance, source hashes and clearly labeled proposals and unresolved details. Validation includes rejected or approximate coordinates; it does not certify every location.
 - `ShellHacks_Winners_Case_Study.pdf`: 25-page report with charts, recommendations, feature matrices and all 36 project records.
 - `ShellHacks_Winners_Case_Study.docx`: editable source report.
 - `ShellHacks_Winners_Dataset.xlsx`: editable four-sheet workbook with sources, evidence, coding definitions and recalculating summaries.
@@ -19,7 +26,7 @@ Version 1.2.0. Sponsor review updated 26 September 2026; historical cohort cutof
 
 The original study and winner dataset remain version 1.0.0. Version 1.1.0 introduced the ten concepts; version 1.2.0 evaluates them alongside four fresh concepts against the eight challenges whose 2026 applicability the user confirmed. Additional organizer or sponsor challenges may exist. The user’s reply “4” is treated as four teammates; skills, hardware and remaining time are unspecified.
 
-The preferred project is ReplayBench with Tiger Data (91/100), followed by Handoff Lab with ElevenLabs (86) and LineCheck with Gemini API (83), conditional on participant/event eligibility, skills, service access and time. The scores are explicit planning judgments: challenge fit 20%, useful integration 20%, feasibility 20%, differentiation 15%, demonstrability 15% and dependency safety 10%. They are not official judging scores, learned findings or winning probabilities. Two candidates are held for additional hardware or trust/skill gates; equal totals share rank. All validation targets are proposed tests, not measured results.
+The version 1.2.0 ranking preferred ReplayBench with Tiger Data (91/100), followed by Handoff Lab with ElevenLabs (86) and LineCheck with Gemini API (83), conditional on participant/event eligibility, skills, service access and time. The scores are explicit planning judgments: challenge fit 20%, useful integration 20%, feasibility 20%, differentiation 15%, demonstrability 15% and dependency safety 10%. They are not official judging scores, learned findings or winning probabilities. Two candidates are held for additional hardware or trust/skill gates; equal totals share rank. All validation targets are proposed tests, not measured results. GridLock was not scored in that comparison; its current priority follows the user's new instruction and supplied brief.
 
 Current general MLH policies inform the review, but local submission requirements, reuse/disclosure details and multi-category entry/award limits are unresolved. Secondary sponsor combinations describe technical compatibility only. No prebuilt application code is recommended and no project implementation was started. The 36-hour plan is a full-window baseline; it is not a statement of remaining time.
 
@@ -55,4 +62,6 @@ The report retains the landscape geometry and source cover illustration and adap
 - Original ideas companion (version 1.1.0): all 17 rendered pages and 21 referenced project records were checked. The proposed finite algorithm test domain was independently counted.
 - Updated sponsor companion (version 1.2.0): all eight challenge records, 80 fit cells, fourteen weighted totals, shared ranks and historical anchors independently reviewed. All 27 final pages visually inspected; 40 PDF hyperlink targets and all 12 historical IDs used in the updated report checked. Scores independently recomputed, shared ranks verified, source-ID namespaces separated and source text checksum verified. Retained theme, numbering, font table, web settings, images and section geometry match the reference. Historical report, workbook, dataset and original ten concept records are byte-for-byte unchanged.
 
-All sources are public. Participant names, contact details and private account data were excluded.
+- GridLock addendum (version 1.3.0): independent audit reproduced all 224 populated source cells, all 25 distances and all six original hits. Dated official records and public map features reviewed against actual work scope. The eight-page addendum was rendered and every page visually checked; template package parts and section geometry preserved. The ZIP/workbook inputs and all earlier study assets remain unchanged. JSON and Git whitespace checks passed; no application or GPU tests were applicable.
+
+Sources are public records or user-supplied public challenge materials. Participant names, contact details and private account data were excluded. Public OpenStreetMap data is attributed to © OpenStreetMap contributors under ODbL. No secure transmission models or reconstructed redactions were used.
