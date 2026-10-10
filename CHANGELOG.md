@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Rewrite the README with a clear overview, verified setup, controls, three captured Metal scene images, and explicit rendering limitations.
+- Preserve detailed scene, shader, transform, and historical verification notes in `Docs/RenderingGuide.md`.
+
 ## 1.0.0 — 2026-09-15
 
 Initial reusable macOS Metal starter, based on metsl-macOS.
